@@ -1,0 +1,51 @@
+.tipo-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    width: 30%;
+    margin-bottom: 20px;
+    border-radius: 30px;
+    border: 1px solid var(--tertiary);
+    padding: 2rem;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+    background-color: var(--primary);
+    color: #fff;
+    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cliente-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.cliente-inputs .sp-1,
+.sp-2,
+.sp-3,
+.sp-4 {
+    width: 100%;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cliente-inputs input {
+    width: 90%;
+}
+
+
+
+@media screen and (max-width: 1000px) {
+    .card {
+        padding: 1.5rem 1rem;
+    }
+}

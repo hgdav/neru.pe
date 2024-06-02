@@ -1,0 +1,32 @@
+table {
+    width: 100%;
+    cursor: pointer;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+#result {
+    margin-top: 1.5rem;
+}
+
+#fileInput {
+    max-width: -webkit-fill-available;
+}

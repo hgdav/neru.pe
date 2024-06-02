@@ -62,6 +62,10 @@ input {
     outline: none;
 }
 
+.hidden {
+    display: none;
+}
+
 #fileInput {
     width: fit-content;
 }
