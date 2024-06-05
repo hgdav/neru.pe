@@ -28,24 +28,27 @@
         <div class="inputs-container">
             <div class="cliente-inputs">
                 <div class="sp-1">
-                    <input type="text" placeholder="Nombre">
-                    <input type="text" placeholder="Apellido">
+                    <input type="text" placeholder="Nombre" id="nombre">
+                    <input type="text" placeholder="Apellido" id="apellido">
                 </div>
                 <div class="sp-2">
-                    <input type="text" placeholder="DNI">
-                    <input type="text" placeholder="Teléfono">
+                    <input type="text" placeholder="DNI" id="dni">
+                    <input type="text" placeholder="Teléfono" id="telefono">
                 </div>
                 <div class="sp-3">
-                    <input type=" text" placeholder="Departamento">
-                    <input type="text" placeholder="Provincia">
+                    <input type=" text" placeholder="Departamento" id="departamento">
+                    <input type="text" placeholder="Provincia" id="provincia">
                 </div>
                 <div class="sp-4">
-                    <input type="text" placeholder="Distrito">
-                    <input type="text" placeholder="Dirección">
+                    <input type="text" placeholder="Distrito" id="distrito">
+                    <input type="text" placeholder="Dirección" id="direccion">
                 </div>
             </div>
             <div class="producto-inputs">
-
+                <div class="">
+                    <textarea placeholder="Detalle de compra" id="productoInput"></textarea>
+                    <input type="text" placeholder="Precio" id="precioInput">
+                </div>
             </div>
         </div>
         <div class="tipo-container">
@@ -60,10 +63,12 @@
             </div>
         </div>
         <div class="btn-container">
-            <input type="button" value="Generar" style="cursor: pointer;">
+            <button style="cursor: pointer;" id="btn-generar">Generar</button>
         </div>
+        <div id="ticket" style="display: none;"></div>
     </div>
-    <script src="assets/js/tickets.js"></script>
+    <script src=" assets/js/tickets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </body>
 
 </html>

@@ -23,8 +23,6 @@ function processCSV(data) {
         const packSize = pack[packSizeIndex];
         const packColors = pack[packColorIndex].split(' - ').map(color => color.trim().toLowerCase());
 
-        console.log(`Procesando pack: ${pack[1]}, Tamaño: ${packSize}, Colores: ${packColors}`);
-
         const allProductsInStock = packColors.every(color => {
             const product = products.find(product => {
                 const productSizeIndex = product.indexOf('Tamaño') !== -1 ? product.indexOf('Tamaño') + 1 : product.indexOf('Size') + 1;
@@ -36,13 +34,9 @@ function processCSV(data) {
                     productSize.trim().toLowerCase() === packSize.trim().toLowerCase() &&
                     productColor.trim().toLowerCase() === color;
             });
-
-            console.log(`Revisando color: ${color}, Producto encontrado: ${product ? product[1] : 'None'}`);
-
-            return product && parseInt(product[11]) > 1; // Asegúrate de que el índice del stock es correcto
+            return product && parseInt(product[11]) > 1;
         });
 
-        console.log(`Pack disponible: ${allProductsInStock}`);
         return allProductsInStock;
     });
 
@@ -62,9 +56,10 @@ function displayResult(packs) {
 
     const table = document.createElement('table');
     const headerRow = document.createElement('tr');
-    ['Nombre del Pack', 'Tamaño', 'Color'].forEach(headerText => {
+    ['Nombre del Pack', 'Talla', 'Color'].forEach(headerText => {
         const header = document.createElement('th');
         header.innerText = headerText;
+        header.addEventListener('click', () => sortTableByColumn(table, headerText));
         headerRow.appendChild(header);
     });
     table.appendChild(headerRow);
@@ -78,11 +73,70 @@ function displayResult(packs) {
             cell.innerText = cellText;
             row.appendChild(cell);
         });
+        row.addEventListener('click', () => showPopup(pack[1], packs));
         table.appendChild(row);
     });
 
     resultDiv.appendChild(table);
 }
+
+function sortTableByColumn(table, column) {
+    const headers = Array.from(table.querySelectorAll('th'));
+    const columnIndex = headers.findIndex(header => header.innerText === column);
+    const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)')); // excluye la cabecera
+
+    const sortedRows = rows.sort((a, b) => {
+        const aText = a.children[columnIndex].innerText.toLowerCase();
+        const bText = b.children[columnIndex].innerText.toLowerCase();
+
+        return aText.localeCompare(bText);
+    });
+
+    sortedRows.forEach(row => table.appendChild(row));
+}
+
+
+function showPopup(packName, packs) {
+    const popupContent = document.getElementById('popup-content');
+    popupContent.innerHTML = '';
+
+    const filteredPacks = packs.filter(pack => pack[1] === packName);
+
+    // Sort filtered packs by size/talla by default
+    const packSizeIndex = filteredPacks[0].indexOf('Tamaño') !== -1 ? filteredPacks[0].indexOf('Tamaño') + 1 : filteredPacks[0].indexOf('Size') + 1;
+    filteredPacks.sort((a, b) => a[packSizeIndex].localeCompare(b[packSizeIndex]));
+
+    const table = document.createElement('table');
+    const headerRow = document.createElement('tr');
+    ['Nombre del Pack', 'Talla', 'Color'].forEach(headerText => {
+        const header = document.createElement('th');
+        header.innerText = headerText;
+        header.addEventListener('click', () => sortTableByColumn(table, headerText));
+        headerRow.appendChild(header);
+    });
+    table.appendChild(headerRow);
+
+    filteredPacks.forEach(pack => {
+        const row = document.createElement('tr');
+        [pack[1], pack[packSizeIndex], pack[pack.indexOf('Color') + 1]].forEach(cellText => {
+            const cell = document.createElement('td');
+            cell.innerText = cellText;
+            row.appendChild(cell);
+        });
+        table.appendChild(row);
+    });
+
+    popupContent.appendChild(table);
+
+    document.body.style.overflow = 'hidden';
+    document.getElementById('overlay').style.display = 'flex';
+}
+
+function closePopup() {
+    document.body.style.overflow = 'auto';
+    document.getElementById('overlay').style.display = 'none';
+}
+
 
 function processFile() {
     document.getElementById('fileInput').click();
