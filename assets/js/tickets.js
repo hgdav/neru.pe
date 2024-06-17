@@ -116,9 +116,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', [80, 297]); // Ancho de 80mm
 
+        const imgData = 'https://cdn.shopify.com/s/files/1/0760/7582/7479/files/LOGOTIPO-NERU.png?v=1689712534';
+        doc.addImage(imgData, 'PNG', 18, 5, 45, 15); // X, Y, W, H
+
+        const imgRoute = 'assets/img/ruta.png';
+        doc.addImage(imgRoute, 'PNG', 8, 40, 10, 45); // X, Y, W, H
+
         // Añade el contenido para el rótulo
         doc.setFontSize(10);
-        doc.text('Rótulo de Envío', 40, 10, null, null, 'center');
+
+        doc.text('Remitente', 40, 10, null, null, 'center');
         doc.setFontSize(8);
         doc.text(`Nombre: ${nombre.value} ${apellido.value}`, 10, 20);
         doc.text(`DNI: ${dni.value}`, 10, 25);
