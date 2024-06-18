@@ -75,8 +75,12 @@ function generateImage() {
     html2canvas(colorContainer).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
-        link.download = 'selected_colors.png';
+        if (colores.length > 2) {
+            link.download = colores[0] + ' - ' + colores[1] + ' - ' + colores[2] + '.png';
+        } else {
+            link.download = colores[0] + ' - ' + colores[1] + '.png';
+        }
         link.click();
-        colorContainer.innerHTML = '';
+        window.location.reload();
     });
 }
