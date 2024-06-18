@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     loadColors();
+    colorInput.focus();
 });
 
 let colors = {};
@@ -61,6 +62,7 @@ btnDownload.addEventListener('click', () => {
 
 function updateColorContainer() {
     colorContainer.innerHTML = '';
+    colorInput.focus();
     colores.forEach((color, index) => {
         const colorDiv = document.createElement('div');
         colorDiv.id = `color-${index + 1}`;
