@@ -36,31 +36,52 @@ colorInput.addEventListener('input', () => {
                 suggestionDiv.addEventListener('click', () => {
                     colorInput.value = colorName;
                     suggestionsDiv.innerHTML = '';
-                    colores.push(colorName);
-                    if (colores.length == 3) {
-                        document.getElementById("color-1").style.backgroundColor = colors[colores[0]];
-                        document.getElementById("color-2").style.backgroundColor = colors[colores[1]];
-                        document.getElementById("color-3").style.backgroundColor = colors[colores[2]];
+                    if (colores.length < 3) {
+                        colores.push(colorName);
+
+                        // Actualizar y mostrar los colores seleccionados
+                        updateColorContainer();
+
                         colorContainer.style.display = "inline-flex";
                         btnDownload.style.display = "block";
+                    }
 
-                    } else if (colores.length > 3) {
+                    if (colores.length > 3) {
                         alert("Solo puedes seleccionar tres colores. La página se recargará.");
                         window.location.reload();
                     }
+
                     colorInput.value = '';
                 });
-
             }
         });
     }
 });
 
 btnDownload.addEventListener('click', () => {
-    html2canvas(document.getElementById('colorContainer')).then(canvas => {
+    generateImage();
+});
+
+function updateColorContainer() {
+    // Limpiar el contenedor de colores antes de actualizar
+    colorContainer.innerHTML = '';
+
+    // Agregar los colores seleccionados al contenedor
+    colores.forEach((color, index) => {
+        const colorDiv = document.createElement('div');
+        colorDiv.id = `color-${index + 1}`;
+        colorDiv.style.backgroundColor = colors[color];
+        colorDiv.style.width = '600px';
+        colorDiv.style.height = '450px';
+        colorContainer.appendChild(colorDiv);
+    });
+}
+
+function generateImage() {
+    html2canvas(colorContainer).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         link.download = 'selected_colors.png';
         link.click();
     });
-});
+}
