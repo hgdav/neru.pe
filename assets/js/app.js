@@ -38,10 +38,7 @@ colorInput.addEventListener('input', () => {
                     suggestionsDiv.innerHTML = '';
                     if (colores.length < 3) {
                         colores.push(colorName);
-
-                        // Actualizar y mostrar los colores seleccionados
                         updateColorContainer();
-
                         colorContainer.style.display = "inline-flex";
                         btnDownload.style.display = "block";
                     }
@@ -63,10 +60,7 @@ btnDownload.addEventListener('click', () => {
 });
 
 function updateColorContainer() {
-    // Limpiar el contenedor de colores antes de actualizar
     colorContainer.innerHTML = '';
-
-    // Agregar los colores seleccionados al contenedor
     colores.forEach((color, index) => {
         const colorDiv = document.createElement('div');
         colorDiv.id = `color-${index + 1}`;
@@ -83,5 +77,6 @@ function generateImage() {
         link.href = canvas.toDataURL('image/png');
         link.download = 'selected_colors.png';
         link.click();
+        colorContainer.innerHTML = '';
     });
 }
