@@ -38,45 +38,59 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function obtenerTallaRecomendada(talla, peso, estilo) {
-        if (talla < 150 || peso < 50) {
-            return "TALLA XS";
-        }
-        if (talla > 190 || peso > 100) {
-            return "TALLA XXL";
-        }
-
-        const LIMITES = {
-            S: { maxTalla: 170, maxPeso: 65 },
-            M: { maxTalla: 180, maxPeso: 80 },
-            L: { maxTalla: 190, maxPeso: 95 }
-        };
-
-        let tallaBase;
-        if (talla <= LIMITES.S.maxTalla && peso <= LIMITES.S.maxPeso) {
-            tallaBase = "S";
-        } else if (talla <= LIMITES.M.maxTalla && peso <= LIMITES.M.maxPeso) {
-            tallaBase = "M";
+        if ((talla >= 150 && talla <= 170) && (peso >= 50 && peso <= 65)) {
+            if (estilo === '1' || estilo === '2') {
+                return "TALLA S";
+            } else if (estilo === '3') {
+                return "TALLA M";
+            }
+        } else if ((talla >= 150 && talla <= 175) && (peso >= 60 && peso <= 75)) {
+            if (estilo === '1') {
+                return "TALLA S";
+            } else if (estilo === '2') {
+                return "TALLA M";
+            } else if (estilo === '3') {
+                return "TALLA L";
+            }
+        } else if ((talla >= 160 && talla <= 185) && (peso >= 65 && peso <= 90)) {
+            if (estilo === '1') {
+                return "TALLA M";
+            } else if (estilo === '2') {
+                return "TALLA L";
+            } else if (estilo === '3') {
+                return "TALLA XL";
+            }
+        } else if ((talla >= 160 && talla <= 190) && (peso >= 85 && peso <= 95)) {
+            if (estilo === '1') {
+                return "TALLA L";
+            } else if (estilo === '2' || estilo === '3') {
+                return "TALLA XL";
+            }
+        } else if ((talla > 190) && (peso >= 96 && peso <= 100)) {
+            return "XXL_NO_DISPONIBLE";
+        } else if ((talla <= 149) && (peso <= 49)) {
+            return "XS_NO_DISPONIBLE";
         } else {
-            tallaBase = "L";
+            return "FUERA_DE_RANGO";
         }
-
-        const ajusteEstilo = {
-            "1": -1,
-            "2": 0,
-            "3": 1
-        };
-
-        const tallas = ["XS", "S", "M", "L", "XL", "XXL"];
-        const indiceTallaBase = tallas.indexOf(tallaBase);
-        const indiceTallaFinal = Math.max(0, Math.min(tallas.length - 1, indiceTallaBase + ajusteEstilo[estilo]));
-
-        return "TALLA " + tallas[indiceTallaFinal];
     }
 
     function mostrarResultado(resultado) {
         formulario.classList.add('blur');
-        resultadoSpan.innerHTML = `<div style="font-size: 18px; line-height: 1.5;">¡Redoble de tambores!🥁<br>
-            Después de analizar tus medidas y estilo, te recomendamos: <br> <b>${resultado}</b></div>`;
+        let mensajeHTML = "";
+
+        if (resultado === "XXL_NO_DISPONIBLE") {
+            mensajeHTML = `<div style="font-size: 18px; line-height: 1.5;">Al parecer, tu talla es XXL y aún no está disponible en nuestra tienda.<br>¡Esperamos tenerla pronto!</div>`;
+        } else if (resultado === "XS_NO_DISPONIBLE") {
+            mensajeHTML = `<div style="font-size: 18px; line-height: 1.5;">Al parecer, tu talla es XS y aún no está disponible en nuestra tienda.<br>¡Esperamos tenerla pronto!</div>`;
+        } else if (resultado === "FUERA_DE_RANGO") {
+            mensajeHTML = `<div style="font-size: 18px; line-height: 1.5;">Lo sentimos, tus medidas están fuera del rango de nuestras tallas disponibles.</div>`;
+        } else {
+            mensajeHTML = `<div style="font-size: 18px; line-height: 1.5;">¡Redoble de tambores!🥁<br>
+                Después de analizar tus medidas y estilo, te recomendamos: <br> <b>${resultado}</b></div>`;
+        }
+
+        resultadoSpan.innerHTML = mensajeHTML;
         resultadoSpan.style.display = 'block';
     }
 
