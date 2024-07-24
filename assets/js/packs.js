@@ -1,171 +1,116 @@
 document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
 
-let sizeIndex, colorIndex, stockIndex; // Variables globales
-
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    if (file && file.name.endsWith('.csv')) {
+    if (file) {
         Papa.parse(file, {
+            header: true,
             complete: function (results) {
-                processCSV(results.data);
-            },
-            header: true
+                processCSVData(results.data);
+            }
         });
-    } else {
-        alert('Por favor sube un archivo CSV.');
     }
 }
 
-function processCSV(data) {
-    const headers = Object.keys(data[0]);
-    const packs = data.filter(row => row.Title && row.Title.includes('Pack'));
-    const products = data.filter(row => row.Title && !row.Title.includes('Pack'));
+function processCSVData(data) {
+    const packs = data.filter(item => item.Title && item.Title.includes('Pack'));
+    const products = data.filter(item => item.Title && !item.Title.includes('Pack'));
 
-    sizeIndex = headers.indexOf('Tamaño') !== -1 ? headers.indexOf('Tamaño') : headers.indexOf('Size');
-    colorIndex = headers.indexOf('Color');
-    stockIndex = headers.indexOf('Available');
+    const packAvailability = packs.map(pack => {
+        const packName = pack.Title;
+        const packSize = pack['Option1 Value'];
+        const packColors = pack['Option2 Value'].split(' - ');
 
-    if (sizeIndex === -1 || colorIndex === -1 || stockIndex === -1) {
-        console.error("No se encontraron las columnas 'Tamaño', 'Color' o 'Available' en los encabezados.");
-        return;
-    }
+        let available = true;
+        let unavailableColors = [];
 
-    const availablePacks = packs.filter(pack => {
-        const packNameMatch = pack.Title.match(/Pack (.*?) x/); // Ajustar el regex según sea necesario
-        const packName = packNameMatch ? packNameMatch[1].trim() : null;
-        const packSize = pack.Tamaño;
-        const packColors = pack.Color.split(' - ').map(color => color.trim().toLowerCase());
+        for (const color of packColors) {
+            const productAvailable = products.some(product =>
+                product['Option1 Value'] === packSize &&
+                product['Option2 Value'].toLowerCase().trim() === color.toLowerCase().trim() &&
+                Number(product.Available) > 1 // Cambiado a > 0 para considerar disponible si hay stock
+            );
 
-        if (!packName) return false;
+            if (!productAvailable) {
+                available = false;
+                unavailableColors.push(color);
+            }
+        }
 
-        const allProductsInStock = packColors.every(color => {
-            const matchingProducts = products.filter(product => {
-                const productName = product.Title.trim().toLowerCase();
-                const productSize = product.Tamaño;
-                const productColor = product.Color;
-                const inStock = parseInt(product.Available);
+        return {
+            packName,
+            packSize,
+            packColors: packColors.join(', '),
+            available,
+            unavailableColors: unavailableColors.join(', ')
+        };
+    });
 
-                return productSize && productColor &&
-                    productName.includes(packName.toLowerCase()) &&
-                    productSize.trim().toLowerCase() === packSize.trim().toLowerCase() &&
-                    productColor.trim().toLowerCase() === color &&
-                    inStock > 1;
-            });
+    // Ordenar por tipo (nombre del pack) y luego por talla
+    packAvailability.sort((a, b) => {
+        if (a.packName < b.packName) return -1;
+        if (a.packName > b.packName) return 1;
+        if (a.packSize < b.packSize) return -1;
+        if (a.packSize > b.packSize) return 1;
+        return 0;
+    });
 
-            return matchingProducts.length >= 1; // Ajustar la condición según el requerimiento
+    displayResults(packAvailability);
+}
+
+function displayResults(packAvailability) {
+    const resultsDiv = document.getElementById('results');
+    let results = '<table><thead><tr><th>Pack</th><th>Talla</th><th>Colores</th><th>Disponibilidad</th></tr></thead><tbody>';
+
+    packAvailability.forEach((pack, index) => {
+        results += `<tr class="${pack.available ? 'available' : 'unavailable'}" data-index="${index}">
+                        <td>${pack.packName}</td>
+                        <td>${pack.packSize}</td>
+                        <td>${pack.packColors}</td>
+                        <td>${pack.available ? 'Disponible' : `<strong>No Disponibles:</strong> ${pack.unavailableColors}`}</td>
+                    </tr>`;
+    });
+
+    results += '</tbody></table>';
+    resultsDiv.innerHTML = results;
+
+    // Agregar event listener a cada fila
+    document.querySelectorAll('tr[data-index]').forEach(row => {
+        row.addEventListener('click', function () {
+            const packName = this.querySelector('td').textContent;
+            showModal(packName, packAvailability);
         });
-
-        return allProductsInStock;
     });
-
-    displayResult(availablePacks, headers);
 }
 
-function displayResult(packs, headers) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '';
+function showModal(packName, packAvailability) {
+    const modal = document.getElementById('myModal');
+    const modalContent = document.getElementById('modalContent');
 
-    if (packs.length === 0) {
-        resultDiv.innerHTML = '<p>No hay packs disponibles.</p>';
-        return;
-    }
-
-    packs.sort((a, b) => a.Title.localeCompare(b.Title));
-
-    const table = document.createElement('table');
-    const headerRow = document.createElement('tr');
-    ['Nombre del Pack', 'Talla', 'Color'].forEach(headerText => {
-        const header = document.createElement('th');
-        header.innerText = headerText;
-        header.addEventListener('click', () => sortTableByColumn(table, headerText));
-        headerRow.appendChild(header);
-    });
-    table.appendChild(headerRow);
-
-    packs.forEach(pack => {
-        const row = document.createElement('tr');
-        [pack.Title, pack.Tamaño, pack.Color].forEach(cellText => {
-            const cell = document.createElement('td');
-            cell.innerText = cellText;
-            row.appendChild(cell);
-        });
-        row.addEventListener('click', () => showPopup(pack.Title, packs, headers));
-        table.appendChild(row);
-    });
-
-    resultDiv.appendChild(table);
-}
-
-function sortTableByColumn(table, column) {
-    const headers = Array.from(table.querySelectorAll('th'));
-    const columnIndex = headers.findIndex(header => header.innerText === column);
-    const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)')); // excluye la cabecera
-
-    const sortedRows = rows.sort((a, b) => {
-        const aText = a.children[columnIndex].innerText.toLowerCase();
-        const bText = b.children[columnIndex].innerText.toLowerCase();
-
-        return aText.localeCompare(bText);
-    });
-
-    sortedRows.forEach(row => table.appendChild(row));
-}
-
-function showPopup(packName, packs, headers) {
-    const popupContent = document.getElementById('popup-content');
-    popupContent.innerHTML = '';
-
-    const filteredPacks = packs.filter(pack => pack.Title === packName);
-
-    // Sort filtered packs by size/talla by default
-    const packSizeIndex = headers.indexOf('Tamaño');
-    const colorIndex = headers.indexOf('Color');
-
-    // Ensure the indexes are valid
-    if (packSizeIndex === -1 || colorIndex === -1) {
-        console.error("No se encontraron las columnas 'Tamaño' o 'Color' en los encabezados.");
-        return;
-    }
-
-    filteredPacks.sort((a, b) => {
-        const aSize = a.Tamaño ? a.Tamaño.toLowerCase() : "";
-        const bSize = b.Tamaño ? b.Tamaño.toLowerCase() : "";
-        return aSize.localeCompare(bSize);
-    });
-
-    const table = document.createElement('table');
-    const headerRow = document.createElement('tr');
-    ['Nombre del Pack', 'Talla', 'Color'].forEach(headerText => {
-        const header = document.createElement('th');
-        header.innerText = headerText;
-        header.addEventListener('click', () => sortTableByColumn(table, headerText));
-        headerRow.appendChild(header);
-    });
-    table.appendChild(headerRow);
+    const filteredPacks = packAvailability.filter(pack => pack.packName === packName);
+    let content = `<table><thead><tr><th>Pack</th><th>Talla</th><th>Colores</th><th>Disponibilidad</th></tr></thead><tbody>`;
 
     filteredPacks.forEach(pack => {
-        const row = document.createElement('tr');
-        const packSize = pack.Tamaño ? pack.Tamaño : "";
-        const packColor = pack.Color ? pack.Color : "";
-        [pack.Title, packSize, packColor].forEach(cellText => {
-            const cell = document.createElement('td');
-            cell.innerText = cellText;
-            row.appendChild(cell);
-        });
-        table.appendChild(row);
+        content += `<tr class="${pack.available ? 'available' : 'unavailable'}">
+                        <td>${pack.packName}</td>
+                        <td>${pack.packSize}</td>
+                        <td>${pack.packColors}</td>
+                        <td>${pack.available ? 'Disponible' : `<strong>No Disponibles:</strong> ${pack.unavailableColors}`}</td>
+                    </tr>`;
     });
 
-    popupContent.appendChild(table);
+    content += `</tbody></table>`;
+    modalContent.innerHTML = content;
+    modal.style.display = "block";
 
-    document.body.style.overflow = 'hidden';
-    document.getElementById('overlay').style.display = 'flex';
-}
+    // Cerrar el modal
+    document.querySelector('.close').onclick = function () {
+        modal.style.display = "none";
+    }
 
-function closePopup() {
-    document.body.style.overflow = 'auto';
-    document.getElementById('overlay').style.display = 'none';
-}
-
-function processFile() {
-    document.getElementById('fileInput').click();
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 }

@@ -9,7 +9,6 @@
     <link rel="icon" type="img/jpg"
         href="https://cdn.shopify.com/s/files/1/0760/7582/7479/files/favicon.png?v=1684944077">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/tallas.css">
 </head>
 
 <body>
@@ -19,35 +18,29 @@
                 alt="logo" width="85%">
         </div>
         <div class="menu">
-            <a href="index.html" class="active">Tallas</a>
-            <a href="colores.html">Colores</a>
+            <a href="index.html">Tallas</a>
+            <a href="colores.html" class="active">Colores</a>
             <a href="packs.html">Packs</a>
             <a href="tickets.html">Tickets</a>
         </div>
     </header>
     <div class="container">
-        <div id="formulario">
-            <h2>Recomendador de tallas</h2>
-            <div class="fila">
-                <div>
-                    <input id="talla" placeholder="Talla" type="text">
-                </div>
-                <div>
-                    <input id="peso" placeholder="Peso" type="text">
-                </div>
-                <div>
-                    <select id="estilo" name="estilo">
-                        <option value="1">Entallado</option>
-                        <option value="2">Normal</option>
-                        <option value="3">Holgado</option>
-                    </select>
-                </div>
+        <h2>Paleta de Colores</h2>
+        <div class="input-container">
+            <div class="inputs">
+                <input type="text" id="colorInput" placeholder="Colores">
+                <img src="assets/img/descargar.png" id="downloadButton" alt="Descargar">
             </div>
-            <button class="btn" id="calc">Calcular</button>
+            <div id="suggestions"></div>
         </div>
-        <div id="resultado"></div>
+        <div class="color-container" id="colorContainer">
+            <div id="color-1"></div>
+            <div id="color-2"></div>
+            <div id="color-3"></div>
+        </div>
+
     </div>
-    <script src="assets/js/tallas.js"></script>
+    <script src="assets/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 

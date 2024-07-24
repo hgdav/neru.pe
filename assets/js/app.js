@@ -21,7 +21,19 @@ const btnDownload = document.getElementById('downloadButton');
 
 let colores = [];
 
-colorInput.addEventListener('input', () => {
+colorInput.addEventListener('input', updateSuggestions);
+
+colorInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Tab') {
+        event.preventDefault();
+        const firstSuggestion = suggestionsDiv.firstChild;
+        if (firstSuggestion) {
+            selectColor(firstSuggestion.textContent);
+        }
+    }
+});
+
+function updateSuggestions() {
     const input = colorInput.value.toLowerCase();
     suggestionsDiv.innerHTML = '';
 
@@ -34,27 +46,30 @@ colorInput.addEventListener('input', () => {
                 suggestionDiv.style.backgroundColor = colors[colorName];
                 suggestionsDiv.appendChild(suggestionDiv);
 
-                suggestionDiv.addEventListener('click', () => {
-                    colorInput.value = colorName;
-                    suggestionsDiv.innerHTML = '';
-                    if (colores.length < 3) {
-                        colores.push(colorName);
-                        updateColorContainer();
-                        colorContainer.style.display = "inline-flex";
-                        btnDownload.style.display = "block";
-                    }
-
-                    if (colores.length > 3) {
-                        alert("Solo puedes seleccionar tres colores. La página se recargará.");
-                        window.location.reload();
-                    }
-
-                    colorInput.value = '';
-                });
+                suggestionDiv.addEventListener('click', () => selectColor(colorName));
             }
         });
     }
-});
+}
+
+function selectColor(colorName) {
+    colorInput.value = colorName;
+    suggestionsDiv.innerHTML = '';
+    if (colores.length < 3) {
+        colores.push(colorName);
+        updateColorContainer();
+        colorContainer.style.display = "inline-flex";
+        btnDownload.style.display = "block";
+    }
+
+    if (colores.length > 3) {
+        alert("Solo puedes seleccionar tres colores. La página se recargará.");
+        window.location.reload();
+    }
+
+    colorInput.value = '';
+    colorInput.focus();
+}
 
 btnDownload.addEventListener('click', () => {
     generateImage();

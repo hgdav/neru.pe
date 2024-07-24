@@ -29,6 +29,7 @@ tr:hover {
 
 #fileInput {
     max-width: -webkit-fill-available;
+    width: 100% !important;
 }
 
 #overlay {
