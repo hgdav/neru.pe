@@ -52,12 +52,24 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (estilo === '3') {
                 return "TALLA L";
             }
+        } else if ((talla >= 175 && talla <= 185) && (peso >= 60 && peso <= 65)) {
+            if (estilo === '1' || estilo === '2') {
+                return "TALLA M";
+            } else if (estilo === '3') {
+                return "TALLA L";
+            }
         } else if ((talla >= 160 && talla <= 185) && (peso >= 65 && peso <= 90)) {
             if (estilo === '1') {
                 return "TALLA M";
             } else if (estilo === '2') {
                 return "TALLA L";
             } else if (estilo === '3') {
+                return "TALLA XL";
+            }
+        } else if ((talla >= 185 && talla <= 190) && (peso >= 65 && peso <= 84)) {
+            if (estilo === '1') {
+                return "TALLA L";
+            } else if (estilo === '2' || estilo === '3') {
                 return "TALLA XL";
             }
         } else if ((talla >= 160 && talla <= 190) && (peso >= 85 && peso <= 95)) {
