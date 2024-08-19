@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     file_put_contents($counterFile, $documentNumber);
 
     // Configurar los correos electrónicos
-    $toAdmin = 'tu-correo@ejemplo.com';
+    $toAdmin = 'neruclothing@gmail.com';
     $subjectAdmin = "Nuevo $type recibido - Documento Nº $documentNumber";
     $messageAdmin = "Has recibido un nuevo $type.\n\n" .
                     "Número de documento: $documentNumber\n" .
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                      "Nos pondremos en contacto con usted lo antes posible.";
 
     // Enviar los correos
-    $headers = "From: no-reply@tu-dominio.com";
+    $headers = "From: no-reply@neruclothing.com";
 
     mail($toAdmin, $subjectAdmin, $messageAdmin, $headers);
     mail($email, $subjectClient, $messageClient, $headers);
