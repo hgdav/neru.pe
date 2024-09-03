@@ -1,0 +1,249 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Colores">
+    <main>
+        <div class="card">
+            <h2>Paleta de Colores</h2>
+            <div class="input-container">
+                <div class="inputs">
+                    <input type="text" id="colorInput" placeholder="Colores" />
+                    <i class="fa-solid fa-download" id="downloadButton"></i>
+                </div>
+                <div id="suggestions"></div>
+            </div>
+        </div>
+        <div class="card hidden" id="secondCard">
+            <div class="color-container" id="colorContainer">
+                <div id="color-1" class="colores"></div>
+                <div id="color-2" class="colores"></div>
+                <div id="color-3" class="colores"></div>
+            </div>
+        </div>
+    </main>
+    <script>
+        import html2canvas from "html2canvas";
+        document.addEventListener("astro:page-load", () => {
+            loadColors();
+
+            interface ColorMap {
+                [key: string]: string;
+            }
+
+            let colors: ColorMap = {};
+
+            async function loadColors(): Promise<void> {
+                try {
+                    const response = await fetch("paletas.json");
+                    colors = await response.json();
+                } catch (error) {
+                    console.error("Error al cargar el archivo JSON:", error);
+                }
+            }
+
+            // Aseguramos que los elementos existen en el DOM y son del tipo correcto
+            const colorInput = document.getElementById(
+                "colorInput",
+            ) as HTMLInputElement | null;
+            const suggestionsDiv = document.getElementById(
+                "suggestions",
+            ) as HTMLDivElement | null;
+            const colorContainer = document.getElementById(
+                "colorContainer",
+            ) as HTMLDivElement | null;
+            const btnDownload = document.getElementById(
+                "downloadButton",
+            ) as HTMLButtonElement | null;
+
+            colorInput.focus();
+
+            let colores: string[] = [];
+
+            if (colorInput && suggestionsDiv && colorContainer && btnDownload) {
+                colorInput.addEventListener("input", updateSuggestions);
+
+                colorInput.addEventListener("keydown", (event) => {
+                    if (event.key === "Tab") {
+                        event.preventDefault();
+                        const firstSuggestion =
+                            suggestionsDiv.firstChild as HTMLElement;
+                        if (firstSuggestion) {
+                            selectColor(firstSuggestion.textContent || "");
+                        }
+                    }
+                });
+
+                btnDownload.addEventListener("click", () => {
+                    generateImage();
+                });
+            }
+
+            function unHidden(): void {
+                document
+                    .getElementById("secondCard")
+                    ?.classList.remove("hidden");
+            }
+
+            function updateSuggestions(): void {
+                if (!colorInput || !suggestionsDiv) return;
+
+                const input = colorInput.value.toLowerCase();
+                suggestionsDiv.innerHTML = "";
+
+                if (input) {
+                    Object.keys(colors).forEach((colorName) => {
+                        if (colorName.toLowerCase().includes(input)) {
+                            const suggestionDiv = document.createElement("div");
+                            suggestionDiv.classList.add("suggestion");
+                            suggestionDiv.textContent = colorName;
+                            suggestionDiv.style.backgroundColor =
+                                colors[colorName];
+                            suggestionsDiv.appendChild(suggestionDiv);
+
+                            suggestionDiv.addEventListener("click", () =>
+                                selectColor(colorName),
+                            );
+                        }
+                    });
+                }
+            }
+
+            function selectColor(colorName: string): void {
+                unHidden();
+                if (
+                    !colorInput ||
+                    !suggestionsDiv ||
+                    !colorContainer ||
+                    !btnDownload
+                )
+                    return;
+
+                colorInput.value = colorName;
+                suggestionsDiv.innerHTML = "";
+
+                if (colores.length < 3) {
+                    colores.push(colorName);
+                    updateColorContainer();
+                    colorContainer.style.display = "inline-flex";
+                    btnDownload.style.display = "block";
+                }
+
+                if (colores.length > 3) {
+                    alert(
+                        "Solo puedes seleccionar tres colores. La página se recargará.",
+                    );
+                    window.location.reload();
+                }
+
+                colorInput.value = "";
+                colorInput.focus();
+            }
+
+            function updateColorContainer(): void {
+                if (!colorContainer) return;
+
+                colorContainer.innerHTML = "";
+                colores.forEach((color, index) => {
+                    const colorDiv = document.createElement("div");
+                    colorDiv.id = `color-${index + 1}`;
+                    colorDiv.style.backgroundColor = colors[color];
+                    colorDiv.classList.add("colores");
+                    colorContainer.appendChild(colorDiv);
+                });
+            }
+
+            function generateImage(): void {
+                if (!colorContainer) return;
+
+                html2canvas(colorContainer).then((canvas) => {
+                    const link = document.createElement("a");
+                    link.href = canvas.toDataURL("image/png");
+                    if (colores.length > 2) {
+                        link.download = `${colores[0]} - ${colores[1]} - ${colores[2]}.png`;
+                    } else {
+                        link.download = `${colores[0]} - ${colores[1]}.png`;
+                    }
+                    link.click();
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+</Layout>
+<style>
+    main {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        gap: 1rem;
+        width: 90%;
+        left: calc(50% - 45%);
+        top: 6rem;
+    }
+
+    .card {
+        border: 1px solid var(--accent-color-3);
+        width: 75%;
+        margin: 0 auto;
+    }
+
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inputs {
+        display: flex;
+        gap: 1rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inputs i {
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    #suggestions {
+        cursor: pointer;
+        position: relative;
+        width: 55%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        max-height: 200px;
+        overflow: hidden;
+    }
+
+    .color-container {
+        display: inline-flex;
+        position: relative;
+        margin: 0 auto;
+        top: 1rem;
+        transition: all 2s;
+        display: none;
+        width: 650px;
+    }
+
+    @media screen and (max-width: 1000px) {
+        #suggestions {
+            padding: 0.6rem 1rem;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        main {
+            flex-direction: column;
+        }
+
+        .color-container {
+            width: 99%;
+            left: calc(50% - 49.5%);
+        }
+    }
+</style>

@@ -1,0 +1,165 @@
+---
+import Header from "../Components/Header.astro";
+import ViewTransitions from "astro/components/ViewTransitions.astro";
+
+const title = Astro.props.title;
+---
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="https://neru.pe/cdn/shop/files/favicon_6271f66c-9e04-4d48-841c-ff68643db8a8.png?v=1688055685"
+        />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+
+        <ViewTransitions />
+    </head>
+    <body>
+        <Header />
+        <slot />
+    </body>
+</html>
+<style is:global>
+    @font-face {
+        font-family: "CircularStd-book";
+        src: url("../assets/fonts/CircularStd-Book.eot");
+        src:
+            url("../assets/fonts/CircularStd-Book-1.eot")
+                format("embedded-opentype"),
+            url("../assets/fonts/CircularStd-Book.woff") format("woff"),
+            url("../assets/fonts/CircularStd-Book.ttf") format("truetype"),
+            url("../assets/fonts/CircularStd-Book.svg") format("svg");
+        font-weight: 400;
+        font-style: normal;
+    }
+    :root {
+        --bg-color: #f0eee5;
+        --accent-color: #bb5c39;
+        --accent-color-2: #8888dc;
+        --accent-color-3: #c4c3bb;
+        --accent-color-4: #d4a37f;
+        --text-color: #3d3929;
+        --contrast-color: #141413;
+        --input-color: #f8f8f7;
+    }
+    body {
+        font-family: "CircularStd-book", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--contrast-color);
+    }
+    h2 {
+        font-size: clamp(1.5rem, 0.3043rem + 3.4783vw, 3.75rem);
+        font-weight: 500;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .card {
+        border-radius: 24px;
+        display: block;
+        height: clamp(18rem, 25vw, 64rem);
+        padding: 1.5rem;
+        position: relative;
+        transition: border-radius 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        vertical-align: middle;
+    }
+    input {
+        background-color: var(--input-color);
+        border: 1px solid var(--contrast-color);
+        border-radius: 10px;
+        padding: 10px 12px;
+        width: 100%;
+        margin: 0 auto;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    select {
+        background-color: var(--input-color);
+        border: 1px solid var(--contrast-color);
+        border-radius: 10px;
+        padding: 10px 12px;
+        width: 100%;
+        margin: 0 calc(50% - 49%);
+    }
+
+    .btn {
+        background-color: var(--accent-color);
+        border: 1px solid var(--contrast-color);
+        color: var(--input-color);
+        border-radius: 10px;
+        padding: 10px 12px;
+        width: 30%;
+        margin: 0 auto;
+        font-size: 1rem;
+        outline: none;
+        cursor: pointer;
+    }
+    .hidden {
+        display: none;
+    }
+
+    #fileInput {
+        width: fit-content;
+    }
+
+    .suggestion {
+        width: fit-content;
+        border-radius: 30px;
+        padding: 0.6rem 2rem;
+        margin: 0.5rem 0;
+        color: var(--input-color);
+    }
+    .colores {
+        transition: all 0.5s;
+        width: 33.333%;
+        height: 350px;
+    }
+
+    table {
+        width: 100%;
+        cursor: pointer;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+
+    .available {
+        color: green;
+    }
+
+    .unavailable {
+        color: red;
+    }
+    @media screen and (max-width: 1000px) {
+        .colores {
+            height: 270px !important;
+        }
+    }
+</style>
