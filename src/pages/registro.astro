@@ -1,18 +1,21 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Records from "../Components/Records.jsx";
 ---
 
-<Layout>
+<Layout title="Registro">
     <main>
-        <h1>No desarrollado aún :c</h1>
+        <Records client:load />
     </main>
 </Layout>
+
 <style>
-    main {
+    #recordsContainer {
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 100vh;
+    }
+    .registro-container {
     }
 </style>

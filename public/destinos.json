@@ -1,0 +1,170 @@
+[
+    {
+        "COSTO_DE_ENVIO": 24.8,
+        "DESTINO": "IQUITOS"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "TOCACHE"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "ALTO AMAZONAS"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "MOYOBAMBA"
+    },
+    {
+        "COSTO_DE_ENVIO": 18,
+        "DESTINO": "SANTA CLARA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "PUNO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "TALARA"
+    },
+    {
+        "COSTO_DE_ENVIO": 24.8,
+        "DESTINO": "PUNCHANA"
+    },
+    {
+        "COSTO_DE_ENVIO": 24.8,
+        "DESTINO": "SAN JUAN BAUTISTA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "SACHACA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "SULLANA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "ILO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "MOQUEGUA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "CHARACATO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.1,
+        "DESTINO": "QUILLABAMBA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "BELLAVISTA"
+    },
+    {
+        "COSTO_DE_ENVIO": 30.2,
+        "DESTINO": "CONTAMANA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "CHINCHERO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "SICUANI"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "BELLAVISTA / SAN MARTIN"
+    },
+    {
+        "COSTO_DE_ENVIO": 20,
+        "DESTINO": "LA MOLINA"
+    },
+    {
+        "COSTO_DE_ENVIO": 18,
+        "DESTINO": "CUTERVO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20,
+        "DESTINO": "BAGUA GRANDE"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "SAN MARTIN"
+    },
+    {
+        "COSTO_DE_ENVIO": 24.5,
+        "DESTINO": "SAN JUAN DE LURIGANCHO"
+    },
+    {
+        "COSTO_DE_ENVIO": 20,
+        "DESTINO": "SAN MIGUEL"
+    },
+    {
+        "COSTO_DE_ENVIO": 24.8,
+        "DESTINO": "BELEN"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "ANTA"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "PAMPAS DE HOSPITAL"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "TAMBOPATA"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "ABANCAY/TAMBURCO"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "LA CONVENCION"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "EL PEDREGAL"
+    },
+    {
+        "COSTO_DE_ENVIO": 19,
+        "DESTINO": "AREQUIPA"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "CASTILLA"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "CAMANA"
+    },
+    {
+        "COSTO_DE_ENVIO": 17.12,
+        "DESTINO": "PAITA"
+    },
+    {
+        "COSTO_DE_ENVIO": 35,
+        "DESTINO": "REQUENA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "CAMANÁ"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "TACNA"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "SAN MARCOS"
+    },
+    {
+        "COSTO_DE_ENVIO": 20.7,
+        "DESTINO": "PARIÑAS"
+    }
+]

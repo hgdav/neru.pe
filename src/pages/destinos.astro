@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Destinos">
+    <main>
+        <div class="card">
+            <h2>Destinos Caros</h2>
+            <div class="input-container">
+                <div class="inputs">
+                    <input
+                        type="text"
+                        id="destinoInput"
+                        placeholder="Buscar destinos"
+                    />
+                </div>
+                <div id="destinos-suggestions"></div>
+            </div>
+        </div>
+    </main>
+</Layout>
+<script src="../assets/js/destinos.js"></script>
+<style>
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inputs {
+        display: flex;
+        gap: 1rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
