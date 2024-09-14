@@ -12,21 +12,18 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [costoEnvio, setCostoEnvio] = useState(0);
     const [dedicatoria, setDedicatoria] = useState(false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(false);
-    const [fuente, setFuente] = useState('');
     const [tracking, setTracking] = useState('');
     const [registro, setRegistro] = useState('');
     const [clave, setClave] = useState('');
     const [estadoTracking, setEstadoTracking] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Inicializar diaEnvio con el día siguiente al actual (ya implementado anteriormente)
     const [diaEnvio, setDiaEnvio] = useState(() => {
         const mañana = new Date();
         mañana.setDate(mañana.getDate() + 1);
         return mañana.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
     });
 
-    // Array de días disponibles (próximos 7 días)
     const diasDisponibles = [];
     for (let i = 1; i <= 7; i++) {
         const fecha = new Date();
@@ -42,9 +39,8 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         });
     }
 
-    // Opciones para Tipo de Envío
     const opcionesTipoEnvio = [
-        'OLVA COURIER',
+        'Olva Courier',
         'Shalom',
         'InDrive',
         'GoPack',
@@ -52,10 +48,8 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Presencial',
     ];
 
-    // Estado inicial de Tipo de Envío
     const [tipoEnvio, setTipoEnvio] = useState('OLVA COURIER');
 
-    // Opciones para Estado de Empaque
     const opcionesEstadoEmpaque = [
         'Empaque Pendiente',
         'Empacado Listo',
@@ -63,10 +57,8 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Enviado',
     ];
 
-    // Estado inicial de Estado de Empaque
     const [estadoEmpaque, setEstadoEmpaque] = useState('Empaque Pendiente');
 
-    // Obtener el último ticket cuando el modal se abre
     useEffect(() => {
         const fetchLastTicket = async () => {
             try {
@@ -82,7 +74,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                     const lastTicketNumber = parseInt(lastTicketData.ticket, 10);
                     setTicket((lastTicketNumber + 1).toString());
                 } else {
-                    // Si no hay registros previos, comenzamos desde 1
                     setTicket('1');
                 }
             } catch (error) {
@@ -102,7 +93,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
         setIsSubmitting(true);
 
-        // Verificar si el ticket ya existe
         try {
             const q = query(
                 collection(db, 'registro-clientes'),
@@ -133,7 +123,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             empaque_regalo: empaqueRegalo,
             tipo_envio: tipoEnvio,
             estado_empaque: estadoEmpaque,
-            fuente,
             tracking,
             registro,
             clave,
@@ -154,28 +143,26 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <form onSubmit={handleSubmit}>
-                <div className='input-row'>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <h3 className="text-xl font-semibold">Agregar Nuevo Registro</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h3>Agregar Nuevo Registro</h3>
-                    </div>
-                    <div>
-                        <label>Pedido #:</label>
+                        <label className="block mb-1 text-gray-700">Pedido #:</label>
                         <input
                             type="text"
                             value={ticket}
                             onChange={(e) => setTicket(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                </div>
-                <div className='input-row'>
                     <div>
-                        <label>Tipo de Envío:</label>
+                        <label className="block mb-1 text-gray-700">Tipo de Envío:</label>
                         <select
                             value={tipoEnvio}
                             onChange={(e) => setTipoEnvio(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         >
                             {opcionesTipoEnvio.map((opcion) => (
                                 <option key={opcion} value={opcion}>
@@ -185,11 +172,12 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                         </select>
                     </div>
                     <div>
-                        <label>Estado de Empaque:</label>
+                        <label className="block mb-1 text-gray-700">Estado de Empaque:</label>
                         <select
                             value={estadoEmpaque}
                             onChange={(e) => setEstadoEmpaque(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         >
                             {opcionesEstadoEmpaque.map((opcion) => (
                                 <option key={opcion} value={opcion}>
@@ -198,14 +186,13 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             ))}
                         </select>
                     </div>
-                </div>
-                <div className='input-row'>
                     <div>
-                        <label>Día de Envío:</label>
+                        <label className="block mb-1 text-gray-700">Día de Envío:</label>
                         <select
                             value={diaEnvio}
                             onChange={(e) => setDiaEnvio(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         >
                             {diasDisponibles.map((dia) => (
                                 <option key={dia.valor} value={dia.valor}>
@@ -214,119 +201,126 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label>Fuente:</label>
-                        <input
-                            type="text"
-                            value={fuente}
-                            onChange={(e) => setFuente(e.target.value)}
-                            required
-                        />
-                    </div>
                 </div>
-                <div className='input-row'>
-                    <div className='checkboxes'>
-                        <label>Empaque Regalo:</label>
-                        <input
-                            type="checkbox"
-                            checked={empaqueRegalo}
-                            onChange={(e) => setEmpaqueRegalo(e.target.checked)}
-                        />
-                    </div>
-                    <div className='checkboxes'>
-                        <label>Dedicatoria:</label>
-                        <input
-                            type="checkbox"
-                            checked={dedicatoria}
-                            onChange={(e) => setDedicatoria(e.target.checked)}
-                        />
-                    </div>
-                </div>
-                <div className='input-row'>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label>Tracking:</label>
-                        <input
-                            type="text"
-                            value={tracking}
-                            onChange={(e) => setTracking(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label># Registro:</label>
-                        <input
-                            type="text"
-                            value={registro}
-                            onChange={(e) => setRegistro(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className='input-row'>
-                    <div>
-                        <label>Clave:</label>
-                        <input
-                            type="text"
-                            value={clave}
-                            onChange={(e) => setClave(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Estado Tracking:</label>
-                        <input
-                            type="text"
-                            value={estadoTracking}
-                            onChange={(e) => setEstadoTracking(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className='input-row'>
-                    <div>
-                        <label>Costo Envío:</label>
+                        <label className="block mb-1 text-gray-700">Costo Envío:</label>
                         <input
                             type="number"
                             value={costoEnvio}
                             onChange={(e) => setCostoEnvio(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
                     <div>
-                        <label>Costo Pedido:</label>
+                        <label className="block mb-1 text-gray-700">Costo Pedido:</label>
                         <input
                             type="number"
                             value={costoPedido}
                             onChange={(e) => setCostoPedido(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
                 </div>
-                <div className='input-row'>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label>Nombre:</label>
+                        <label className="block mb-1 text-gray-700">Nombre:</label>
                         <input
                             type="text"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
                     <div>
-                        <label>Teléfono:</label>
+                        <label className="block mb-1 text-gray-700">Teléfono:</label>
                         <input
                             type="text"
                             value={telefono}
                             onChange={(e) => setTelefono(e.target.value)}
                             required
+                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
                 </div>
-                <label>Distrito:</label>
-                <input
-                    type="text"
-                    value={distrito}
-                    onChange={(e) => setDistrito(e.target.value)}
-                    required
-                />
-
-                <button className='btn centre' type="submit" disabled={isSubmitting}>
+                <div>
+                    <label className="block mb-1 text-gray-700">Distrito:</label>
+                    <input
+                        type="text"
+                        value={distrito}
+                        onChange={(e) => setDistrito(e.target.value)}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={empaqueRegalo}
+                            onChange={(e) => setEmpaqueRegalo(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label className="text-gray-700">Empaque Regalo</label>
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={dedicatoria}
+                            onChange={(e) => setDedicatoria(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label className="text-gray-700">Dedicatoria</label>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-1 text-gray-700">Tracking:</label>
+                        <input
+                            type="text"
+                            value={tracking}
+                            onChange={(e) => setTracking(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-gray-700"># Registro:</label>
+                        <input
+                            type="text"
+                            value={registro}
+                            onChange={(e) => setRegistro(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-1 text-gray-700">Clave:</label>
+                        <input
+                            type="text"
+                            value={clave}
+                            onChange={(e) => setClave(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-gray-700">Estado Tracking:</label>
+                        <input
+                            type="text"
+                            value={estadoTracking}
+                            onChange={(e) => setEstadoTracking(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                </div>
+                <button
+                    type="submit"
+                    className="bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-warm transition duration-300 w-full mt-4"
+                    disabled={isSubmitting}
+                >
                     {isSubmitting ? 'Agregando...' : 'Agregar Registro'}
                 </button>
             </form>

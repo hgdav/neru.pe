@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "CircularStd-book";
+  src: url("../assets/fonts/CircularStd-Book.eot");
+  src:
+    url("../assets/fonts/CircularStd-Book-1.eot") format("embedded-opentype"),
+    url("../assets/fonts/CircularStd-Book.woff") format("woff"),
+    url("../assets/fonts/CircularStd-Book.ttf") format("truetype"),
+    url("../assets/fonts/CircularStd-Book.svg") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  font-family: "CircularStd-book", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0eee5;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

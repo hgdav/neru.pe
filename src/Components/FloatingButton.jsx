@@ -11,19 +11,7 @@ const FloatingButton = () => {
         <>
             <button
                 onClick={openModal}
-                style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    right: '20px',
-                    backgroundColor: 'var(--accent-color-2)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '55px',
-                    height: '55px',
-                    fontSize: '24px',
-                    cursor: 'pointer',
-                }}
+                className="fixed bottom-5 right-5 bg-accent-secondary text-white rounded-full w-14 h-14 text-2xl shadow-lg hover:bg-accent-primary transition-colors duration-300 ease-in-out"
             >
                 +
             </button>

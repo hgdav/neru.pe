@@ -17,15 +17,24 @@ const MonthNavigator = ({ currentMonth, currentYear, onMonthChange }) => {
     };
 
     return (
-        <div className="month-navigator">
-            <button className="nav-button" onClick={handlePrevious}>
+        <div className="flex items-center justify-center gap-4 my-4">
+            <button
+                className="bg-accent-primary text-white rounded-full p-2 hover:bg-accent-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                onClick={handlePrevious}
+            >
                 &lt;
             </button>
-            <h3>{months[currentMonth]} {currentYear}</h3>
-            <button className="nav-button" onClick={handleNext}>
+            <h3 className="text-lg font-bold text-text-primary">
+                {months[currentMonth]} {currentYear}
+            </h3>
+            <button
+                className="bg-accent-primary text-white rounded-full p-2 hover:bg-accent-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                onClick={handleNext}
+            >
                 &gt;
             </button>
         </div>
+
     );
 };
 

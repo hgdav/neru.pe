@@ -6,16 +6,20 @@ const Modal = ({ isOpen, onClose, children }) => {
     }
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <button className="modal-close" onClick={onClose}>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-bg-base rounded-lg shadow-lg max-w-lg w-full mx-4 p-6 relative">
+                <button
+                    className="absolute top-3 right-3 text-accent-muted hover:text-accent-primary text-2xl font-bold focus:outline-none"
+                    onClick={onClose}
+                >
                     &times;
                 </button>
-                <div className="modal-body">
+                <div className="modal-body text-text-primary">
                     {children} {/* Aquí pasamos los detalles del cliente */}
                 </div>
             </div>
         </div>
+
     );
 };
 
