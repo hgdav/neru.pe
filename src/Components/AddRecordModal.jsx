@@ -25,21 +25,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         return mañana.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
     });
 
-    const diasDisponibles = [];
-    for (let i = 1; i <= 7; i++) {
-        const fecha = new Date();
-        fecha.setDate(fecha.getDate() + i);
-        const opciones = {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long'
-        };
-        diasDisponibles.push({
-            valor: fecha.toISOString().split('T')[0],
-            etiqueta: fecha.toLocaleDateString('es-ES', opciones)
-        });
-    }
-
     const opcionesTipoEnvio = [
         'Olva Courier',
         'Shalom',
@@ -59,7 +44,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     ];
 
     const [estadoEmpaque, setEstadoEmpaque] = useState('Empaque Pendiente');
-
 
     useEffect(() => {
         const fetchLastTicket = async () => {
@@ -190,18 +174,13 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                     </div>
                     <div>
                         <label className="block mb-1 text-gray-700">Día de Envío:</label>
-                        <select
+                        <input
+                            type="date"
                             value={diaEnvio}
                             onChange={(e) => setDiaEnvio(e.target.value)}
                             required
                             className="w-full p-2 border border-gray-300 rounded-md"
-                        >
-                            {diasDisponibles.map((dia) => (
-                                <option key={dia.valor} value={dia.valor}>
-                                    {dia.etiqueta}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -266,7 +245,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700">Empaque Regalo</label>
+                        <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
                     </div>
                     <div className="flex items-center">
                         <input
@@ -275,7 +254,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setDedicatoria(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700">Dedicatoria</label>
+                        <label className="text-gray-700" onClick={() => setDedicatoria(!dedicatoria)}>Dedicatoria</label>
                     </div>
                 </div>
                 <button

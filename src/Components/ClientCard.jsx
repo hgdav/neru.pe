@@ -3,11 +3,8 @@ import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
-import { MdRemoveRedEye } from "react-icons/md";
-import { MdOutlineSync } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
-import { MdCardGiftcard } from "react-icons/md";
-
+import { MdRemoveRedEye, MdOutlineSync, MdDelete, MdCardGiftcard } from "react-icons/md";
+import { formatFirestoreDateWithDay } from '../utils/helpers'; // Importa la función
 
 function getStatusClass(estadoEmpaque) {
     switch (estadoEmpaque) {
@@ -51,11 +48,7 @@ const ClientCard = ({ client }) => {
     };
 
     const verifyEmpaque = () => {
-        if (client.empaque_regalo === true) {
-            return true;
-        } else {
-            return false;
-        }
+        return client.empaque_regalo === true;
     }
 
     return (
@@ -79,8 +72,8 @@ const ClientCard = ({ client }) => {
                     <span className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}>{client.estado_empaque}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-bold text-text-primary">Destino:</span>
-                    <span className="ml-2 text-text-primary">{client.distrito}</span>
+                    <span className="font-bold text-text-primary">Día de envío:</span>
+                    <span className="ml-2 text-text-primary">{formatFirestoreDateWithDay(client.dia_envio)}</span> {/* Aquí usas la nueva función */}
                 </div>
                 <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Tracking:</span>
@@ -88,10 +81,10 @@ const ClientCard = ({ client }) => {
                 </div>
             </div>
             <div className="flex justify-between mt-4">
-                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-4 py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={toggleModal}>
+                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={toggleModal}>
                     <MdRemoveRedEye size={24} /> Ver Detalles
                 </button>
-                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-4 py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={handleUpdateClick}>
+                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={handleUpdateClick}>
                     <MdOutlineSync size={24} /> Cambiar Estado
                 </button>
 
@@ -112,7 +105,6 @@ const ClientCard = ({ client }) => {
                 />
             )}
         </div>
-
     );
 };
 

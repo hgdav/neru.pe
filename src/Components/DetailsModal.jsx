@@ -165,7 +165,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700">Empaque Regalo</label>
+                        <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
                     </div>
                     <div className="flex items-center">
                         <input
@@ -174,7 +174,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             onChange={(e) => setDedicatoria(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-text-primary">Dedicatoria</label>
+                        <label className="text-text-primary" onClick={() => setDedicatoria(!dedicatoria)}>Dedicatoria</label>
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Número de Registro:</label>

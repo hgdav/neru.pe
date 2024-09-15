@@ -47,7 +47,6 @@ const Colores = () => {
         setSuggestions([]); // Limpiar sugerencias después de seleccionar
     };
 
-    // Generar imagen con los colores seleccionados (mantener tamaño fijo de 750x562 para la descarga)
     const generateImage = () => {
         const colorContainer = document.getElementById("colorContainer");
         if (!colorContainer) return;
@@ -60,7 +59,7 @@ const Colores = () => {
             paddingBottom: colorContainer.style.paddingBottom,
         };
 
-        // Establecer tamaño fijo para la generación de la imagen
+        // Establecer tamaño fijo para la generación de la imagen (ajustado a 562x750)
         colorContainer.style.width = '750px';
         colorContainer.style.height = '562px';
         colorContainer.style.maxWidth = 'unset';
@@ -80,6 +79,7 @@ const Colores = () => {
             window.location.reload();
         });
     };
+
 
     // Determinar el ancho para cada sección dependiendo del número de colores seleccionados
     const getSectionWidth = () => {
@@ -121,14 +121,14 @@ const Colores = () => {
                 className={`card bg-white shadow-md rounded-lg p-6 mt-6 ${coloresSeleccionados.length > 0 ? '' : 'hidden'}`}
                 id="secondCard"
             >
-                {/* Contenedor responsivo */}
                 <div
                     className="color-container relative mx-auto"
                     style={{
                         width: '100%',
-                        maxWidth: '750px', // Máximo ancho para pantallas grandes
+                        maxWidth: '750px', // Ajustado a 562 de ancho
                         position: 'relative',
-                        paddingBottom: `${(562 / 750) * 100}%`, // Mantener relación de aspecto
+                        maxHeight: '562px', // Ajustado a 750 de alto
+                        paddingBottom: `${(750 / 562) * 100}%`, // Mantener relación de aspecto correcta (alto / ancho)
                     }}
                     id="colorContainer"
                 >
@@ -146,6 +146,7 @@ const Colores = () => {
                         ></div>
                     ))}
                 </div>
+
             </div>
         </main>
     );
