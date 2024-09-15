@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import MonthNavigator from '../Components/MonthNavigator.jsx';
-import ClientCard from '../Components/ClientCard.jsx';
-import FloatingButton from '../Components/FloatingButton.jsx';
-import SearchBar from '../Components/SearchBar.jsx'; // Importa el buscador
-import FilterByStatus from '../Components/FilterByStatus.jsx'; // Importa el filtro por estado
+import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
+import ClientCard from '../Components/RegistroClientes/ClientCard';
+import FloatingButton from '../Components/RegistroClientes/FloatingButton';
+import SearchBar from '../Components/RegistroClientes/SearchBar'; // Importa el buscador
+import FilterByStatus from '../Components/RegistroClientes/FilterByStatus'; // Importa el filtro por estado
 import { collection, query, where, orderBy, limit, onSnapshot, getDocs, startAfter, Timestamp } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 

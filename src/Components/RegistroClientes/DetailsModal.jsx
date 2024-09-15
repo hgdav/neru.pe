@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Modal from './Modal';
+import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../utils/firebaseConfig';
+import { db } from '../../utils/firebaseConfig';
 
 const DetailsModal = ({ isOpen, onClose, client }) => {
     // Estados para editar los datos

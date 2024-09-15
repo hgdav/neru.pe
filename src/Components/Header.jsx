@@ -4,28 +4,37 @@ import { Link } from 'react-router-dom';
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const toggleSubMenu = () => {
+        setIsSubMenuOpen(!isSubMenuOpen);
     };
 
     return (
         <header className="bg-bg-base py-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="logo">
-                    <img
-                        src="https://neru.pe/cdn/shop/files/favicon_6271f66c-9e04-4d48-841c-ff68643db8a8.png?v=1688055685"
-                        alt="Logo"
-                        className="w-8 h-8 ml-4"
-                    />
+                    <a href="/">
+                        <img
+                            src="logo.svg"
+                            alt="Logo"
+                            className="w-8 h-8 ml-4"
+                        />
+                    </a>
                 </div>
                 {/* Hamburguesa en móviles */}
                 <MdMenu className="text-contrast md:hidden focus:outline-none mr-4"
                     onClick={toggleMenu} size={32} />
 
-
                 {/* Menú de navegación */}
-                <nav className="hidden md:flex space-x-6 mr-4">
+                <nav className="hidden md:flex space-x-6 mr-10 items-center">
+                    <Link to="/registro" className="text-contrast hover:text-accent-warm">
+                        Registro
+                    </Link>
                     <Link to="/tallas" className="text-contrast hover:text-accent-warm">
                         Tallas
                     </Link>
@@ -38,15 +47,42 @@ function Header() {
                     <Link to="/packs" className="text-contrast hover:text-accent-warm">
                         Packs
                     </Link>
-                    <Link to="/registro" className="text-contrast hover:text-accent-warm">
-                        Registro
-                    </Link>
+
+                    {/* Menú desplegable para "Próximas Funcionalidades" */}
+                    <div className="relative">
+                        <button
+                            onClick={toggleSubMenu}
+                            className="text-contrast hover:text-accent-warm focus:outline-none"
+                        >
+                            Feature Flags
+                        </button>
+                        {isSubMenuOpen && (
+                            <div className="absolute top-full mt-2 bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-32">
+                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
+                                    Facturación electrónica
+                                </Link>
+                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
+                                    Nombres por DNI
+                                </Link>
+                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
+                                    Shopify API
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </nav>
 
                 {/* Menú desplegable en móviles */}
                 {isMenuOpen && (
                     <div className="absolute top-16 left-0 w-full bg-bg-base md:hidden shadow-lg z-50">
                         <nav className="flex flex-col items-center py-4 space-y-4">
+                            <Link
+                                to="/registro"
+                                className="text-contrast hover:text-accent-warm"
+                                onClick={toggleMenu}
+                            >
+                                Registro
+                            </Link>
                             <Link
                                 to="/tallas"
                                 className="text-contrast hover:text-accent-warm"
@@ -75,13 +111,29 @@ function Header() {
                             >
                                 Packs
                             </Link>
-                            <Link
-                                to="/registro"
-                                className="text-contrast hover:text-accent-warm"
-                                onClick={toggleMenu}
-                            >
-                                Registro
-                            </Link>
+
+                            {/* Menú desplegable móvil para "Próximas Funcionalidades" */}
+                            <div className="relative w-full text-center">
+                                <button
+                                    onClick={toggleSubMenu}
+                                    className="text-contrast hover:text-accent-warm focus:outline-none"
+                                >
+                                    Feature Flags
+                                </button>
+                                {isSubMenuOpen && (
+                                    <div className="bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-full mt-2">
+                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
+                                            Facturación electrónica
+                                        </Link>
+                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
+                                            Nombres por DNI
+                                        </Link>
+                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
+                                            Shopify API
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </nav>
                     </div>
                 )}

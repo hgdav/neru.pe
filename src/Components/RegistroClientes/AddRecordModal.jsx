@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal';
+import Modal from '../Modal';
 import { addDoc, collection, Timestamp, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
-import { db } from '../utils/firebaseConfig';
+import { db } from '../../utils/firebaseConfig';
 
 const AddRecordModal = ({ isOpen, onClose }) => {
     const [ticket, setTicket] = useState('');

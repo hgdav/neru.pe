@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../utils/firebaseConfig';
+import { db } from '../../utils/firebaseConfig';
 import { MdRemoveRedEye, MdOutlineSync, MdDelete, MdCardGiftcard } from "react-icons/md";
-import { formatFirestoreDateWithDay } from '../utils/helpers'; // Importa la función
+import { formatFirestoreDateWithDay } from '../../utils/helpers'; // Importa la función
 
 function getStatusClass(estadoEmpaque) {
     switch (estadoEmpaque) {
