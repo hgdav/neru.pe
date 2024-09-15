@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
+import { MdContentCopy } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 const DetailsModal = ({ isOpen, onClose, client }) => {
     // Estados para editar los datos
@@ -62,7 +64,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
 
         try {
             await updateDoc(docRef, updatedData);
-            alert('Registro actualizado exitosamente');
+            toast.success('Actualización correctamente');
             onClose();
         } catch (error) {
             console.error('Error actualizando el registro:', error);
@@ -142,12 +144,23 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Teléfono:</label>
-                        <input
-                            type="text"
-                            value={telefono}
-                            onChange={(e) => setTelefono(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
+                        <div className="flex items-center">
+                            <input
+                                type="text"
+                                value={telefono}
+                                onChange={(e) => setTelefono(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(telefono);
+                                }}
+                                className="ml-2 text-blue-500 hover:text-blue-700"
+                            >
+                                <MdContentCopy />
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Distrito:</label>
@@ -178,30 +191,63 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Número de Registro:</label>
-                        <input
-                            type="text"
-                            value={nroSeguimiento}
-                            onChange={(e) => setNroSeguimiento(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
+                        <div className="flex items-center">
+                            <input
+                                type="text"
+                                value={nroSeguimiento}
+                                onChange={(e) => setNroSeguimiento(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(telefono);
+                                }}
+                                className="ml-2 text-blue-500 hover:text-blue-700"
+                            >
+                                <MdContentCopy />
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Código de Tracking	:</label>
-                        <input
-                            type="text"
-                            value={codigoTracking}
-                            onChange={(e) => setCodigoTracking(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
+                        <div className="flex items-center">
+                            <input
+                                type="text"
+                                value={codigoTracking}
+                                onChange={(e) => setCodigoTracking(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(telefono);
+                                }}
+                                className="ml-2 text-blue-500 hover:text-blue-700"
+                            >
+                                <MdContentCopy />
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label className="block mb-1 text-text-primary">Código de Recojo:</label>
-                        <input
-                            type="text"
-                            value={codigoRecojo}
-                            onChange={(e) => setCodigoRecojo(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
+                        <div className="flex items-center">
+                            <input
+                                type="text"
+                                value={codigoRecojo}
+                                onChange={(e) => setCodigoRecojo(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(telefono);
+                                }}
+                                className="ml-2 text-blue-500 hover:text-blue-700"
+                            >
+                                <MdContentCopy />
+                            </button>
+                        </div>
                     </div>
 
                     <div>

@@ -7,15 +7,20 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);  // Nuevo estado
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);  // Inicia el estado de carga
+        setError('');        // Limpia errores previos
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            navigate('/'); // Redireccionar al inicio o a la ruta que desees
+            navigate('/');
         } catch (err) {
             setError('Correo o contraseña incorrectos');
+        } finally {
+            setIsLoading(false);  // Finaliza el estado de carga
         }
     };
 
@@ -52,9 +57,16 @@ const Login = () => {
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <button
                             type="submit"
-                            className="w-full bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300"
+                            className="w-full bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
+                            disabled={isLoading}
                         >
-                            Iniciar Sesión
+                            {isLoading ? (
+                                <>
+                                    Iniciando sesión...
+                                </>
+                            ) : (
+                                'Iniciar Sesión'
+                            )}
                         </button>
                     </form>
                 </div>

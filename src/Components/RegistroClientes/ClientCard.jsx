@@ -3,12 +3,13 @@ import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
-import { MdRemoveRedEye, MdOutlineSync, MdDelete, MdCardGiftcard } from "react-icons/md";
+import { MdRemoveRedEye, MdChecklistRtl, MdDelete, MdCardGiftcard } from "react-icons/md";
 import { formatFirestoreDateWithDay } from '../../utils/helpers'; // Importa la función
+import { toast } from 'react-toastify';
 
 function getStatusClass(estadoEmpaque) {
     switch (estadoEmpaque) {
-        case 'Empacado listo':
+        case 'Empacado Listo':
             return 'bg-yellow-200 text-yellow-800';
         case 'Pendiente':
             return 'bg-red-200 text-red-800';
@@ -41,7 +42,7 @@ const ClientCard = ({ client }) => {
 
         try {
             await deleteDoc(doc(db, 'registro-clientes', client.id));
-            alert('Registro eliminado exitosamente');
+            toast.success('Eliminado exitosamente');
         } catch (error) {
             console.error('Error eliminando el registro:', error);
         }
@@ -81,17 +82,30 @@ const ClientCard = ({ client }) => {
                 </div>
             </div>
             <div className="flex justify-between mt-4">
-                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={toggleModal}>
-                    <MdRemoveRedEye size={24} /> Ver Detalles
-                </button>
-                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={handleUpdateClick}>
-                    <MdOutlineSync size={24} /> Cambiar Estado
+                <button
+                    className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300"
+                    onClick={toggleModal}
+                >
+                    <MdRemoveRedEye size={24} />
+                    <span className="hidden sm:inline">Ver Detalles</span>
                 </button>
 
-                <button className="bg-accent-primary text-white p-1 px-2 rounded hover:bg-red-600 transition duration-300" onClick={handleDeleteClick}>
+                <button
+                    className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300"
+                    onClick={handleUpdateClick}
+                >
+                    <MdChecklistRtl size={24} />
+                    <span className="hidden sm:inline">Cambiar Estado</span>
+                </button>
+
+                <button
+                    className="bg-accent-primary text-white p-1 px-2 rounded hover:bg-red-600 transition duration-300"
+                    onClick={handleDeleteClick}
+                >
                     <MdDelete size={20} />
                 </button>
             </div>
+
 
             {/* Modal con todos los detalles del cliente */}
             <DetailsModal isOpen={isModalOpen} onClose={toggleModal} client={client} />

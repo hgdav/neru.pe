@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import { addDoc, collection, Timestamp, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
+import { toast } from 'react-toastify';
 
 const AddRecordModal = ({ isOpen, onClose }) => {
     const [ticket, setTicket] = useState('');
@@ -13,7 +14,8 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [dedicatoria, setDedicatoria] = useState(false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // Variables que no se registran pero se necesitan para el actualizar tracking
+
+    // Variables adicionales
     const codTracking = '';
     const nroSeguimiento = '';
     const claveRecojo = '';
@@ -46,28 +48,44 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [estadoEmpaque, setEstadoEmpaque] = useState('Empaque Pendiente');
 
     useEffect(() => {
-        const fetchLastTicket = async () => {
-            try {
-                const q = query(
-                    collection(db, 'registro-clientes'),
-                    orderBy('ticket', 'desc'),
-                    limit(1)
-                );
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    const lastTicketDoc = querySnapshot.docs[0];
-                    const lastTicketData = lastTicketDoc.data();
-                    const lastTicketNumber = parseInt(lastTicketData.ticket, 10);
-                    setTicket((lastTicketNumber + 1).toString());
-                } else {
-                    setTicket('1');
-                }
-            } catch (error) {
-                console.error('Error obteniendo el último ticket:', error);
-            }
-        };
-
         if (isOpen) {
+            // Resetear los campos necesarios
+            setNombre('');
+            setTelefono('');
+            setDistrito('');
+            setCostoPedido(0);
+            setCostoEnvio(0);
+            setDedicatoria(false);
+            setEmpaqueRegalo(false);
+            setIsSubmitting(false);
+
+            // Establecer la fecha de envío a mañana
+            const mañana = new Date();
+            mañana.setDate(mañana.getDate() + 1);
+            setDiaEnvio(mañana.toISOString().split('T')[0]);
+
+            // Obtener el último ticket
+            const fetchLastTicket = async () => {
+                try {
+                    const q = query(
+                        collection(db, 'registro-clientes'),
+                        orderBy('ticket', 'desc'),
+                        limit(1)
+                    );
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        const lastTicketDoc = querySnapshot.docs[0];
+                        const lastTicketData = lastTicketDoc.data();
+                        const lastTicketNumber = parseInt(lastTicketData.ticket, 10);
+                        setTicket((lastTicketNumber + 1).toString());
+                    } else {
+                        setTicket('1');
+                    }
+                } catch (error) {
+                    console.error('Error obteniendo el último ticket:', error);
+                }
+            };
+
             fetchLastTicket();
         }
     }, [isOpen]);
@@ -118,7 +136,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
         try {
             await addDoc(collection(db, 'registro-clientes'), nuevoRegistro);
-            alert('Registro añadido exitosamente');
+            toast.success('Registro añadido exitosamente');
             onClose();
         } catch (error) {
             console.error('Error añadiendo el registro:', error);

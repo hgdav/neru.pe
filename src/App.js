@@ -8,9 +8,14 @@ import { Index } from './Pages/Index';
 import { Login } from './Pages/Login';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <Router>
+      <DisableSwipeReload />
+      <ToastContainer />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
@@ -57,7 +62,6 @@ function App() {
           path="/registro"
           element={
             <PrivateRoute>
-              <DisableSwipeReload />
               <Registro />
             </PrivateRoute>
           }

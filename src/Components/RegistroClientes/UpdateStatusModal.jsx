@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
+import { toast } from 'react-toastify';
 
 const UpdateStatusModal = ({ isOpen, onClose, client }) => {
     const [codTracking, setCodTracking] = useState(client.cod_tracking || '');
@@ -35,7 +36,7 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
                 estado_tracking: estadoTracking,
                 costo_envio: costoEnvio,
             });
-            alert('Estado actualizado exitosamente');
+            toast.success('Actualizado correctamente');
             onClose();
         } catch (error) {
             console.error('Error actualizando el estado:', error);
@@ -84,7 +85,6 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
                             type="number"
                             value={costoEnvio}
                             onChange={(e) => setCostoEnvio(e.target.value)}
-                            required
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
