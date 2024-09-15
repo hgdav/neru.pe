@@ -11,7 +11,7 @@ const FloatingButton = () => {
         <>
             <button
                 onClick={openModal}
-                className="fixed bottom-5 right-5 bg-accent-secondary text-white rounded-full w-14 h-14 text-2xl shadow-lg hover:bg-accent-primary transition-colors duration-300 ease-in-out"
+                className="fixed bottom-5 right-5 bg-accent-primary text-white rounded-full w-14 h-14 text-2xl shadow-lg transition-colors duration-300 ease-in-out"
             >
                 +
             </button>

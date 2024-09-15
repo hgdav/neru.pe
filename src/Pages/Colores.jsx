@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MdDownload } from "react-icons/md";
 import html2canvas from 'html2canvas';
 
 const Colores = () => {
@@ -98,12 +99,7 @@ const Colores = () => {
                             placeholder="Colores"
                             className="border border-gray-300 rounded-md p-2 w-full"
                         />
-                        <button
-                            onClick={generateImage}
-                            className="bg-accent-primary text-white p-2 rounded-md"
-                        >
-                            Descargar
-                        </button>
+                        <MdDownload onClick={generateImage} size={32} className="cursor-pointer" />
                     </div>
                     <div id="suggestions" className="mt-2 space-y-2">
                         {suggestions.map((colorName) => (

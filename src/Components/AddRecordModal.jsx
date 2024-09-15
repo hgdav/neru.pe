@@ -12,11 +12,12 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [costoEnvio, setCostoEnvio] = useState(0);
     const [dedicatoria, setDedicatoria] = useState(false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(false);
-    const [tracking, setTracking] = useState('');
-    const [registro, setRegistro] = useState('');
-    const [clave, setClave] = useState('');
-    const [estadoTracking, setEstadoTracking] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    // Variables que no se registran pero se necesitan para el actualizar tracking
+    const codTracking = '';
+    const nroSeguimiento = '';
+    const claveRecojo = '';
+    const estadoTracking = 'Pendiente';
 
     const [diaEnvio, setDiaEnvio] = useState(() => {
         const mañana = new Date();
@@ -48,16 +49,17 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Presencial',
     ];
 
-    const [tipoEnvio, setTipoEnvio] = useState('OLVA COURIER');
+    const [tipoEnvio, setTipoEnvio] = useState('Olva Courier');
 
     const opcionesEstadoEmpaque = [
-        'Empaque Pendiente',
+        'Pendiente',
         'Empacado Listo',
         'Documentado',
         'Enviado',
     ];
 
     const [estadoEmpaque, setEstadoEmpaque] = useState('Empaque Pendiente');
+
 
     useEffect(() => {
         const fetchLastTicket = async () => {
@@ -113,21 +115,21 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
         const nuevoRegistro = {
             ticket,
+            tipo_envio: tipoEnvio,
+            estado_empaque: estadoEmpaque,
+            dia_envio: diaEnvio,
+            costo_envio: parseFloat(costoEnvio),
+            costo_pedido: parseFloat(costoPedido),
             nombre,
             telefono,
             distrito,
-            costo_pedido: parseFloat(costoPedido),
-            costo_envio: parseFloat(costoEnvio),
             dedicatoria,
-            dia_envio: diaEnvio,
             empaque_regalo: empaqueRegalo,
-            tipo_envio: tipoEnvio,
-            estado_empaque: estadoEmpaque,
-            tracking,
-            registro,
-            clave,
-            estado_tracking: estadoTracking,
             fecha: Timestamp.now(),
+            estado_tracking: estadoTracking,
+            cod_tracking: codTracking,
+            nro_seguimiento: nroSeguimiento,
+            clave_recojo: claveRecojo,
         };
 
         try {
@@ -274,46 +276,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             className="mr-2"
                         />
                         <label className="text-gray-700">Dedicatoria</label>
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Tracking:</label>
-                        <input
-                            type="text"
-                            value={tracking}
-                            onChange={(e) => setTracking(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700"># Registro:</label>
-                        <input
-                            type="text"
-                            value={registro}
-                            onChange={(e) => setRegistro(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Clave:</label>
-                        <input
-                            type="text"
-                            value={clave}
-                            onChange={(e) => setClave(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Estado Tracking:</label>
-                        <input
-                            type="text"
-                            value={estadoTracking}
-                            onChange={(e) => setEstadoTracking(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
                     </div>
                 </div>
                 <button

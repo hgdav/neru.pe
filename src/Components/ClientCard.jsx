@@ -3,15 +3,20 @@ import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
+import { MdRemoveRedEye } from "react-icons/md";
+import { MdOutlineSync } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { MdCardGiftcard } from "react-icons/md";
+
 
 function getStatusClass(estadoEmpaque) {
     switch (estadoEmpaque) {
         case 'Empacado listo':
-            return 'bg-green-200 text-green-800';
-        case 'Pendiente':
             return 'bg-yellow-200 text-yellow-800';
+        case 'Pendiente':
+            return 'bg-red-200 text-red-800';
         case 'Enviado':
-            return 'bg-blue-200 text-blue-800';
+            return 'bg-green-200 text-green-800';
         default:
             return 'bg-gray-200 text-gray-800';
     }
@@ -45,39 +50,53 @@ const ClientCard = ({ client }) => {
         }
     };
 
+    const verifyEmpaque = () => {
+        if (client.empaque_regalo === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     return (
-        <div className="border border-gray-300 shadow-lg rounded-lg p-4 mb-4 bg-bg-base">
+        <div className="border border-gray-300 shadow-lg rounded-3xl p-4 mb-4 bg-input-bg">
             <div className="card-header">
-                <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
+                <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
+                    {verifyEmpaque() && (
+                        <MdCardGiftcard size={24} />
+                    )}
+                </div>
                 <h3 className="text-md text-gray-500">#{client.ticket}</h3>
             </div>
             <div className="my-2">
                 <div className="info-row">
-                    <span className="font-medium text-text-primary">Courier:</span>
+                    <span className="font-bold text-text-primary">Courier:</span>
                     <span className="ml-2 text-text-primary">{client.tipo_envio}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-medium text-text-primary">Estado de Empaque:</span>
+                    <span className="font-bold text-text-primary">Estado de Empaque:</span>
                     <span className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}>{client.estado_empaque}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-medium text-text-primary">Destino:</span>
+                    <span className="font-bold text-text-primary">Destino:</span>
                     <span className="ml-2 text-text-primary">{client.distrito}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-medium text-text-primary">Total del Pedido:</span>
-                    <span className="ml-2 text-text-primary">S/. {client.costo_pedido}</span>
+                    <span className="font-bold text-text-primary">Tracking:</span>
+                    <span className={`${getStatusClass(client.estado_tracking)} ml-2 p-1 rounded text-text-primary`}>{client.estado_tracking}</span>
                 </div>
             </div>
             <div className="flex justify-between mt-4">
-                <button className="bg-accent-primary text-white p-2 rounded hover:bg-accent-warm transition duration-300" onClick={toggleModal}>
-                    Ver detalles
+                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-4 py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={toggleModal}>
+                    <MdRemoveRedEye size={24} /> Ver Detalles
                 </button>
-                <button className="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition duration-300" onClick={handleUpdateClick}>
-                    Actualizar Estado
+                <button className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-4 py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300" onClick={handleUpdateClick}>
+                    <MdOutlineSync size={24} /> Cambiar Estado
                 </button>
-                <button className="bg-red-500 text-white p-2 rounded hover:bg-red-600 transition duration-300" onClick={handleDeleteClick}>
-                    Eliminar
+
+                <button className="bg-accent-primary text-white p-1 px-2 rounded hover:bg-red-600 transition duration-300" onClick={handleDeleteClick}>
+                    <MdDelete size={20} />
                 </button>
             </div>
 

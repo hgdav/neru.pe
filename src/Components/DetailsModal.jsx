@@ -1,77 +1,232 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from './Modal';
-import { formatFirestoreTimestamp } from '../utils/helpers';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../utils/firebaseConfig';
 
 const DetailsModal = ({ isOpen, onClose, client }) => {
-    const formattedDate = formatFirestoreTimestamp(client.fecha);
+    // Estados para editar los datos
+    const [ticket, setTicket] = useState(client.ticket || '');
+    const [codigoTracking, setCodigoTracking] = useState(client.cod_tracking || '');
+    const [codigoRecojo, setCodigoRecojo] = useState(client.clave_recojo || '');
+    const [telefono, setTelefono] = useState(client.telefono || '');
+    const [nroSeguimiento, setNroSeguimiento] = useState(client.nro_seguimiento || '');
+    const [tipoEnvio, setTipoEnvio] = useState(client.tipo_envio || 'Olva Courier');
+    const [estadoEmpaque, setEstadoEmpaque] = useState(client.estado_empaque || 'Empaque Pendiente');
+    const [estadoTracking, setEstadoTracking] = useState(client.estado_tracking || 'Pendiente');
+    const [distrito, setDistrito] = useState(client.distrito || '');
+    const [costoPedido, setCostoPedido] = useState(client.costo_pedido || 0);
+    const [costoEnvio, setCostoEnvio] = useState(client.costo_envio || 0);
+    const [dedicatoria, setDedicatoria] = useState(client.dedicatoria || false);
+    const [diaEnvio, setDiaEnvio] = useState(client.dia_envio || '');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [empaqueRegalo, setEmpaqueRegalo] = useState(client.empaque_regalo || false);
+
+    const opcionesTipoEnvio = [
+        'Olva Courier',
+        'Shalom',
+        'InDrive',
+        'GoPack',
+        'OTS',
+        'Presencial',
+    ];
+
+    const opcionesEstadoEmpaque = [
+        'Pendiente',
+        'Empacado Listo',
+        'Documentado',
+        'Enviado',
+    ];
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        const docRef = doc(db, 'registro-clientes', client.id);
+
+        const updatedData = {
+            ticket,
+            telefono,
+            tipo_envio: tipoEnvio,
+            estado_empaque: estadoEmpaque,
+            estado_tracking: estadoTracking,
+            distrito,
+            costo_pedido: parseFloat(costoPedido),
+            costo_envio: parseFloat(costoEnvio),
+            dedicatoria,
+            dia_envio: diaEnvio,
+            empaque_regalo: empaqueRegalo,
+            nro_seguimiento: nroSeguimiento,
+            cod_tracking: codigoTracking,
+            clave_recojo: codigoRecojo,
+        };
+
+        try {
+            await updateDoc(docRef, updatedData);
+            alert('Registro actualizado exitosamente');
+            onClose();
+        } catch (error) {
+            console.error('Error actualizando el registro:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <h3 className="text-lg font-semibold mb-4 text-text-primary">{client.nombre}</h3>
-            <div className="space-y-2">
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Código de Envío:</span>
-                    <span className="text-text-contrast">{client.codigo_envio || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Código de Recojo:</span>
-                    <span className="text-text-contrast">{client.codigo_recojo || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Teléfono:</span>
-                    <span className="text-text-contrast">{client.telefono}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Número de Registro:</span>
-                    <span className="text-text-contrast">{client.nro_registro || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Tipo de Envío:</span>
-                    <span className="text-text-contrast">{client.tipo_envio}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Tipo de Empaque:</span>
-                    <span className="text-text-contrast">{client.tipo_empaque}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Estado de Empaque:</span>
-                    <span className="text-text-contrast">{client.estado_empaque}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Estado de Tracking:</span>
-                    <span className="text-text-contrast">{client.estado_tracking || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Destino:</span>
-                    <span className="text-text-contrast">{client.distrito}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Total del Pedido:</span>
-                    <span className="text-text-contrast">S/. {client.costo_pedido}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Costo de Envío:</span>
-                    <span className="text-text-contrast">S/. {client.costo_envio}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Dedicatoria:</span>
-                    <span className="text-text-contrast">{client.dedicatoria ? 'Sí' : 'No'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Día de Envío:</span>
-                    <span className="text-text-contrast">{client.dia_envio}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Fuente:</span>
-                    <span className="text-text-contrast">{client.fuente || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="font-medium text-text-primary">Fecha de Registro:</span>
-                    <span className="text-text-contrast">{formattedDate}</span>
-                </div>
-            </div>
-        </Modal>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <h3 className="text-lg font-semibold text-text-primary">{client.nombre}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-1 text-text-primary">Pedido #:</label>
+                        <input
+                            type="text"
+                            value={ticket}
+                            onChange={(e) => setTicket(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Tipo de Envío:</label>
+                        <select
+                            value={tipoEnvio}
+                            onChange={(e) => setTipoEnvio(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        >
+                            {opcionesTipoEnvio.map((opcion) => (
+                                <option key={opcion} value={opcion}>
+                                    {opcion}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Estado de Empaque:</label>
+                        <select
+                            value={estadoEmpaque}
+                            onChange={(e) => setEstadoEmpaque(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        >
+                            {opcionesEstadoEmpaque.map((opcion) => (
+                                <option key={opcion} value={opcion}>
+                                    {opcion}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Día de Envío:</label>
+                        <input
+                            type="text"
+                            value={diaEnvio}
+                            onChange={(e) => setDiaEnvio(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Costo de Envío:</label>
+                        <input
+                            type="number"
+                            value={costoEnvio}
+                            onChange={(e) => setCostoEnvio(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Costo del Pedido:</label>
+                        <input
+                            type="number"
+                            value={costoPedido}
+                            onChange={(e) => setCostoPedido(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Teléfono:</label>
+                        <input
+                            type="text"
+                            value={telefono}
+                            onChange={(e) => setTelefono(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Distrito:</label>
+                        <input
+                            type="text"
+                            value={distrito}
+                            onChange={(e) => setDistrito(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="checkbox"
+                            checked={empaqueRegalo}
+                            onChange={(e) => setEmpaqueRegalo(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label className="text-gray-700">Empaque Regalo</label>
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={dedicatoria}
+                            onChange={(e) => setDedicatoria(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label className="text-text-primary">Dedicatoria</label>
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Número de Registro:</label>
+                        <input
+                            type="text"
+                            value={nroSeguimiento}
+                            onChange={(e) => setNroSeguimiento(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Código de Tracking	:</label>
+                        <input
+                            type="text"
+                            value={codigoTracking}
+                            onChange={(e) => setCodigoTracking(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-text-primary">Código de Recojo:</label>
+                        <input
+                            type="text"
+                            value={codigoRecojo}
+                            onChange={(e) => setCodigoRecojo(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
 
+                    <div>
+                        <label className="block mb-1 text-text-primary">Estado de Tracking:</label>
+                        <select
+                            value={estadoTracking}
+                            onChange={(e) => setEstadoTracking(e.target.value)}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        >
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Enviado">Enviado</option>
+                        </select>
+                    </div>
+
+                </div>
+                <button
+                    type="submit"
+                    className="bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-warm transition duration-300 w-full mt-4"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Actualizando...' : 'Actualizar Registro'}
+                </button>
+            </form>
+        </Modal>
     );
 };
 

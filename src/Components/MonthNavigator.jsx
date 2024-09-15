@@ -1,4 +1,6 @@
 import React from 'react';
+import { MdChevronLeft } from "react-icons/md";
+import { MdChevronRight } from "react-icons/md";
 
 const months = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -19,19 +21,19 @@ const MonthNavigator = ({ currentMonth, currentYear, onMonthChange }) => {
     return (
         <div className="flex items-center justify-center gap-4 my-4">
             <button
-                className="bg-accent-primary text-white rounded-full p-2 hover:bg-accent-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="bg-accent-primary text-white rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 onClick={handlePrevious}
             >
-                &lt;
+                <MdChevronLeft size={24} />
             </button>
             <h3 className="text-lg font-bold text-text-primary">
                 {months[currentMonth]} {currentYear}
             </h3>
             <button
-                className="bg-accent-primary text-white rounded-full p-2 hover:bg-accent-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="bg-accent-primary text-white rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 onClick={handleNext}
             >
-                &gt;
+                <MdChevronRight size={24} />
             </button>
         </div>
 
