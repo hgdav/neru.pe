@@ -41,12 +41,6 @@ function Header() {
                     <Link to="/destinos" className="text-contrast hover:text-accent-warm">
                         Destinos
                     </Link>
-                    <Link to="/colores" className="text-contrast hover:text-accent-warm">
-                        Colores
-                    </Link>
-                    <Link to="/packs" className="text-contrast hover:text-accent-warm">
-                        Packs
-                    </Link>
 
                     {/* Menú desplegable para "Próximas Funcionalidades" */}
                     <div className="relative">
@@ -58,11 +52,14 @@ function Header() {
                         </button>
                         {isSubMenuOpen && (
                             <div className="absolute top-full mt-2 bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-32">
-                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
-                                    Facturación electrónica
+                                <Link to="/colores" className="block px-4 py-2 text-contrast hover:text-accent-warm">
+                                    Colores
+                                </Link>
+                                <Link to="/packs" className="block px-4 py-2 text-contrast hover:text-accent-warm">
+                                    Packs
                                 </Link>
                                 <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
-                                    Nombres por DNI
+                                    Facturación electrónica
                                 </Link>
                                 <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
                                     Shopify API
@@ -97,20 +94,6 @@ function Header() {
                             >
                                 Destinos
                             </Link>
-                            <Link
-                                to="/colores"
-                                className="text-contrast hover:text-accent-warm"
-                                onClick={toggleMenu}
-                            >
-                                Colores
-                            </Link>
-                            <Link
-                                to="/packs"
-                                className="text-contrast hover:text-accent-warm"
-                                onClick={toggleMenu}
-                            >
-                                Packs
-                            </Link>
 
                             {/* Menú desplegable móvil para "Próximas Funcionalidades" */}
                             <div className="relative w-full text-center">
@@ -122,11 +105,22 @@ function Header() {
                                 </button>
                                 {isSubMenuOpen && (
                                     <div className="bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-full mt-2">
-                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
-                                            Facturación electrónica
+                                        <Link
+                                            to="/colores"
+                                            className="block px-4 py-2 text-contrast hover:text-accent-warm"
+                                            onClick={toggleMenu}
+                                        >
+                                            Colores
+                                        </Link>
+                                        <Link
+                                            to="/packs"
+                                            className="block px-4 py-2 text-contrast hover:text-accent-warm"
+                                            onClick={toggleMenu}
+                                        >
+                                            Packs
                                         </Link>
                                         <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
-                                            Nombres por DNI
+                                            Facturación electrónica
                                         </Link>
                                         <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
                                             Shopify API

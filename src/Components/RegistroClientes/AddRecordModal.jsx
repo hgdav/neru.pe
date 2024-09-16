@@ -21,11 +21,14 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const claveRecojo = '';
     const estadoTracking = 'Pendiente';
 
-    const [diaEnvio, setDiaEnvio] = useState(() => {
+    const getTomorrow = () => {
         const mañana = new Date();
-        mañana.setDate(mañana.getDate() + 1);
+        mañana.setHours(0, 0, 0, 0);  // Asegurarte de que la hora sea medianoche
+        mañana.setDate(mañana.getDate() + 1);  // Sumar un día
         return mañana.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
-    });
+    };
+
+    const [diaEnvio, setDiaEnvio] = useState(getTomorrow);
 
     const opcionesTipoEnvio = [
         'Olva Courier',
@@ -45,7 +48,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Enviado',
     ];
 
-    const [estadoEmpaque, setEstadoEmpaque] = useState('Empaque Pendiente');
+    const [estadoEmpaque, setEstadoEmpaque] = useState('Pendiente');
 
     useEffect(() => {
         if (isOpen) {
@@ -58,11 +61,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             setDedicatoria(false);
             setEmpaqueRegalo(false);
             setIsSubmitting(false);
-
-            // Establecer la fecha de envío a mañana
-            const mañana = new Date();
-            mañana.setDate(mañana.getDate() + 1);
-            setDiaEnvio(mañana.toISOString().split('T')[0]);
+            setDiaEnvio(getTomorrow);
 
             // Obtener el último ticket
             const fetchLastTicket = async () => {
