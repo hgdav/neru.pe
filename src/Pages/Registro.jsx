@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
 import ClientCard from '../Components/RegistroClientes/ClientCard';
 import FloatingButton from '../Components/RegistroClientes/FloatingButton';
-import SearchBar from '../Components/RegistroClientes/SearchBar'; // Importa el buscador
-import FilterByStatus from '../Components/RegistroClientes/FilterByStatus'; // Importa el filtro por estado
+import SearchBar from '../Components/RegistroClientes/SearchBar';
+import FilterByStatus from '../Components/RegistroClientes/FilterByStatus';
 import { collection, query, where, orderBy, limit, onSnapshot, getDocs, startAfter, Timestamp } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 
 const Registro = () => {
     const [records, setRecords] = useState([]);
-    const [filteredRecords, setFilteredRecords] = useState([]); // Para guardar los resultados filtrados
+    const [filteredRecords, setFilteredRecords] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [lastVisible, setLastVisible] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
-    const [isFilteredByStatus, setIsFilteredByStatus] = useState(false); // Estado para el filtro por estado de empaque
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isFilteredByStatus, setIsFilteredByStatus] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -39,7 +39,7 @@ const Registro = () => {
                 fetchedRecords.push({ id: doc.id, ...doc.data() });
             });
             setRecords(fetchedRecords);
-            setFilteredRecords(fetchedRecords); // Inicialmente mostramos todos los registros
+            setFilteredRecords(fetchedRecords);
 
             if (querySnapshot.docs.length > 0) {
                 const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];

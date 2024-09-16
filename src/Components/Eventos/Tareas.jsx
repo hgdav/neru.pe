@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdCheckCircle, MdCircle, MdAddCircle } from 'react-icons/md';
 import { getTasks, addTask, updateTask, deleteTask } from '../../utils/TareasApiFunctions';
+import { toast } from 'react-toastify';
 
 const Tareas = () => {
     const [tasks, setTasks] = useState([]);
@@ -39,8 +40,12 @@ const Tareas = () => {
     };
 
     const handleDeleteTask = async (id) => {
-        await deleteTask(id);
-        setTasks(tasks.filter(task => task.id !== id)); // Eliminar tarea del estado local
+        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta tarea?");
+        if (confirmDelete) {
+            await deleteTask(id);
+            setTasks(tasks.filter(task => task.id !== id)); // Eliminar tarea del estado local
+            toast.success('Eliminado');
+        }
     };
 
     const calculateTimeRemaining = (deadline) => {
