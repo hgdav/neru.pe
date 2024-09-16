@@ -98,7 +98,7 @@ const Packs = () => {
 
     return (
         <div className="flex flex-col items-center justify-center p-8">
-            <div className="card bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+            <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full max-w-lg">
                 <h2 className="text-2xl font-bold mb-4 text-center">Verificador de Packs</h2>
                 <input
                     type="file"
@@ -110,7 +110,7 @@ const Packs = () => {
             </div>
 
             {packAvailability.length > 0 && (
-                <div className="card bg-white shadow-md rounded-lg p-6 w-full mt-4">
+                <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full mt-4">
                     <table className="w-full text-left">
                         <thead>
                             <tr>

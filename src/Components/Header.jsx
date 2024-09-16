@@ -15,7 +15,7 @@ function Header() {
     };
 
     return (
-        <header className="bg-bg-base py-4">
+        <header className="bg-bg-base py-4 shadow rounded-3xl">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="logo">
                     <a href="/">
@@ -71,7 +71,7 @@ function Header() {
 
                 {/* Menú desplegable en móviles */}
                 {isMenuOpen && (
-                    <div className="absolute top-16 left-0 w-full bg-bg-base md:hidden shadow-lg z-50">
+                    <div className="absolute top-16 left-0 w-full bg-bg-base md:hidden shadow-lg z-50 rounded-3xl">
                         <nav className="flex flex-col items-center py-4 space-y-4">
                             <Link
                                 to="/registro"

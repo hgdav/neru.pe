@@ -87,8 +87,8 @@ const Colores = () => {
     };
 
     return (
-        <main className="p-8 bg-bg-base">
-            <div className="card bg-white shadow-md rounded-lg p-6">
+        <main className="p-8 bg-bg-base mt-2">
+            <div className="card bg-input-bg shadow-md rounded-3xl p-6">
                 <h2 className="text-xl font-bold mb-4 text-text-primary">Paleta de Colores</h2>
                 <div className="input-container mb-4">
                     <div className="inputs flex items-center gap-4">

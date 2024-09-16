@@ -99,7 +99,7 @@ const ClientCard = ({ client }) => {
                 </button>
 
                 <button
-                    className="bg-accent-primary text-white p-1 px-2 rounded hover:bg-red-600 transition duration-300"
+                    className="text-text-contrast border border-text-contrast bg-transparent p-1 px-2 rounded hover:bg-red-500 transition duration-300"
                     onClick={handleDeleteClick}
                 >
                     <MdDelete size={20} />

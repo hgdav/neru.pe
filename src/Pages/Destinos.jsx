@@ -30,8 +30,8 @@ const Destinos = () => {
     }, [searchTerm, destinos]);
 
     return (
-        <div className="bg-bg-base flex flex-col items-center justify-center p-4">
-            <div className="card bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+        <div className="bg-bg-base flex flex-col items-center justify-center p-4 mt-2">
+            <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full max-w-lg">
                 <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">Destinos Caros</h2>
                 <div className="input-container flex flex-col items-center justify-center space-y-4">
                     <input

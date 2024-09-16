@@ -119,8 +119,8 @@ const Tallas = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center p-8 bg-bg-base">
-            <div className="card bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+        <div className="flex flex-col items-center justify-center p-8 bg-bg-base mt-2">
+            <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full max-w-lg">
                 <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">Recomendador de Tallas</h2>
                 <form onSubmit={calcularTalla} className="flex flex-col gap-4">
                     <input
