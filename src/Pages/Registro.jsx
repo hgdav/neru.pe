@@ -29,7 +29,7 @@ const Registro = () => {
             collection(db, 'registro-clientes'),
             where('fecha', '>=', startOfMonth),
             where('fecha', '<=', endOfMonth),
-            orderBy('fecha', 'desc'),
+            orderBy('ticket', 'desc'), // Ordenar por ticket en lugar de fecha - orderBy('fecha', 'desc'),
             limit(10)
         );
 
@@ -93,7 +93,7 @@ const Registro = () => {
             collection(db, 'registro-clientes'),
             where('fecha', '>=', startOfMonth),
             where('fecha', '<=', endOfMonth),
-            orderBy('fecha', 'desc'),
+            orderBy('ticket', 'desc'),// orderBy('fecha', 'desc'),
             startAfter(lastVisible),
             limit(10)
         );
