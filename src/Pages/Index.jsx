@@ -6,10 +6,6 @@ const Index = () => {
     return (
         <div className="min-h-screen p-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className="border-gray-300 bg-input-bg shadow rounded-3xl p-4">
-                    <h2 className="text-2xl text-center font-bold mb-4">Eventos Pendientes</h2>
-                    <Tareas />
-                </div>
 
                 {/* Segunda mitad para gráficos */}
                 <div className="bg-input-bg shadow rounded-3xl p-4">
@@ -17,6 +13,12 @@ const Index = () => {
                         <Graficos />
                     </div>
                 </div>
+
+                <div className="border-gray-300 bg-input-bg shadow rounded-3xl p-4">
+                    <h2 className="text-2xl text-center font-bold mb-4">Eventos Pendientes</h2>
+                    <Tareas />
+                </div>
+
             </div>
 
             <div className="bg-white shadow rounded-3xl p-4 hidden">

@@ -14,6 +14,8 @@ module.exports = {
         'text-primary': '#3d3929', // Color principal para texto
         'text-contrast': '#141413', // Color de texto de alto contraste
         'input-bg': '#f8f8f7', // Color de fondo para inputs o formularios
+        'olva-bg': '#f9b52f',
+        'shalom-bg': '#ea1c23',
       },
     },
   },

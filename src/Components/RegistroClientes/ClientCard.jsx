@@ -20,6 +20,20 @@ function getStatusClass(estadoEmpaque) {
     }
 }
 
+function getCourierClass(tipo_envio) {
+    switch (tipo_envio) {
+        case 'Olva Courier':
+            return 'bg-olva-bg text-white';
+        case 'Shalom':
+            return 'bg-shalom-bg text-white';
+        case 'GoPack':
+            return 'bg-blue-200 text-blue-800'
+        default:
+            return 'bg-gray-200 text-gray-800';
+
+    }
+}
+
 const ClientCard = ({ client }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -66,7 +80,7 @@ const ClientCard = ({ client }) => {
             <div className="my-2">
                 <div className="info-row">
                     <span className="font-bold text-text-primary">Courier:</span>
-                    <span className="ml-2 text-text-primary">{client.tipo_envio}</span>
+                    <span className={`${getCourierClass(client.tipo_envio)}  ml-2 p-1 rounded text-text-primary`}>{client.tipo_envio}</span>
                 </div>
                 <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Estado de Empaque:</span>
@@ -79,6 +93,10 @@ const ClientCard = ({ client }) => {
                 <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Tracking:</span>
                     <span className={`${getStatusClass(client.estado_tracking)} ml-2 p-1 rounded text-text-primary`}>{client.estado_tracking}</span>
+                </div>
+                <div className="info-row mt-2">
+                    <span className="font-bold text-text-primary">Distrito:</span>
+                    <span className="ml-2 text-text-primary">{client.distrito.toUpperCase()}</span>
                 </div>
             </div>
             <div className="flex justify-between mt-4">

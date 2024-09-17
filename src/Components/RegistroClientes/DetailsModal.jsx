@@ -171,7 +171,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
+                    <div className="flex items-center p-2">
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
@@ -180,7 +180,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         />
                         <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center p-2">
                         <input
                             type="checkbox"
                             checked={dedicatoria}
@@ -201,7 +201,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    navigator.clipboard.writeText(telefono);
+                                    navigator.clipboard.writeText(nroSeguimiento);
                                 }}
                                 className="ml-2 text-blue-500 hover:text-blue-700"
                             >
@@ -210,7 +210,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         </div>
                     </div>
                     <div>
-                        <label className="block mb-1 text-text-primary">Código de Tracking	:</label>
+                        <label className="block mb-1 text-text-primary">Tracking:</label>
                         <div className="flex items-center">
                             <input
                                 type="text"
@@ -221,7 +221,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    navigator.clipboard.writeText(telefono);
+                                    navigator.clipboard.writeText(codigoTracking);
                                 }}
                                 className="ml-2 text-blue-500 hover:text-blue-700"
                             >
@@ -241,7 +241,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    navigator.clipboard.writeText(telefono);
+                                    navigator.clipboard.writeText(codigoRecojo);
                                 }}
                                 className="ml-2 text-blue-500 hover:text-blue-700"
                             >

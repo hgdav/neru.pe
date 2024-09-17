@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import { toast } from 'react-toastify';
+import { MdContentCopy } from 'react-icons/md';
 
 const UpdateStatusModal = ({ isOpen, onClose, client }) => {
     const [codTracking, setCodTracking] = useState(client.cod_tracking || '');
@@ -12,6 +13,7 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
     const [estadoTracking, setEstadoTracking] = useState(client.estado_tracking || 'Pendiente');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [costoEnvio, setCostoEnvio] = useState(client.costo_envio || '');
+    const [mensajeWsp, setMensajeWsp] = useState('');
 
     // Opciones para Estado de Empaque
     const opcionesEstadoEmpaque = [
@@ -20,6 +22,45 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
         'Documentado',
         'Enviado',
     ];
+
+    // Lógica para actualizar mensajeWsp basada en el tipo de envío y datos
+    useEffect(() => {
+        let mensaje = '';
+        if (client.tipo_envio === 'Olva Courier') {
+            if (codTracking && nroSeguimiento && claveRecojo) {
+                mensaje = `¡Hola! Bienvenid@ al WhatsApp oficial de Nerū 👕 
+
+Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
+
+✅ Este es tu número de TRACKING: ${codTracking}.   
+
+✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://tracking.olvaexpress.pe/  coloca el número de tracking y año de emisión.
+
+📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻.`
+            } else {
+                mensaje = `¡Hola! Bienvenid@ al WhatsApp oficial de Nerū 👕 
+
+Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
+
+✅ Este es tu número de TRACKING: ${codTracking} y esta es tu CLAVE DE SEGURIDAD: ${claveRecojo} recuerda llevar tu DNI en físico para poder recoger tu pedido en la agencia de OLVA COURIER.
+
+✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://tracking.olvaexpress.pe/  coloca el número de tracking y año de emisión.
+
+📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻.`;
+            }
+        } else if (client.tipo_envio === 'Shalom') {
+            mensaje = `¡Hola! te saluda David Hurtado agente logístico de Neru 🙋🏻‍♂️. 
+
+✅ Este es tu nro. de orden: ${nroSeguimiento} tu código es: ${codTracking}, la clave de seguridad es: ${claveRecojo}, recuerda llevar tu DNI en físico para poder recoger tu pedido en la agencia de SHALOM.
+
+✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://rastrea.shalom.pe/  coloca el número de ORDEN y CODIGO.
+
+📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻`;
+        } else {
+            mensaje = "Aún no cuenta con códigos de seguimiento"
+        }
+        setMensajeWsp(mensaje);
+    }, [client.tipo_envio, nroSeguimiento, codTracking, claveRecojo]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -116,13 +157,23 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
                         <option value="Enviado">Enviado</option>
                     </select>
                 </div>
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-accent-primary text-white w-full p-2 rounded-md mt-4 disabled:opacity-50"
-                >
-                    {isSubmitting ? 'Actualizando...' : 'Actualizar'}
-                </button>
+                <div className='flex flex-row gap-2'>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="bg-accent-primary text-white w-full p-2 rounded-md mt-4 disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Actualizando...' : 'Actualizar'}
+                    </button>
+                    <div
+                        onClick={() => {
+                            navigator.clipboard.writeText(mensajeWsp);
+                        }}
+                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer"
+                    >
+                        <MdContentCopy />
+                    </div>
+                </div>
             </form>
         </Modal>
     );

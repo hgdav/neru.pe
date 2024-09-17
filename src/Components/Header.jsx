@@ -75,21 +75,21 @@ function Header() {
                         <nav className="flex flex-col items-center py-4 space-y-4">
                             <Link
                                 to="/registro"
-                                className="text-contrast hover:text-accent-warm"
+                                className="text-contrast hover:text-accent-warm text-2xl px-4 py-2"
                                 onClick={toggleMenu}
                             >
                                 Registro
                             </Link>
                             <Link
                                 to="/tallas"
-                                className="text-contrast hover:text-accent-warm"
+                                className="text-contrast hover:text-accent-warm text-2xl"
                                 onClick={toggleMenu}
                             >
                                 Tallas
                             </Link>
                             <Link
                                 to="/destinos"
-                                className="text-contrast hover:text-accent-warm"
+                                className="text-contrast hover:text-accent-warm text-2xl"
                                 onClick={toggleMenu}
                             >
                                 Destinos
@@ -99,7 +99,7 @@ function Header() {
                             <div className="relative w-full text-center">
                                 <button
                                     onClick={toggleSubMenu}
-                                    className="text-contrast hover:text-accent-warm focus:outline-none"
+                                    className="text-contrast hover:text-accent-warm focus:outline-none text-2xl"
                                 >
                                     Feature Flags
                                 </button>

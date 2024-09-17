@@ -255,7 +255,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center">
+                    <div className="flex items-center p-2">
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
@@ -264,7 +264,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                         />
                         <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center p-2">
                         <input
                             type="checkbox"
                             checked={dedicatoria}

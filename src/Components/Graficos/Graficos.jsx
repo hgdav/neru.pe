@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { fetchRecords } from '../../utils/apiFunctions';
 import { Pie, Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
-import MonthNavigator from '../RegistroClientes/MonthNavigator';  // Importa tu MonthNavigator
+import MonthNavigator from '../RegistroClientes/MonthNavigator';
 
 const Graficos = () => {
-    const [mostFrequentDistrict, setMostFrequentDistrict] = useState('');
+    const [mostFrequentDistrict, setMostFrequentDistrict] = useState([]);
     const [totalEnvios, setTotalEnvios] = useState(0);
     const [totalVentas, setTotalVentas] = useState(0);
     const [totalRegistros, setTotalRegistros] = useState(0);
     const [enviosPorTipo, setEnviosPorTipo] = useState({});
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date());
+
+    // Función para limpiar y normalizar texto
+    const normalizeText = (text) => {
+        return text ? text.trim().toLowerCase() : '';
+    };
 
     useEffect(() => {
         const getRecordsData = async () => {
@@ -31,22 +36,42 @@ const Graficos = () => {
                 records.forEach((record) => {
                     const { distrito, costo_envio, costo_pedido, tipo_envio } = record;
 
-                    if (districtCount[distrito]) {
-                        districtCount[distrito]++;
-                    } else {
-                        districtCount[distrito] = 1;
+                    // Normalizar distrito y tipo de envío
+                    const normalizedDistrict = normalizeText(distrito);
+                    const normalizedEnvioType = normalizeText(tipo_envio);
+
+                    // Contar distritos
+                    if (normalizedDistrict) {
+                        if (districtCount[normalizedDistrict]) {
+                            districtCount[normalizedDistrict]++;
+                        } else {
+                            districtCount[normalizedDistrict] = 1;
+                        }
                     }
 
-                    totalEnviosCost += costo_envio || 0;
-                    totalVentasAmount += costo_pedido || 0;
+                    // Convertir costos a números y acumular
+                    const envioCost = parseFloat(costo_envio);
+                    if (!isNaN(envioCost)) {
+                        totalEnviosCost += envioCost;
+                    }
 
-                    if (envioTypeCount[tipo_envio]) {
-                        envioTypeCount[tipo_envio]++;
-                    } else {
-                        envioTypeCount[tipo_envio] = 1;
+                    const ventaAmount = parseFloat(costo_pedido);
+                    if (!isNaN(ventaAmount)) {
+                        totalVentasAmount += ventaAmount;
+                    }
+
+                    // Contar tipos de envío
+                    if (normalizedEnvioType) {
+                        if (envioTypeCount[normalizedEnvioType]) {
+                            envioTypeCount[normalizedEnvioType]++;
+                        } else {
+                            envioTypeCount[normalizedEnvioType] = 1;
+                        }
                     }
                 });
 
+
+                // Ordenar distritos por más frecuentes y limitar a los top 5
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 5);
@@ -67,7 +92,7 @@ const Graficos = () => {
     }, [currentDate]);
 
     const handleMonthChange = (newDate) => {
-        setCurrentDate(newDate); // Cambia el mes y año al seleccionar otro mes
+        setCurrentDate(newDate);
     };
 
     const generatePieChartData = () => ({
@@ -76,31 +101,35 @@ const Graficos = () => {
             {
                 data: Object.values(enviosPorTipo),
                 backgroundColor: [
-                    '#bb5c39',  // accent-primary
-                    '#8888dc',  // accent-secondary
-                    '#c4c3bb',  // accent-muted
-                    '#d4a37f',  // accent-warm
+                    '#bb5c39',
+                    '#8888dc',
+                    '#c4c3bb',
+                    '#d4a37f',
                 ],
                 hoverBackgroundColor: [
-                    '#bb5c39',  // accent-primary
-                    '#8888dc',  // accent-secondary
-                    '#c4c3bb',  // accent-muted
-                    '#d4a37f',  // accent-warm
+                    '#bb5c39',
+                    '#8888dc',
+                    '#c4c3bb',
+                    '#d4a37f',
                 ],
             },
         ],
     });
 
-    const generateBarChartData = () => ({
-        labels: ['Gastos de Envío', 'Total de Ventas', 'Total de Registros'],
-        datasets: [
-            {
-                label: 'Montos',
-                data: [totalEnvios, totalVentas, totalRegistros],
-                backgroundColor: ['#bb5c39', '#8888dc', '#d4a37f'],
-            },
-        ],
-    });
+    const generateBarChartData = () => {
+        const data = [totalEnvios, totalVentas, totalRegistros];
+
+        return {
+            labels: ['Gastos de Envío', 'Total de Ventas', 'Total de Registros'],
+            datasets: [
+                {
+                    label: 'Cantidad',
+                    data: data,
+                    backgroundColor: ['#bb5c39', '#8888dc', '#d4a37f'],
+                },
+            ],
+        };
+    };
 
     return (
         <div className="bg-base-lg p-6">
@@ -115,7 +144,7 @@ const Graficos = () => {
                 <p>Cargando...</p>
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
-                    {/* Total de envíos, ventas y registros (Ocupa toda la fila) */}
+                    {/* Total de envíos, ventas y registros */}
                     <div className="p-4 bg-gray-100 rounded-lg w-full h-full">
                         <h2 className="text-xl font-semibold">Totales</h2>
                         <div className="h-64 w-full">
@@ -130,7 +159,7 @@ const Graficos = () => {
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (
                                     <li key={district} className="flex justify-between text-lg">
-                                        <span>{index + 1}. {district}</span>
+                                        <span>{index + 1}. {district.toUpperCase()}</span>
                                         <span>{count} envíos</span>
                                     </li>
                                 ))}
