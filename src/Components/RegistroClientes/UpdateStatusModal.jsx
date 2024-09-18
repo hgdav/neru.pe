@@ -32,21 +32,22 @@ const UpdateStatusModal = ({ isOpen, onClose, client }) => {
 
 Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
 
-✅ Este es tu número de TRACKING: ${codTracking}.   
-
-✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://tracking.olvaexpress.pe/  coloca el número de tracking y año de emisión.
-
-📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻.`
-            } else {
-                mensaje = `¡Hola! Bienvenid@ al WhatsApp oficial de Nerū 👕 
-
-Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
-
 ✅ Este es tu número de TRACKING: ${codTracking} y esta es tu CLAVE DE SEGURIDAD: ${claveRecojo} recuerda llevar tu DNI en físico para poder recoger tu pedido en la agencia de OLVA COURIER.
 
 ✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://tracking.olvaexpress.pe/  coloca el número de tracking y año de emisión.
 
 📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻.`;
+
+            } else {
+                mensaje = `¡Hola! Bienvenid@ al WhatsApp oficial de Nerū 👕 
+
+Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
+
+✅ Este es tu número de TRACKING: ${codTracking}.   
+
+✅ Para verificar el estado de tu envio, ingresa aqui 👉🏻 https://tracking.olvaexpress.pe/  coloca el número de tracking y año de emisión.
+
+📌 Cualquier otra duda que tengas nos la haces saber por favor 👍🏻.`
             }
         } else if (client.tipo_envio === 'Shalom') {
             mensaje = `¡Hola! te saluda David Hurtado agente logístico de Neru 🙋🏻‍♂️. 
@@ -89,7 +90,16 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
+
+                <div
+                    onClick={() => {
+                        navigator.clipboard.writeText(client.telefono);
+                    }}
+                    className="flex flex-row items-center"
+                >
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
+                    <MdContentCopy className='text-green-600 flex items-center mb-4 ml-2 cursor-pointer' />
+                </div>
                 <div className='flex flex-row gap-2'>
                     <div className="space-y-2 w-1/2">
                         <label className="block text-sm font-medium text-text-primary">Código de Tracking:</label>
@@ -101,7 +111,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                         />
                     </div>
                     <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary">Nro. de Seguimiento:</label>
+                        <label className="block text-sm font-medium text-text-primary">Número de Registro:</label>
                         <input
                             type="text"
                             value={nroSeguimiento}

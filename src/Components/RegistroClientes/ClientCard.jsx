@@ -142,7 +142,7 @@ const ClientCard = ({ client }) => {
                     onClick={handleUpdateClick}
                 >
                     <MdChecklistRtl size={24} />
-                    <span className="hidden sm:inline">Cambiar Estado</span>
+                    <span className="hidden sm:inline">Agregar Seguimiento</span>
                 </button>
 
                 <button
