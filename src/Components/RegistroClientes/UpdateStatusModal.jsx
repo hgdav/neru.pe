@@ -89,7 +89,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-xl font-semibold text-text-primary mb-4">Actualizar Estado</h3>
+                <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
                 <div className='flex flex-row gap-2'>
                     <div className="space-y-2 w-1/2">
                         <label className="block text-sm font-medium text-text-primary">Código de Tracking:</label>

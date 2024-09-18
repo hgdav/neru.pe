@@ -16,12 +16,14 @@ import {
     Timestamp,
 } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
-import { format, isToday } from 'date-fns';
+import { format, isToday, parseISO, compareAsc } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el locale español
 
 const Registro = () => {
     const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
     const [groupedRecords, setGroupedRecords] = useState({});
+    const [orderedDates, setOrderedDates] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [lastVisible, setLastVisible] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +52,7 @@ const Registro = () => {
             where('fecha', '>=', startOfMonth),
             where('fecha', '<=', endOfMonth),
             orderBy('fecha', 'desc'),
+            orderBy('ticket', 'desc'),
             limit(10)
         );
 
@@ -58,8 +61,10 @@ const Registro = () => {
             querySnapshot.forEach((doc) => {
                 fetchedRecords.push({ id: doc.id, ...doc.data() });
             });
+
             setRecords(fetchedRecords);
             setFilteredRecords(fetchedRecords);
+            setIsLoading(false);
 
             if (querySnapshot.docs.length > 0) {
                 const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -67,8 +72,6 @@ const Registro = () => {
             } else {
                 setLastVisible(null);
             }
-
-            setIsLoading(false);
         });
 
         return () => {
@@ -89,7 +92,9 @@ const Registro = () => {
         }
 
         if (searchTerm === '') {
-            setFilteredRecords(currentRecords);
+            // Ordenar los registros por número de ticket descendente
+            const sortedRecords = currentRecords.sort((a, b) => b.ticket - a.ticket);
+            setFilteredRecords(sortedRecords);
         } else {
             const filtered = currentRecords.filter((record) => {
                 const nombre = record.nombre ? record.nombre.toLowerCase() : '';
@@ -102,35 +107,61 @@ const Registro = () => {
                     telefono.includes(searchTerm.toLowerCase())
                 );
             });
-            setFilteredRecords(filtered);
+            // Ordenar los registros filtrados por número de ticket descendente
+            const sortedFiltered = filtered.sort((a, b) => b.ticket - a.ticket);
+            setFilteredRecords(sortedFiltered);
         }
     }, [searchTerm, records, isFilteredByStatus]);
 
     useEffect(() => {
         if (isFilteredByStatus) {
-            // Agrupa los registros filtrados por fecha de envío o fecha de registro
+            // Agrupa los registros filtrados por dia_envio
             const grouped = filteredRecords.reduce((groups, record) => {
-                const fechaEnvio = record.fecha_envio ? record.fecha_envio.toDate() : null;
-                const fechaRegistro = record.fecha ? record.fecha.toDate() : null;
-                const dateToUse = fechaEnvio || fechaRegistro;
+                const diaEnvio = record.dia_envio || null; // Asumimos que dia_envio es una cadena de texto en formato 'YYYY-MM-DD'
 
-                if (dateToUse) {
-                    const dateKey = isToday(dateToUse) ? 'Hoy' : format(dateToUse, 'dd/MM/yyyy');
+                if (diaEnvio) {
+                    const dateObj = parseISO(diaEnvio); // Convertir la cadena a objeto Date
+                    const dateKey = isToday(dateObj)
+                        ? 'Hoy'
+                        : format(dateObj, 'EEEE, d MMM', { locale: es }); // Formatear la fecha en español
+
                     if (!groups[dateKey]) {
-                        groups[dateKey] = [];
+                        groups[dateKey] = { records: [], date: dateObj };
                     }
-                    groups[dateKey].push(record);
+                    groups[dateKey].records.push(record);
                 } else {
-                    if (!groups['Sin fecha']) {
-                        groups['Sin fecha'] = [];
+                    if (!groups['Sin fecha de envío']) {
+                        groups['Sin fecha de envío'] = { records: [], date: null };
                     }
-                    groups['Sin fecha'].push(record);
+                    groups['Sin fecha de envío'].records.push(record);
                 }
                 return groups;
             }, {});
+
+            // Ordenar los registros dentro de cada grupo por número de ticket descendente
+            Object.keys(grouped).forEach((dateKey) => {
+                grouped[dateKey].records.sort((a, b) => b.ticket - a.ticket);
+            });
+
+            // Ordenar las fechas de los grupos
+            const dates = Object.keys(grouped).map((key) => ({
+                key,
+                date: grouped[key].date,
+            }));
+
+            dates.sort((a, b) => {
+                if (a.key === 'Hoy') return -1;
+                if (b.key === 'Hoy') return 1;
+                if (!a.date) return 1; // 'Sin fecha de envío' al final
+                if (!b.date) return -1;
+                return compareAsc(a.date, b.date);
+            });
+
+            setOrderedDates(dates.map((item) => item.key));
             setGroupedRecords(grouped);
         } else {
-            setGroupedRecords({}); // Limpia los registros agrupados cuando no hay filtro
+            setGroupedRecords({});
+            setOrderedDates([]);
         }
     }, [filteredRecords, isFilteredByStatus]);
 
@@ -165,6 +196,7 @@ const Registro = () => {
                 where('fecha', '>=', startOfMonth),
                 where('fecha', '<=', endOfMonth),
                 orderBy('fecha', 'desc'),
+                orderBy('ticket', 'desc'),
                 startAfter(lastVisible),
                 limit(10)
             );
@@ -218,19 +250,15 @@ const Registro = () => {
                         fetchedRecords.push({ id: doc.id, ...doc.data() });
                     });
 
-                    // Ordenamos los registros manualmente por fecha de envío o fecha
+                    // Ordenamos los registros por dia_envio y número de ticket
                     fetchedRecords.sort((a, b) => {
-                        const fechaA = a.fecha_envio ? a.fecha_envio.toDate() : a.fecha ? a.fecha.toDate() : null;
-                        const fechaB = b.fecha_envio ? b.fecha_envio.toDate() : b.fecha ? b.fecha.toDate() : null;
+                        const diaEnvioA = a.dia_envio ? parseISO(a.dia_envio).getTime() : 0;
+                        const diaEnvioB = b.dia_envio ? parseISO(b.dia_envio).getTime() : 0;
 
-                        if (fechaA && fechaB) {
-                            return fechaA - fechaB;
-                        } else if (fechaA) {
-                            return -1;
-                        } else if (fechaB) {
-                            return 1;
+                        if (diaEnvioA !== diaEnvioB) {
+                            return diaEnvioA - diaEnvioB; // Ordenar por dia_envio ascendente
                         } else {
-                            return 0;
+                            return b.ticket - a.ticket; // Si las fechas son iguales, ordenar por ticket descendente
                         }
                     });
 
@@ -271,12 +299,12 @@ const Registro = () => {
                             <div className="text-center mt-6">
                                 <p>Cargando registros...</p>
                             </div>
-                        ) : Object.keys(groupedRecords).length > 0 ? (
-                            Object.keys(groupedRecords).map((dateKey) => (
+                        ) : orderedDates.length > 0 ? (
+                            orderedDates.map((dateKey) => (
                                 <div key={dateKey} className="mb-8">
                                     <h2 className="text-xl font-semibold mb-4">{dateKey}</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {groupedRecords[dateKey].map((record) => (
+                                        {groupedRecords[dateKey].records.map((record) => (
                                             <ClientCard key={record.id} client={record} />
                                         ))}
                                     </div>

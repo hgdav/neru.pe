@@ -134,7 +134,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         />
                     </div>
                     <div>
-                        <label className="block mb-1 text-text-primary">Costo del Pedido:</label>
+                        <label className="block mb-1 text-text-primary">Precio del Pedido:</label>
                         <input
                             type="number"
                             value={costoPedido}

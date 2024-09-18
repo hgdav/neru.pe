@@ -1,5 +1,9 @@
 [
     {
+        "COSTO_DE_ENVIO": 20.70,
+        "DESTINO": "ATALAYA"
+    },
+    {
         "COSTO_DE_ENVIO": 24.8,
         "DESTINO": "IQUITOS"
     },

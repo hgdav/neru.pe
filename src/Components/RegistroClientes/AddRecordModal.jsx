@@ -10,7 +10,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [telefono, setTelefono] = useState('');
     const [distrito, setDistrito] = useState('');
     const [costoPedido, setCostoPedido] = useState(0);
-    const [costoEnvio, setCostoEnvio] = useState(0);
     const [dedicatoria, setDedicatoria] = useState(false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,7 +27,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         return mañana.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
     };
 
-    const [diaEnvio, setDiaEnvio] = useState(getTomorrow);
+    const [fechaEnvio, setFechaEnvio] = useState(getTomorrow());
 
     const opcionesTipoEnvio = [
         'Olva Courier',
@@ -57,11 +56,10 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             setTelefono('');
             setDistrito('');
             setCostoPedido(0);
-            setCostoEnvio(0);
             setDedicatoria(false);
             setEmpaqueRegalo(false);
             setIsSubmitting(false);
-            setDiaEnvio(getTomorrow);
+            setFechaEnvio(getTomorrow());
 
             // Obtener el último ticket
             const fetchLastTicket = async () => {
@@ -114,12 +112,15 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             return;
         }
 
+        // Convertir fecha de envío a Timestamp
+        const [year, month, day] = fechaEnvio.split('-');
+        const fechaEnvioTimestamp = Timestamp.fromDate(new Date(year, month - 1, day));
+
         const nuevoRegistro = {
             ticket,
             tipo_envio: tipoEnvio,
             estado_empaque: estadoEmpaque,
-            dia_envio: diaEnvio,
-            costo_envio: parseFloat(costoEnvio),
+            fecha_envio: fechaEnvioTimestamp,
             costo_pedido: parseFloat(costoPedido),
             nombre,
             telefono,
@@ -147,7 +148,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-xl font-semibold">Agregar Nuevo Registro</h3>
+                <h3 className="text-xl font-semibold">Nuevo Registro</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block mb-1 text-gray-700">Pedido #:</label>
@@ -190,33 +191,11 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-1 text-gray-700">Día de Envío:</label>
+                        <label className="block mb-1 text-gray-700">Fecha de Envío:</label>
                         <input
                             type="date"
-                            value={diaEnvio}
-                            onChange={(e) => setDiaEnvio(e.target.value)}
-                            required
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Costo Envío:</label>
-                        <input
-                            type="number"
-                            value={costoEnvio}
-                            onChange={(e) => setCostoEnvio(e.target.value)}
-                            required
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Costo Pedido:</label>
-                        <input
-                            type="number"
-                            value={costoPedido}
-                            onChange={(e) => setCostoPedido(e.target.value)}
+                            value={fechaEnvio}
+                            onChange={(e) => setFechaEnvio(e.target.value)}
                             required
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
@@ -244,15 +223,27 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                         />
                     </div>
                 </div>
-                <div>
-                    <label className="block mb-1 text-gray-700">Distrito:</label>
-                    <input
-                        type="text"
-                        value={distrito}
-                        onChange={(e) => setDistrito(e.target.value)}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-1 text-gray-700">Distrito:</label>
+                        <input
+                            type="text"
+                            value={distrito}
+                            onChange={(e) => setDistrito(e.target.value)}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-gray-700">Precio del Pedido:</label>
+                        <input
+                            type="number"
+                            value={costoPedido}
+                            onChange={(e) => setCostoPedido(e.target.value)}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center p-2">
