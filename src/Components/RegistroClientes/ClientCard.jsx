@@ -1,5 +1,3 @@
-// ClientCard.jsx
-
 import React, { useState } from 'react';
 import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';

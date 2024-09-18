@@ -1,5 +1,3 @@
-// Registro.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
 import ClientCard from '../Components/RegistroClientes/ClientCard';
@@ -19,7 +17,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 import { format, isToday, compareAsc } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importa el locale español
+import { es } from 'date-fns/locale';
 
 const Registro = () => {
     const [records, setRecords] = useState([]);
@@ -94,7 +92,6 @@ const Registro = () => {
         }
 
         if (searchTerm === '') {
-            // Ordenar los registros por número de ticket descendente
             const sortedRecords = currentRecords.sort((a, b) => b.ticket - a.ticket);
             setFilteredRecords(sortedRecords);
         } else {
@@ -109,7 +106,6 @@ const Registro = () => {
                     telefono.includes(searchTerm.toLowerCase())
                 );
             });
-            // Ordenar los registros filtrados por número de ticket descendente
             const sortedFiltered = filtered.sort((a, b) => b.ticket - a.ticket);
             setFilteredRecords(sortedFiltered);
         }
@@ -117,7 +113,6 @@ const Registro = () => {
 
     useEffect(() => {
         if (isFilteredByStatus) {
-            // Agrupa los registros filtrados por fecha_envio
             const grouped = filteredRecords.reduce((groups, record) => {
                 const fechaEnvioTimestamp = record.fecha_envio || null;
 
@@ -125,13 +120,10 @@ const Registro = () => {
                     let dateObj;
 
                     if (fechaEnvioTimestamp instanceof Timestamp) {
-                        // Si es un Timestamp
                         dateObj = fechaEnvioTimestamp.toDate();
                     } else if (fechaEnvioTimestamp instanceof Date) {
-                        // Si es un objeto Date
                         dateObj = fechaEnvioTimestamp;
                     } else if (typeof fechaEnvioTimestamp === 'string') {
-                        // Si es una cadena, intentar parsearla
                         const [year, month, day] = fechaEnvioTimestamp.split('-').map(Number);
                         dateObj = new Date(year, month - 1, day);
                     } else {
@@ -142,7 +134,7 @@ const Registro = () => {
                     if (dateObj) {
                         const dateKey = isToday(dateObj)
                             ? 'Hoy'
-                            : format(dateObj, 'EEEE, d MMM', { locale: es }); // Formatear la fecha en español
+                            : format(dateObj, 'EEEE, d MMM', { locale: es });
 
                         if (!groups[dateKey]) {
                             groups[dateKey] = { records: [], date: dateObj };
@@ -163,12 +155,10 @@ const Registro = () => {
                 return groups;
             }, {});
 
-            // Ordenar los registros dentro de cada grupo por número de ticket descendente
             Object.keys(grouped).forEach((dateKey) => {
                 grouped[dateKey].records.sort((a, b) => b.ticket - a.ticket);
             });
 
-            // Ordenar las fechas de los grupos
             const dates = Object.keys(grouped).map((key) => ({
                 key,
                 date: grouped[key].date,
@@ -177,7 +167,7 @@ const Registro = () => {
             dates.sort((a, b) => {
                 if (a.key === 'Hoy') return -1;
                 if (b.key === 'Hoy') return 1;
-                if (!a.date) return 1; // 'Sin fecha de envío' al final
+                if (!a.date) return 1;
                 if (!b.date) return -1;
                 return compareAsc(a.date, b.date);
             });
@@ -191,41 +181,33 @@ const Registro = () => {
     }, [filteredRecords, isFilteredByStatus]);
 
     const loadMoreRecords = () => {
-        if (isLoading || !lastVisible) return;
+        if (isLoading || !lastVisible || isFilteredByStatus) return;
 
         setIsLoading(true);
 
-        let q;
+        const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const endDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() + 1,
+            0,
+            23,
+            59,
+            59,
+            999
+        );
 
-        if (isFilteredByStatus) {
-            // Puedes decidir si manejar o no la paginación cuando el filtro está activo
-            setIsLoading(false);
-            return;
-        } else {
-            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            const endDate = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth() + 1,
-                0,
-                23,
-                59,
-                59,
-                999
-            );
+        const startOfMonth = Timestamp.fromDate(startDate);
+        const endOfMonth = Timestamp.fromDate(endDate);
 
-            const startOfMonth = Timestamp.fromDate(startDate);
-            const endOfMonth = Timestamp.fromDate(endDate);
-
-            q = query(
-                collection(db, 'registro-clientes'),
-                where('fecha', '>=', startOfMonth),
-                where('fecha', '<=', endOfMonth),
-                orderBy('fecha', 'desc'),
-                orderBy('ticket', 'desc'),
-                startAfter(lastVisible),
-                limit(10)
-            );
-        }
+        const q = query(
+            collection(db, 'registro-clientes'),
+            where('fecha', '>=', startOfMonth),
+            where('fecha', '<=', endOfMonth),
+            orderBy('fecha', 'desc'),
+            orderBy('ticket', 'desc'),
+            startAfter(lastVisible),
+            limit(20)
+        );
 
         getDocs(q)
             .then((querySnapshot) => {
@@ -259,7 +241,6 @@ const Registro = () => {
         setIsFilteredByStatus(!isFilteredByStatus);
 
         if (!isFilteredByStatus) {
-            // Aplicando el filtro
             setIsLoading(true);
 
             const q = query(
@@ -275,22 +256,20 @@ const Registro = () => {
                         fetchedRecords.push({ id: doc.id, ...doc.data() });
                     });
 
-                    // Ordenamos los registros por fecha_envio y número de ticket
                     fetchedRecords.sort((a, b) => {
-                        const fechaEnvioA = a.fecha_envio ? a.fecha_envio.toDate().getTime() : 0;
-                        const fechaEnvioB = b.fecha_envio ? b.fecha_envio.toDate().getTime() : 0;
+                        const fechaEnvioA = a.fecha_envio ? new Date(a.fecha_envio).getTime() : 0;
+                        const fechaEnvioB = b.fecha_envio ? new Date(b.fecha_envio).getTime() : 0;
 
                         if (fechaEnvioA !== fechaEnvioB) {
-                            return fechaEnvioA - fechaEnvioB; // Ordenar por fecha_envio ascendente
+                            return fechaEnvioA - fechaEnvioB;
                         } else {
-                            return b.ticket - a.ticket; // Si las fechas son iguales, ordenar por ticket descendente
+                            return b.ticket - a.ticket;
                         }
                     });
 
                     setRecords(fetchedRecords);
                     setFilteredRecords(fetchedRecords);
                     setIsLoading(false);
-
                     setLastVisible(null);
                 })
                 .catch((error) => {
@@ -298,7 +277,6 @@ const Registro = () => {
                     setIsLoading(false);
                 });
         } else {
-            // Quitando el filtro, volvemos a los registros iniciales
             fetchInitialRecords();
         }
     };
@@ -353,7 +331,7 @@ const Registro = () => {
                                     </p>
                                 )}
                             </div>
-                            {lastVisible && (
+                            {lastVisible && !isFilteredByStatus && (
                                 <div className="text-center mt-6">
                                     <button
                                         onClick={loadMoreRecords}
