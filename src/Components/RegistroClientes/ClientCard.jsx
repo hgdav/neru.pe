@@ -1,11 +1,15 @@
+// ClientCard.jsx
+
 import React, { useState } from 'react';
 import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import { MdRemoveRedEye, MdChecklistRtl, MdDelete, MdCardGiftcard } from "react-icons/md";
-import { formatFirestoreDateWithDay } from '../../utils/helpers'; // Importa la función
 import { toast } from 'react-toastify';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Timestamp } from 'firebase/firestore'; // Importa Timestamp
 
 function getStatusClass(estadoEmpaque) {
     switch (estadoEmpaque) {
@@ -27,10 +31,9 @@ function getCourierClass(tipo_envio) {
         case 'Shalom':
             return 'bg-shalom-bg text-white';
         case 'GoPack':
-            return 'bg-blue-200 text-blue-800'
+            return 'bg-blue-200 text-blue-800';
         default:
             return 'bg-gray-200 text-gray-800';
-
     }
 }
 
@@ -64,7 +67,35 @@ const ClientCard = ({ client }) => {
 
     const verifyEmpaque = () => {
         return client.empaque_regalo === true;
+    };
+
+    // ClientCard.jsx
+
+    const fechaEnvio = client.fecha_envio;
+    let fechaEnvioString = 'Sin fecha de envío';
+
+    if (fechaEnvio) {
+        let fechaDate;
+
+        if (fechaEnvio instanceof Timestamp) {
+            // Si es un Timestamp
+            fechaDate = fechaEnvio.toDate();
+        } else if (fechaEnvio instanceof Date) {
+            // Si es un objeto Date
+            fechaDate = fechaEnvio;
+        } else if (typeof fechaEnvio === 'string') {
+            // Si es una cadena, intentar parsearla
+            const [year, month, day] = fechaEnvio.split('-').map(Number);
+            fechaDate = new Date(year, month - 1, day);
+        } else {
+            console.warn(`Tipo desconocido para fecha_envio: ${typeof fechaEnvio}`);
+        }
+
+        if (fechaDate) {
+            fechaEnvioString = format(fechaDate, 'EEEE, d MMMM yyyy', { locale: es });
+        }
     }
+
 
     return (
         <div className="border border-gray-300 shadow-lg rounded-3xl p-4 mb-4 bg-input-bg">
@@ -87,8 +118,8 @@ const ClientCard = ({ client }) => {
                     <span className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}>{client.estado_empaque}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-bold text-text-primary">Día de envío:</span>
-                    <span className="ml-2 text-text-primary">{formatFirestoreDateWithDay(client.dia_envio)}</span> {/* Aquí usas la nueva función */}
+                    <span className="font-bold text-text-primary">Fecha de envío:</span>
+                    <span className="ml-2 text-text-primary">{fechaEnvioString}</span>
                 </div>
                 <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Tracking:</span>
@@ -123,7 +154,6 @@ const ClientCard = ({ client }) => {
                     <MdDelete size={20} />
                 </button>
             </div>
-
 
             {/* Modal con todos los detalles del cliente */}
             <DetailsModal isOpen={isModalOpen} onClose={toggleModal} client={client} />

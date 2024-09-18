@@ -1,3 +1,5 @@
+// Registro.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
 import ClientCard from '../Components/RegistroClientes/ClientCard';
@@ -16,7 +18,7 @@ import {
     Timestamp,
 } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
-import { format, isToday, parseISO, compareAsc } from 'date-fns';
+import { format, isToday, compareAsc } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el locale español
 
 const Registro = () => {
@@ -115,20 +117,43 @@ const Registro = () => {
 
     useEffect(() => {
         if (isFilteredByStatus) {
-            // Agrupa los registros filtrados por dia_envio
+            // Agrupa los registros filtrados por fecha_envio
             const grouped = filteredRecords.reduce((groups, record) => {
-                const diaEnvio = record.dia_envio || null; // Asumimos que dia_envio es una cadena de texto en formato 'YYYY-MM-DD'
+                const fechaEnvioTimestamp = record.fecha_envio || null;
 
-                if (diaEnvio) {
-                    const dateObj = parseISO(diaEnvio); // Convertir la cadena a objeto Date
-                    const dateKey = isToday(dateObj)
-                        ? 'Hoy'
-                        : format(dateObj, 'EEEE, d MMM', { locale: es }); // Formatear la fecha en español
+                if (fechaEnvioTimestamp) {
+                    let dateObj;
 
-                    if (!groups[dateKey]) {
-                        groups[dateKey] = { records: [], date: dateObj };
+                    if (fechaEnvioTimestamp instanceof Timestamp) {
+                        // Si es un Timestamp
+                        dateObj = fechaEnvioTimestamp.toDate();
+                    } else if (fechaEnvioTimestamp instanceof Date) {
+                        // Si es un objeto Date
+                        dateObj = fechaEnvioTimestamp;
+                    } else if (typeof fechaEnvioTimestamp === 'string') {
+                        // Si es una cadena, intentar parsearla
+                        const [year, month, day] = fechaEnvioTimestamp.split('-').map(Number);
+                        dateObj = new Date(year, month - 1, day);
+                    } else {
+                        console.warn(`Tipo desconocido para fecha_envio: ${typeof fechaEnvioTimestamp}`);
+                        dateObj = null;
                     }
-                    groups[dateKey].records.push(record);
+
+                    if (dateObj) {
+                        const dateKey = isToday(dateObj)
+                            ? 'Hoy'
+                            : format(dateObj, 'EEEE, d MMM', { locale: es }); // Formatear la fecha en español
+
+                        if (!groups[dateKey]) {
+                            groups[dateKey] = { records: [], date: dateObj };
+                        }
+                        groups[dateKey].records.push(record);
+                    } else {
+                        if (!groups['Sin fecha de envío']) {
+                            groups['Sin fecha de envío'] = { records: [], date: null };
+                        }
+                        groups['Sin fecha de envío'].records.push(record);
+                    }
                 } else {
                     if (!groups['Sin fecha de envío']) {
                         groups['Sin fecha de envío'] = { records: [], date: null };
@@ -250,13 +275,13 @@ const Registro = () => {
                         fetchedRecords.push({ id: doc.id, ...doc.data() });
                     });
 
-                    // Ordenamos los registros por dia_envio y número de ticket
+                    // Ordenamos los registros por fecha_envio y número de ticket
                     fetchedRecords.sort((a, b) => {
-                        const diaEnvioA = a.dia_envio ? parseISO(a.dia_envio).getTime() : 0;
-                        const diaEnvioB = b.dia_envio ? parseISO(b.dia_envio).getTime() : 0;
+                        const fechaEnvioA = a.fecha_envio ? a.fecha_envio.toDate().getTime() : 0;
+                        const fechaEnvioB = b.fecha_envio ? b.fecha_envio.toDate().getTime() : 0;
 
-                        if (diaEnvioA !== diaEnvioB) {
-                            return diaEnvioA - diaEnvioB; // Ordenar por dia_envio ascendente
+                        if (fechaEnvioA !== fechaEnvioB) {
+                            return fechaEnvioA - fechaEnvioB; // Ordenar por fecha_envio ascendente
                         } else {
                             return b.ticket - a.ticket; // Si las fechas son iguales, ordenar por ticket descendente
                         }

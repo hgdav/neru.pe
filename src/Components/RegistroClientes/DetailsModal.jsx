@@ -4,6 +4,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import { MdContentCopy } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import { Timestamp } from 'firebase/firestore';
 
 const DetailsModal = ({ isOpen, onClose, client }) => {
     // Estados para editar los datos
@@ -13,15 +14,32 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
     const [telefono, setTelefono] = useState(client.telefono || '');
     const [nroSeguimiento, setNroSeguimiento] = useState(client.nro_seguimiento || '');
     const [tipoEnvio, setTipoEnvio] = useState(client.tipo_envio || 'Olva Courier');
-    const [estadoEmpaque, setEstadoEmpaque] = useState(client.estado_empaque || 'Empaque Pendiente');
+    const [estadoEmpaque, setEstadoEmpaque] = useState(
+        client.estado_empaque || 'Empaque Pendiente'
+    );
     const [estadoTracking, setEstadoTracking] = useState(client.estado_tracking || 'Pendiente');
     const [distrito, setDistrito] = useState(client.distrito || '');
     const [costoPedido, setCostoPedido] = useState(client.costo_pedido || 0);
     const [costoEnvio, setCostoEnvio] = useState(client.costo_envio || 0);
     const [dedicatoria, setDedicatoria] = useState(client.dedicatoria || false);
-    const [diaEnvio, setDiaEnvio] = useState(client.dia_envio || '');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(client.empaque_regalo || false);
+
+    // Convertir fecha_envio a 'YYYY-MM-DD' para el input de tipo date
+    const [fechaEnvio, setFechaEnvio] = useState(() => {
+        let dateString = '';
+        if (client.fecha_envio) {
+            if (client.fecha_envio instanceof Timestamp) {
+                // Si es un Timestamp de Firebase
+                dateString = client.fecha_envio.toDate().toISOString().split('T')[0];
+            } else if (typeof client.fecha_envio === 'string') {
+                // Si ya es una cadena
+                dateString = client.fecha_envio;
+            }
+        }
+        return dateString;
+    });
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const opcionesTipoEnvio = [
         'Olva Courier',
@@ -45,6 +63,14 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
 
         const docRef = doc(db, 'registro-clientes', client.id);
 
+        // Convertir fechaEnvio a Timestamp si es válida
+        let fechaEnvioTimestamp = null;
+        if (fechaEnvio) {
+            const [year, month, day] = fechaEnvio.split('-').map(Number);
+            const date = new Date(year, month - 1, day);
+            fechaEnvioTimestamp = Timestamp.fromDate(date);
+        }
+
         const updatedData = {
             ticket,
             telefono,
@@ -55,7 +81,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
             costo_pedido: parseFloat(costoPedido),
             costo_envio: parseFloat(costoEnvio),
             dedicatoria,
-            dia_envio: diaEnvio,
+            fecha_envio: fechaEnvioTimestamp,
             empaque_regalo: empaqueRegalo,
             nro_seguimiento: nroSeguimiento,
             cod_tracking: codigoTracking,
@@ -116,11 +142,11 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-1 text-text-primary">Día de Envío:</label>
+                        <label className="block mb-1 text-text-primary">Fecha de Envío:</label>
                         <input
-                            type="text"
-                            value={diaEnvio}
-                            onChange={(e) => setDiaEnvio(e.target.value)}
+                            type="date"
+                            value={fechaEnvio}
+                            onChange={(e) => setFechaEnvio(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>

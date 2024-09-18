@@ -22,7 +22,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
     const getTomorrow = () => {
         const mañana = new Date();
-        mañana.setHours(0, 0, 0, 0);  // Asegurarte de que la hora sea medianoche
         mañana.setDate(mañana.getDate() + 1);  // Sumar un día
         return mañana.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
     };
@@ -112,9 +111,10 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             return;
         }
 
-        // Convertir fecha de envío a Timestamp
-        const [year, month, day] = fechaEnvio.split('-');
-        const fechaEnvioTimestamp = Timestamp.fromDate(new Date(year, month - 1, day));
+        // Convertir fecha de envío a Timestamp correctamente
+        const [year, month, day] = fechaEnvio.split('-').map(Number);
+        const fechaEnvioDate = new Date(year, month - 1, day);
+        const fechaEnvioTimestamp = Timestamp.fromDate(fechaEnvioDate);
 
         const nuevoRegistro = {
             ticket,
@@ -253,7 +253,12 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
+                        <label
+                            className="text-gray-700"
+                            onClick={() => setEmpaqueRegalo(!empaqueRegalo)}
+                        >
+                            Empaque Regalo
+                        </label>
                     </div>
                     <div className="flex items-center p-2">
                         <input
@@ -262,7 +267,12 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setDedicatoria(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700" onClick={() => setDedicatoria(!dedicatoria)}>Dedicatoria</label>
+                        <label
+                            className="text-gray-700"
+                            onClick={() => setDedicatoria(!dedicatoria)}
+                        >
+                            Dedicatoria
+                        </label>
                     </div>
                 </div>
                 <button
