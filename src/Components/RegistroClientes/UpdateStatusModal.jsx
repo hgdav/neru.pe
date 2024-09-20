@@ -98,7 +98,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     className="flex flex-row items-center"
                 >
                     <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
-                    <MdContentCopy className='text-green-600 flex items-center mb-4 ml-2 cursor-pointer' />
+                    <MdContentCopy className='text-green-600 flex items-center mb-4 ml-2 cursor-pointer' title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
                 </div>
                 <div className='flex flex-row gap-2'>
                     <div className="space-y-2 w-1/2">
@@ -131,14 +131,22 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                         />
                     </div>
                     <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary">Costo de Envio:</label>
-                        <input
-                            type="number"
-                            value={costoEnvio}
-                            onChange={(e) => setCostoEnvio(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
+                        <label className="block text-sm font-medium text-text-primary">Costo de Envío:</label>
+
+                        <div className="flex items-center border border-gray-300 rounded-md">
+                            <span className="bg-gray-200 text-gray-700 px-3 py-2 border-r border-gray-300">S/</span>
+                            <input
+                                type="number"
+                                value={costoEnvio}
+                                onChange={(e) => setCostoEnvio(e.target.value)}
+                                className="w-full p-2 focus:outline-none"
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                            />
+                        </div>
                     </div>
+
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-text-primary">Estado de Empaque:</label>
@@ -181,7 +189,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                         }}
                         className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer"
                     >
-                        <MdContentCopy />
+                        <MdContentCopy title='Copiar mensaje de tracking para WhatsApp' />
                     </div>
                 </div>
             </form>
