@@ -29,6 +29,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [fechaEnvio, setFechaEnvio] = useState(getTomorrow());
 
     const opcionesTipoEnvio = [
+        'Seleccione',
         'Olva Courier',
         'Shalom',
         'InDrive',
@@ -37,7 +38,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Presencial',
     ];
 
-    const [tipoEnvio, setTipoEnvio] = useState('Olva Courier');
+    const [tipoEnvio, setTipoEnvio] = useState('Seleccione');
 
     const opcionesEstadoEmpaque = [
         'Pendiente',
@@ -54,7 +55,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             setNombre('');
             setTelefono('');
             setDistrito('');
-            setCostoPedido(0);
+            setCostoPedido('');
             setDedicatoria(false);
             setEmpaqueRegalo(false);
             setIsSubmitting(false);
@@ -101,7 +102,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                alert('El número de pedido ya existe.');
+                toast.error('El número de pedido ya existe.');
                 setIsSubmitting(false);
                 return;
             }
