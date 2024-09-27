@@ -22,7 +22,7 @@ const Index = () => {
 
             <div className="bg-white shadow rounded-3xl p-4">
                 <div className="border-gray-300 bg-input-bg shadow rounded-3xl p-4">
-                    <h2 className="text-2xl text-center font-bold mb-4">Tareas Pendientes</h2>
+                    <h2 className="text-2xl text-center font-bold mb-4">Cambios, Observaciones</h2>
                     <Tareas />
                 </div>
             </div>
