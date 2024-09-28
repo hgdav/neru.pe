@@ -30,12 +30,16 @@ const Tareas = () => {
                 completed: false,
             };
             try {
-                const addedTask = await addTask(task); // Asegúrate de que se devuelve la tarea agregada con un ID
+                const addedTask = await addTask(task);
                 if (addedTask) {
-                    setTasks([...tasks, addedTask]); // Actualizar el estado con la tarea que incluye el ID
+                    setTasks((prevTasks) => [...prevTasks, addedTask]);
                     setNewTask('');
+                    toast.success('Tarea agregada exitosamente');
+                } else {
+                    toast.error('Error al agregar la tarea');
                 }
             } catch (error) {
+                console.error('Error en handleAddTask:', error);
                 toast.error('Error al agregar la tarea');
             }
         } else {
@@ -49,6 +53,7 @@ const Tareas = () => {
             setTasks(
                 tasks.map(task => (task.id === id ? { ...task, completed: !currentStatus } : task))
             );
+            toast.success('Tarea actualizada exitosamente');
         } catch (error) {
             toast.error('Error al actualizar la tarea');
         }
@@ -59,8 +64,8 @@ const Tareas = () => {
         if (confirmDelete) {
             try {
                 await deleteTask(id);
-                setTasks(tasks.filter(task => task.id !== id)); // Asegúrate de filtrar correctamente
-                toast.success('Pendiente eliminado');
+                setTasks(tasks.filter(task => task.id !== id)); // Actualizar el estado eliminando la tarea
+                toast.success('Tarea eliminada');
             } catch (error) {
                 toast.error('Error al eliminar la tarea');
             }

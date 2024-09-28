@@ -53,7 +53,7 @@ const Registro = () => {
             where('fecha', '<=', endOfMonth),
             orderBy('fecha', 'desc'),
             orderBy('ticket', 'desc'),
-            limit(10)
+            limit(9)
         );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {

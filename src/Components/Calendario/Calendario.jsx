@@ -24,10 +24,24 @@ const Calendario = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             const tasks = await getTasks(); // Obtener tareas desde la API
-            const mappedEvents = tasks.map((task) => ({
-                ...task,
-                date: new Date(task.date.seconds * 1000), // Convertir el timestamp de Firestore a Date
-            }));
+            const mappedEvents = tasks.map((task) => {
+                let eventDate = null;
+
+                if (task.date) {
+                    if (task.date.seconds !== undefined) {
+                        // Timestamp de Firestore
+                        eventDate = new Date(task.date.seconds * 1000);
+                    } else {
+                        // Asumir que es una cadena de fecha válida
+                        eventDate = new Date(task.date);
+                    }
+                }
+
+                return {
+                    ...task,
+                    date: eventDate,
+                };
+            });
             setEvents(mappedEvents);
         };
 
@@ -47,11 +61,20 @@ const Calendario = () => {
     const addEvent = async () => {
         if (newEventTitle && selectedDate) {
             const newEvent = { title: newEventTitle, date: selectedDate };
-            await addTask(newEvent); // Guardar evento en Firestore o en la API
-            setEvents([...events, { id: Date.now().toString(), ...newEvent }]); // Actualizar el estado local
-            setNewEventTitle("");
-            toast.success('Evento agregado exitosamente');
-            closeModal(); // Cerrar el modal aquí
+            try {
+                const addedEvent = await addTask(newEvent);
+                if (addedEvent) {
+                    setEvents([...events, addedEvent]);
+                    setNewEventTitle("");
+                    toast.success('Evento agregado exitosamente');
+                    closeModal();
+                } else {
+                    toast.error('Error al agregar el evento');
+                }
+            } catch (error) {
+                console.error('Error al agregar el evento:', error);
+                toast.error('Error al agregar el evento');
+            }
         }
     };
 
@@ -66,6 +89,7 @@ const Calendario = () => {
     const getEventsForDate = (date) => {
         return events.filter(
             (event) =>
+                event.date &&
                 event.date.getDate() === date.getDate() &&
                 event.date.getMonth() === date.getMonth() &&
                 event.date.getFullYear() === date.getFullYear()
@@ -123,7 +147,7 @@ const Calendario = () => {
                     return (
                         <div
                             key={i}
-                            className={`relative h-24 bg-white border rounded-lg p-2 overflow-y-auto text-left hover:bg-gray-50 ${isToday ? "border-2 border-blue-500" : ""}`} // Aplica una clase especial si es hoy
+                            className={`relative h-24 bg-white border rounded-lg p-2 overflow-y-auto text-left hover:bg-gray-50 ${isToday ? "border-2 border-blue-500" : ""}`}
                         >
                             <button className="w-full h-full text-left" onClick={() => handleDayClick(date)}>
                                 <div className="font-bold mb-1">{i + 1}</div>
@@ -131,7 +155,7 @@ const Calendario = () => {
                                     <div
                                         key={event.id}
                                         className="text-xs bg-blue-100 p-1 mb-1 rounded overflow-hidden text-ellipsis whitespace-nowrap"
-                                        style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }} // Limitar a 2 líneas
+                                        style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
                                     >
                                         {event.title}
                                     </div>

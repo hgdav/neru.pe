@@ -1,4 +1,3 @@
-// taskApi.js
 import { db } from './firebaseConfig';
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
@@ -13,7 +12,8 @@ export const getTasks = async () => {
 // Función para agregar una nueva tarea
 export const addTask = async (task) => {
     const tasksCollection = collection(db, 'tareas');
-    await addDoc(tasksCollection, task);
+    const docRef = await addDoc(tasksCollection, task);
+    return { id: docRef.id, ...task };
 };
 
 // Función para actualizar una tarea
