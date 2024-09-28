@@ -112,7 +112,7 @@ const Calendario = () => {
                 <h1 className="text-2xl font-bold">
                     {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
                 </h1>
-                <div>
+                <div className="flex items-center">
                     <button onClick={prevMonth} className="bg-accent-primary text-white rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-accent-primary">
                         <MdChevronLeft size={24} />
                     </button>
