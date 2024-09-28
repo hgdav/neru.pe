@@ -29,7 +29,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     const [fechaEnvio, setFechaEnvio] = useState(getTomorrow());
 
     const opcionesTipoEnvio = [
-        'Seleccione',
         'Olva Courier',
         'Shalom',
         'InDrive',
@@ -38,7 +37,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
         'Presencial',
     ];
 
-    const [tipoEnvio, setTipoEnvio] = useState('Seleccione');
+    const [tipoEnvio, setTipoEnvio] = useState('Olva Courier');
 
     const opcionesEstadoEmpaque = [
         'Pendiente',
