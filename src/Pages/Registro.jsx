@@ -53,7 +53,7 @@ const Registro = () => {
             where('fecha', '<=', endOfMonth),
             orderBy('fecha', 'desc'),
             orderBy('ticket', 'desc'),
-            limit(9)
+            limit(15)
         );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -86,30 +86,58 @@ const Registro = () => {
     }, [currentDate, fetchInitialRecords]);
 
     useEffect(() => {
-        let currentRecords = records;
-        if (isFilteredByStatus) {
-            currentRecords = records.filter((record) => record.estado_empaque !== 'Enviado');
-        }
-
-        if (searchTerm === '') {
-            const sortedRecords = currentRecords.sort((a, b) => b.ticket - a.ticket);
+        if (searchTerm === '' && !isFilteredByStatus) {
+            // Use existing records
+            const sortedRecords = records.sort((a, b) => b.ticket - a.ticket);
             setFilteredRecords(sortedRecords);
         } else {
-            const filtered = currentRecords.filter((record) => {
-                const nombre = record.nombre ? record.nombre.toLowerCase() : '';
-                const ticket = record.ticket ? record.ticket.toString().toLowerCase() : '';
-                const telefono = record.telefono ? record.telefono.toLowerCase() : '';
+            setIsLoading(true);
 
-                return (
-                    nombre.includes(searchTerm.toLowerCase()) ||
-                    ticket.includes(searchTerm.toLowerCase()) ||
-                    telefono.includes(searchTerm.toLowerCase())
-                );
-            });
-            const sortedFiltered = filtered.sort((a, b) => b.ticket - a.ticket);
-            setFilteredRecords(sortedFiltered);
+            // Construct the base query
+            let q = collection(db, 'registro-clientes');
+
+            // Apply filters based on searchTerm and isFilteredByStatus
+            if (isFilteredByStatus) {
+                q = query(q, where('estado_empaque', '!=', 'Enviado'));
+            }
+
+            // Fetch all relevant records
+            getDocs(q)
+                .then((querySnapshot) => {
+                    const fetchedRecords = [];
+                    querySnapshot.forEach((doc) => {
+                        fetchedRecords.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    let currentRecords = fetchedRecords;
+
+                    // Apply search term filtering
+                    if (searchTerm !== '') {
+                        currentRecords = currentRecords.filter((record) => {
+                            const nombre = record.nombre ? record.nombre.toLowerCase() : '';
+                            const ticket = record.ticket ? record.ticket.toString().toLowerCase() : '';
+                            const telefono = record.telefono ? record.telefono.toLowerCase() : '';
+
+                            return (
+                                nombre.includes(searchTerm.toLowerCase()) ||
+                                ticket.includes(searchTerm.toLowerCase()) ||
+                                telefono.includes(searchTerm.toLowerCase())
+                            );
+                        });
+                    }
+
+                    // Sort the records
+                    const sortedRecords = currentRecords.sort((a, b) => b.ticket - a.ticket);
+
+                    setFilteredRecords(sortedRecords);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error fetching records:', error);
+                    setIsLoading(false);
+                });
         }
-    }, [searchTerm, records, isFilteredByStatus]);
+    }, [searchTerm, isFilteredByStatus, records]);
 
     useEffect(() => {
         if (isFilteredByStatus) {
@@ -181,7 +209,7 @@ const Registro = () => {
     }, [filteredRecords, isFilteredByStatus]);
 
     const loadMoreRecords = () => {
-        if (isLoading || !lastVisible || isFilteredByStatus) return;
+        if (isLoading || !lastVisible || isFilteredByStatus || searchTerm !== '') return;
 
         setIsLoading(true);
 
@@ -239,46 +267,6 @@ const Registro = () => {
 
     const handleFilterByStatus = () => {
         setIsFilteredByStatus(!isFilteredByStatus);
-
-        if (!isFilteredByStatus) {
-            setIsLoading(true);
-
-            const q = query(
-                collection(db, 'registro-clientes'),
-                where('estado_empaque', '!=', 'Enviado'),
-                orderBy('estado_empaque')
-            );
-
-            getDocs(q)
-                .then((querySnapshot) => {
-                    const fetchedRecords = [];
-                    querySnapshot.forEach((doc) => {
-                        fetchedRecords.push({ id: doc.id, ...doc.data() });
-                    });
-
-                    fetchedRecords.sort((a, b) => {
-                        const fechaEnvioA = a.fecha_envio ? new Date(a.fecha_envio).getTime() : 0;
-                        const fechaEnvioB = b.fecha_envio ? new Date(b.fecha_envio).getTime() : 0;
-
-                        if (fechaEnvioA !== fechaEnvioB) {
-                            return fechaEnvioA - fechaEnvioB;
-                        } else {
-                            return b.ticket - a.ticket;
-                        }
-                    });
-
-                    setRecords(fetchedRecords);
-                    setFilteredRecords(fetchedRecords);
-                    setIsLoading(false);
-                    setLastVisible(null);
-                })
-                .catch((error) => {
-                    console.error('Error fetching filtered records:', error);
-                    setIsLoading(false);
-                });
-        } else {
-            fetchInitialRecords();
-        }
     };
 
     return (
@@ -331,7 +319,7 @@ const Registro = () => {
                                     </p>
                                 )}
                             </div>
-                            {lastVisible && !isFilteredByStatus && (
+                            {lastVisible && !isFilteredByStatus && searchTerm === '' && (
                                 <div className="text-center mt-6">
                                     <button
                                         onClick={loadMoreRecords}

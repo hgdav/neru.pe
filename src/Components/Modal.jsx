@@ -7,9 +7,9 @@ const Modal = ({ isOpen, onClose, children }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-bg-base rounded-lg shadow-lg max-w-lg w-full mx-4 p-6 relative max-h-screen overflow-y-auto">
+            <div className="bg-bg-base rounded-3xl shadow-lg max-w-lg w-full mx-4 p-6 relative max-h-screen overflow-y-auto">
                 <button
-                    className="absolute top-3 right-3 text-accent-secondary-dark hover:text-red-500 text-2xl font-bold focus:outline-none"
+                    className="absolute top-2 right-3 text-accent-secondary-dark hover:text-red-500 text-2xl font-bold focus:outline-none"
                     onClick={onClose}
                 >
                     &times;
