@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MdMenu } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import SparklesText from './SparklesText';
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +16,7 @@ function Header() {
     };
 
     return (
-        <header className="bg-bg-base py-4 shadow rounded-3xl">
+        <header className="bg-bg-base py-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="logo">
                     <a href="/">
@@ -33,7 +34,7 @@ function Header() {
                 {/* Menú de navegación */}
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
                     <Link to="/registro" className="text-contrast hover:text-accent-warm">
-                        Registro
+                        <SparklesText text="Registro" sparklesCount={5} />
                     </Link>
                     <Link to="/tallas" className="text-contrast hover:text-accent-warm">
                         Tallas

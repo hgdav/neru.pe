@@ -151,7 +151,7 @@ const Tallas = () => {
                     </select>
                     <button
                         type="submit"
-                        className="bg-accent-primary text-white p-2 rounded-md w-full"
+                        className="bg-accent-secondary text-accent-secondary-dark p-2 rounded-md w-full"
                     >
                         Calcular
                     </button>
@@ -167,7 +167,7 @@ const Tallas = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 
 };

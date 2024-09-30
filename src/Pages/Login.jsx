@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../utils/firebaseConfig';
+import FlickeringGrid from '../Components/FlickeringGrid';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -26,9 +27,13 @@ const Login = () => {
 
     return (
         <>
+            <FlickeringGrid squareSize={10} gridGap={5} color="bg-accent-secondary" className="z-10 absolute" />
             <div className="flex items-center justify-center min-h-screen bg-base">
-                <div className="shadow-lg rounded-lg p-8 max-w-md w-full">
+
+                <div className="bg-bg-base shadow-lg rounded-lg p-8 max-w-md w-full z-10">
+
                     <h2 className="text-2xl font-bold mb-6 text-center text-text-primary">Iniciar Sesión</h2>
+
                     <form onSubmit={handleLogin} className="space-y-4">
                         <div>
                             <label className="block mb-1 text-gray-700" htmlFor="email">Correo electrónico</label>
@@ -39,7 +44,7 @@ const Login = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         <div>
@@ -51,13 +56,13 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <button
                             type="submit"
-                            className="w-full bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
+                            className="w-full bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -70,7 +75,7 @@ const Login = () => {
                         </button>
                     </form>
                 </div>
-            </div>
+            </div >
         </>
     );
 };

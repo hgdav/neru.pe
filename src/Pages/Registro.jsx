@@ -282,7 +282,7 @@ const Registro = () => {
     };
 
     return (
-        <div className="registro-container p-4">
+        <div className="registro-container p-4 bg-bg-base">
             <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
                 <MonthNavigator
                     currentMonth={currentDate.getMonth()}
@@ -295,7 +295,7 @@ const Registro = () => {
                 </div>
             </div>
 
-            <div id="recordsContainer" className="w-full">
+            <div id="recordsContainer" className="w-full bg-bg-base">
                 <div className="container mx-auto">
                     {isFilteredByStatus ? (
                         isLoading ? (
@@ -336,7 +336,7 @@ const Registro = () => {
                                     <button
                                         onClick={loadMoreRecords}
                                         disabled={isLoading}
-                                        className="bg-accent-primary text-white px-4 py-2 rounded-md hover:bg-accent-secondary transition duration-300"
+                                        className="bg-accent-secondary text-accent-secondary-dark px-4 py-2 rounded-md"
                                     >
                                         {isLoading ? 'Cargando...' : 'Cargar más'}
                                     </button>

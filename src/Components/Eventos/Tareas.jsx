@@ -34,16 +34,16 @@ const Tareas = () => {
                 if (addedTask) {
                     setTasks((prevTasks) => [...prevTasks, addedTask]);
                     setNewTask('');
-                    toast.success('Tarea agregada exitosamente');
+                    toast.success('Observación, queja, sugerencia o propuesta agregada exitosamente');
                 } else {
-                    toast.error('Error al agregar la tarea');
+                    toast.error('Error al agregar la observación, queja, sugerencia o propuesta');
                 }
             } catch (error) {
                 console.error('Error en handleAddTask:', error);
-                toast.error('Error al agregar la tarea');
+                toast.error('Error al agregar la observación, queja, sugerencia o propuesta');
             }
         } else {
-            toast.warn('El campo de tarea no puede estar vacío');
+            toast.warn('El campo de observación, queja, sugerencia o propuesta no puede estar vacío');
         }
     };
 
@@ -53,27 +53,27 @@ const Tareas = () => {
             setTasks(
                 tasks.map(task => (task.id === id ? { ...task, completed: !currentStatus } : task))
             );
-            toast.success('Tarea actualizada exitosamente');
+            toast.success('Observación, queja, sugerencia o propuesta actualizada exitosamente');
         } catch (error) {
-            toast.error('Error al actualizar la tarea');
+            toast.error('Error al actualizar la observación, queja, sugerencia o propuesta');
         }
     };
 
     const handleDeleteTask = async (id) => {
-        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este pendiente?");
+        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta observación, queja, sugerencia o propuesta?");
         if (confirmDelete) {
             try {
                 await deleteTask(id);
                 setTasks(tasks.filter(task => task.id !== id)); // Actualizar el estado eliminando la tarea
-                toast.success('Tarea eliminada');
+                toast.success('Observación, queja, sugerencia o propuesta eliminada');
             } catch (error) {
-                toast.error('Error al eliminar la tarea');
+                toast.error('Error al eliminar la observación, queja, sugerencia o propuesta');
             }
         }
     };
 
     return (
-        <div className="min-h-screen bg-main py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-input-bg py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-lg mx-auto">
 
                 {/* Campo para ingresar la tarea */}
@@ -87,7 +87,7 @@ const Tareas = () => {
                     />
                     <button
                         type="submit"
-                        className="w-full bg-accent-primary text-white p-2 rounded-md flex items-center gap-2 justify-center"
+                        className="w-full bg-accent-primary text-accent-primary-dark p-2 rounded-md flex items-center gap-2 justify-center"
                     >
                         <MdAddCircle size={24} />
                         Agregar
@@ -95,7 +95,7 @@ const Tareas = () => {
                 </form>
 
                 {/* Lista de tareas */}
-                <div className="bg-white shadow overflow-hidden sm:rounded-md">
+                <div className="bg-bg-base-white shadow overflow-hidden sm:rounded-md">
                     <ul className="divide-y divide-gray-200">
                         {tasks.map(task => (
                             <li key={task.id} className="px-4 py-4 sm:px-6">
@@ -106,9 +106,9 @@ const Tareas = () => {
                                             className="mr-3 flex-shrink-0"
                                         >
                                             {task.completed ? (
-                                                <MdCheckCircle className="h-6 w-6 text-green-500" />
+                                                <MdCheckCircle className="h-6 w-6 text-accent-primary bg-accent-primary-dark rounded-full" />
                                             ) : (
-                                                <MdCircle className="h-6 w-6 text-gray-400" />
+                                                <MdCircle className="h-6 w-6 text-accent-muted" />
                                             )}
                                         </button>
                                         <p className={`text-sm font-medium text-gray-900 ${task.completed ? 'line-through' : ''}`}>

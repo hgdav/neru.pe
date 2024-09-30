@@ -173,7 +173,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                                 type="number"
                                 value={costoPedido}
                                 onChange={(e) => setCostoPedido(e.target.value)}
-                                className="w-full p-2 focus:outline-none"
+                                className="w-full p-2 focus:outline-none rounded-md"
                                 placeholder="0.00"
                                 min="0"
                                 step="0.01"
@@ -304,7 +304,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                 </div>
                 <button
                     type="submit"
-                    className="bg-accent-primary text-white py-2 px-4 rounded-md hover:bg-accent-warm transition duration-300 w-full mt-4"
+                    className="bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md w-full mt-4"
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? 'Actualizando...' : 'Actualizar Registro'}

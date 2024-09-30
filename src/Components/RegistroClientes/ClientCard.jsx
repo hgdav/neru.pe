@@ -16,7 +16,7 @@ function getStatusClass(estadoEmpaque) {
         case 'Pendiente':
             return 'bg-red-200 text-red-800';
         case 'Enviado':
-            return 'bg-green-200 text-green-800';
+            return 'bg-accent-primary text-accent-primary-dark';
         default:
             return 'bg-gray-200 text-gray-800';
     }
@@ -96,7 +96,7 @@ const ClientCard = ({ client }) => {
 
 
     return (
-        <div className="border border-gray-300 shadow-lg rounded-3xl p-4 mb-4 bg-input-bg">
+        <div className="shadow-lg rounded-3xl p-6 mb-4 bg-bg-base-white">
             <div className="card-header">
                 <div className="flex items-center justify-between gap-2">
                     <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
@@ -128,9 +128,9 @@ const ClientCard = ({ client }) => {
                     <span className="ml-2 text-text-primary">{client.distrito.toUpperCase()}</span>
                 </div>
             </div>
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-6">
                 <button
-                    className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300"
+                    className="flex items-center justify-center gap-2 text-button-bg-dark bg-button-bg rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
                     onClick={toggleModal}
                 >
                     <MdRemoveRedEye size={24} />
@@ -138,7 +138,7 @@ const ClientCard = ({ client }) => {
                 </button>
 
                 <button
-                    className="flex items-center justify-center gap-2 text-text-contrast border border-text-contrast bg-transparent rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans hover:bg-text-contrast hover:text-white transition duration-300"
+                    className="flex items-center justify-center gap-2 text-button-bg-dark bg-button-bg rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
                     onClick={handleUpdateClick}
                 >
                     <MdChecklistRtl size={24} />
@@ -146,7 +146,7 @@ const ClientCard = ({ client }) => {
                 </button>
 
                 <button
-                    className="text-text-contrast border border-text-contrast bg-transparent p-1 px-2 rounded hover:bg-red-500 transition duration-300"
+                    className="text-button-bg-dark bg-button-bg p-1 px-2 rounded"
                     onClick={handleDeleteClick}
                 >
                     <MdDelete size={20} />

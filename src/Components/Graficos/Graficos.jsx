@@ -101,16 +101,16 @@ const Graficos = () => {
             {
                 data: Object.values(enviosPorTipo),
                 backgroundColor: [
-                    '#bb5c39',
-                    '#8888dc',
-                    '#c4c3bb',
-                    '#d4a37f',
+                    '#f9b52f',
+                    '#ebe5d9',
+                    '#ea1c23',
+                    '#ffddae',
                 ],
                 hoverBackgroundColor: [
-                    '#bb5c39',
-                    '#8888dc',
-                    '#c4c3bb',
-                    '#d4a37f',
+                    '#f9b52f',
+                    '#ebe5d9',
+                    '#ea1c23',
+                    '#ffddae',
                 ],
             },
         ],
@@ -125,7 +125,7 @@ const Graficos = () => {
                 {
                     label: 'Cantidad',
                     data: data,
-                    backgroundColor: ['#bb5c39', '#8888dc', '#d4a37f'],
+                    backgroundColor: ['#ffddae', '#d3eabc', '#405231'],
                 },
             ],
         };
@@ -145,7 +145,7 @@ const Graficos = () => {
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                     {/* Total de envíos, ventas y registros */}
-                    <div className="p-4 bg-gray-100 rounded-lg w-full h-full">
+                    <div className="p-4 bg-input-bg rounded-lg w-full h-full">
                         <h2 className="text-xl font-semibold">Totales</h2>
                         <div className="h-64 w-full">
                             <Bar data={generateBarChartData()} />
@@ -154,7 +154,7 @@ const Graficos = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Top 5 distritos con más envíos */}
-                        <div className="p-4 bg-gray-100 rounded-lg w-full h-full">
+                        <div className="p-4 bg-bg-base-white rounded-lg w-full h-full">
                             <h2 className="text-xl font-semibold">Top 5 Distritos con más envíos</h2>
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (
@@ -167,7 +167,7 @@ const Graficos = () => {
                         </div>
 
                         {/* Gráfico de tipos de envío */}
-                        <div className="p-4 bg-gray-100 rounded-lg w-full h-full">
+                        <div className="p-4 bg-input-bg rounded-lg w-full h-full">
                             <h2 className="text-xl font-semibold">Registros según tipo de envío</h2>
                             <div className="h-64 w-full">
                                 <Pie data={generatePieChartData()} />

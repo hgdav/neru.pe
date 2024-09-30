@@ -7,7 +7,7 @@ const FilterByStatus = ({ handleFilter }) => {
         <div className="mb-6">
             <button
                 onClick={handleFilter}
-                className="bg-accent-primary text-white px-3 py-3 rounded-md transition duration-300"
+                className="bg-accent-secondary text-accent-secondary-dark px-3 py-3 rounded-md transition duration-300"
             >
                 <MdFilterAlt size={12} />
             </button>

@@ -8,7 +8,7 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar..."
-                className="p-2 w-full max-w-lg border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-accent-primary"
+                className="p-2 w-full max-w-lg border bg-bg-base-white border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-accent-secondary"
             />
         </div>
     );

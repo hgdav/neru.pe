@@ -139,7 +139,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                                 type="number"
                                 value={costoEnvio}
                                 onChange={(e) => setCostoEnvio(e.target.value)}
-                                className="w-full p-2 focus:outline-none"
+                                className="w-full p-2 focus:outline-none rounded-md"
                                 placeholder="0.00"
                                 min="0"
                                 step="0.01"
@@ -179,7 +179,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-accent-primary text-white w-full p-2 rounded-md mt-4 disabled:opacity-50"
+                        className="bg-accent-secondary text-accent-secondary-dark w-full p-2 rounded-md mt-4 disabled:opacity-50"
                     >
                         {isSubmitting ? 'Actualizando...' : 'Actualizar'}
                     </button>
