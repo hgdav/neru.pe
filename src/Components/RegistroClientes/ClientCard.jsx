@@ -134,7 +134,7 @@ const ClientCard = ({ client }) => {
                     onClick={toggleModal}
                 >
                     <MdRemoveRedEye size={24} />
-                    <span className="hidden sm:inline">Ver Detalles</span>
+                    <span className="hidden sm:inline">Detalles</span>
                 </button>
 
                 <button
@@ -142,7 +142,7 @@ const ClientCard = ({ client }) => {
                     onClick={handleUpdateClick}
                 >
                     <MdChecklistRtl size={24} />
-                    <span className="hidden sm:inline">Agregar Seguimiento</span>
+                    <span className="hidden sm:inline">Seguimiento</span>
                 </button>
 
                 <button

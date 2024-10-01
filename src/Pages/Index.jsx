@@ -2,6 +2,8 @@ import React from 'react';
 import Tareas from '../Components/Eventos/Tareas';
 import Graficos from '../Components/Graficos/Graficos';
 import Calendario from '../Components/Calendario/Calendario';
+import { MdInsertChartOutlined } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
 const Index = () => {
     return (
@@ -9,10 +11,15 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
                 <div className="border-gray-300 bg-input-bg shadow rounded-3xl p-4">
-                    <Calendario />
+                    <div className="w-full max-w-3xl float-right">
+                        <Calendario />
+                    </div>
                 </div>
 
                 <div className="bg-input-bg shadow rounded-3xl p-4">
+                    <Link to="/resumen" className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-1 float-right">
+                        <MdInsertChartOutlined size={24} />
+                    </Link>
                     <div className="w-full max-w-3xl">
                         <Graficos />
                     </div>

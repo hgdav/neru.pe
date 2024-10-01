@@ -6,6 +6,7 @@ import { Packs } from './Pages/Packs';
 import { Registro } from './Pages/Registro';
 import { Index } from './Pages/Index';
 import { Login } from './Pages/Login';
+import { Resumen } from './Pages/Resumen';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
 import { ToastContainer } from 'react-toastify';
@@ -63,6 +64,14 @@ function App() {
           element={
             <PrivateRoute>
               <Registro />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/resumen"
+          element={
+            <PrivateRoute>
+              <Resumen />
             </PrivateRoute>
           }
         />

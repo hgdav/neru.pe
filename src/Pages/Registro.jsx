@@ -271,15 +271,17 @@ const Registro = () => {
 
     return (
         <div className="registro-container p-4 bg-bg-base">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
-                <MonthNavigator
-                    currentMonth={currentDate.getMonth()}
-                    currentYear={currentDate.getFullYear()}
-                    onMonthChange={handleMonthChange}
-                />
-                <div className="flex flex-row justify-between items-center mb-4 gap-4">
-                    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-                    <FilterByStatus handleFilter={handleFilterByStatus} />
+            <div className="container mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
+                    <MonthNavigator
+                        currentMonth={currentDate.getMonth()}
+                        currentYear={currentDate.getFullYear()}
+                        onMonthChange={handleMonthChange}
+                    />
+                    <div className="flex flex-row justify-between items-center mb-4 gap-4">
+                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                        <FilterByStatus handleFilter={handleFilterByStatus} />
+                    </div>
                 </div>
             </div>
 

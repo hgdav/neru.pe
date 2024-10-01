@@ -9,20 +9,20 @@ import { Timestamp } from 'firebase/firestore';
 const DetailsModal = ({ isOpen, onClose, client }) => {
     // Estados para editar los datos
     const [ticket, setTicket] = useState(client.ticket || '');
-    const [codigoTracking, setCodigoTracking] = useState(client.cod_tracking || '');
-    const [codigoRecojo, setCodigoRecojo] = useState(client.clave_recojo || '');
     const [telefono, setTelefono] = useState(client.telefono || '');
-    const [nroSeguimiento, setNroSeguimiento] = useState(client.nro_seguimiento || '');
     const [tipoEnvio, setTipoEnvio] = useState(client.tipo_envio || 'Olva Courier');
     const [estadoEmpaque, setEstadoEmpaque] = useState(
         client.estado_empaque || 'Empaque Pendiente'
     );
-    const [estadoTracking, setEstadoTracking] = useState(client.estado_tracking || 'Pendiente');
     const [distrito, setDistrito] = useState(client.distrito || '');
     const [costoPedido, setCostoPedido] = useState(client.costo_pedido || 0);
     const [costoEnvio, setCostoEnvio] = useState(client.costo_envio || 0);
     const [dedicatoria, setDedicatoria] = useState(client.dedicatoria || false);
     const [empaqueRegalo, setEmpaqueRegalo] = useState(client.empaque_regalo || false);
+    /*const [estadoTracking, setEstadoTracking] = useState(client.estado_tracking || 'Pendiente');
+    const [codigoTracking, setCodigoTracking] = useState(client.cod_tracking || '');
+    const [codigoRecojo, setCodigoRecojo] = useState(client.clave_recojo || '');
+    const [nroSeguimiento, setNroSeguimiento] = useState(client.nro_seguimiento || '');*/
 
     // Convertir fecha_envio a 'YYYY-MM-DD' para el input de tipo date
     const [fechaEnvio, setFechaEnvio] = useState(() => {
@@ -76,16 +76,16 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
             telefono,
             tipo_envio: tipoEnvio,
             estado_empaque: estadoEmpaque,
-            estado_tracking: estadoTracking,
             distrito,
             costo_pedido: parseFloat(costoPedido),
             costo_envio: parseFloat(costoEnvio),
             dedicatoria,
             fecha_envio: fechaEnvioTimestamp,
             empaque_regalo: empaqueRegalo,
+            /*estado_tracking: estadoTracking,
             nro_seguimiento: nroSeguimiento,
             cod_tracking: codigoTracking,
-            clave_recojo: codigoRecojo,
+            clave_recojo: codigoRecojo,*/
         };
 
         try {
@@ -227,7 +227,8 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         />
                         <label className="text-text-primary" onClick={() => setDedicatoria(!dedicatoria)}>Dedicatoria</label>
                     </div>
-                    <div>
+
+                    {/* <div>
                         <label className="block mb-1 text-text-primary">Número de Registro:</label>
                         <div className="flex items-center">
                             <input
@@ -287,7 +288,6 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             </button>
                         </div>
                     </div>
-
                     <div>
                         <label className="block mb-1 text-text-primary">Estado de Tracking:</label>
                         <select
@@ -299,7 +299,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             <option value="Pendiente">Pendiente</option>
                             <option value="Enviado">Enviado</option>
                         </select>
-                    </div>
+                    </div> */}
 
                 </div>
                 <button
