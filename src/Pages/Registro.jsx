@@ -49,12 +49,13 @@ const Registro = () => {
 
         const q = query(
             collection(db, 'registro-clientes'),
-            where('fecha', '>=', startOfMonth),
-            where('fecha', '<=', endOfMonth),
-            orderBy('fecha', 'desc'),
+            where('fecha_envio', '>=', startOfMonth),
+            where('fecha_envio', '<=', endOfMonth),
+            orderBy('fecha_envio', 'desc'),  // Ordena por fecha_envio en lugar de fecha
             orderBy('ticket', 'desc'),
             limit(15)
         );
+
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedRecords = [];
@@ -87,21 +88,23 @@ const Registro = () => {
 
     useEffect(() => {
         if (searchTerm === '' && !isFilteredByStatus) {
-            // Use existing records
-            const sortedRecords = records.sort((a, b) => b.ticket - a.ticket);
+            // Ordena los registros por fecha_envio y ticket
+            const sortedRecords = records.sort((a, b) => {
+                if (b.fecha_envio && a.fecha_envio) {
+                    return b.fecha_envio.toMillis() - a.fecha_envio.toMillis();
+                }
+                return b.ticket - a.ticket;  // Orden alternativo si no hay fecha_envio
+            });
             setFilteredRecords(sortedRecords);
         } else {
             setIsLoading(true);
 
-            // Construct the base query
             let q = collection(db, 'registro-clientes');
 
-            // Apply filters based on searchTerm and isFilteredByStatus
             if (isFilteredByStatus) {
                 q = query(q, where('estado_empaque', '!=', 'Enviado'));
             }
 
-            // Fetch all relevant records
             getDocs(q)
                 .then((querySnapshot) => {
                     const fetchedRecords = [];
@@ -111,7 +114,7 @@ const Registro = () => {
 
                     let currentRecords = fetchedRecords;
 
-                    // Apply search term filtering
+                    // Filtrar por término de búsqueda
                     if (searchTerm !== '') {
                         currentRecords = currentRecords.filter((record) => {
                             const nombre = record.nombre ? record.nombre.toLowerCase() : '';
@@ -126,8 +129,13 @@ const Registro = () => {
                         });
                     }
 
-                    // Sort the records
-                    const sortedRecords = currentRecords.sort((a, b) => b.ticket - a.ticket);
+                    // Ordenar los registros por fecha_envio y ticket
+                    const sortedRecords = currentRecords.sort((a, b) => {
+                        if (b.fecha_envio && a.fecha_envio) {
+                            return b.fecha_envio.toMillis() - a.fecha_envio.toMillis();
+                        }
+                        return b.ticket - a.ticket;  // Orden alternativo si no hay fecha_envio
+                    });
 
                     setFilteredRecords(sortedRecords);
                     setIsLoading(false);
@@ -139,6 +147,7 @@ const Registro = () => {
         }
     }, [searchTerm, isFilteredByStatus, records]);
 
+
     useEffect(() => {
         if (isFilteredByStatus) {
             const grouped = filteredRecords.reduce((groups, record) => {
@@ -147,6 +156,7 @@ const Registro = () => {
                 if (fechaEnvioTimestamp) {
                     let dateObj;
 
+                    // Verificar si es un Timestamp, Date o un string de fecha
                     if (fechaEnvioTimestamp instanceof Timestamp) {
                         dateObj = fechaEnvioTimestamp.toDate();
                     } else if (fechaEnvioTimestamp instanceof Date) {
@@ -183,6 +193,7 @@ const Registro = () => {
                 return groups;
             }, {});
 
+            // Ordenar los grupos por fecha
             Object.keys(grouped).forEach((dateKey) => {
                 grouped[dateKey].records.sort((a, b) => b.ticket - a.ticket);
             });
@@ -208,6 +219,7 @@ const Registro = () => {
         }
     }, [filteredRecords, isFilteredByStatus]);
 
+
     const loadMoreRecords = () => {
         if (isLoading || !lastVisible || isFilteredByStatus || searchTerm !== '') return;
 
@@ -229,9 +241,9 @@ const Registro = () => {
 
         const q = query(
             collection(db, 'registro-clientes'),
-            where('fecha', '>=', startOfMonth),
-            where('fecha', '<=', endOfMonth),
-            orderBy('fecha', 'desc'),
+            where('fecha_envio', '>=', startOfMonth),
+            where('fecha_envio', '<=', endOfMonth),
+            orderBy('fecha_envio', 'desc'),
             orderBy('ticket', 'desc'),
             startAfter(lastVisible),
             limit(20)

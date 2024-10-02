@@ -18,9 +18,9 @@ async function fetchRecords(month, year) {
 
         const q = query(
             collection(db, "registro-clientes"),
-            where("fecha", ">=", startOfMonth),
-            where("fecha", "<=", endOfMonth),
-            orderBy("fecha", "desc") // Ordenar por fecha descendente
+            where("fecha_envio", ">=", startOfMonth),
+            where("fecha_envio", "<=", endOfMonth),
+            orderBy("fecha_envio", "desc") // Ordenar por fecha descendente
         );
 
         const querySnapshot = await getDocs(q);
@@ -50,9 +50,9 @@ async function fetchRecordsByYear(year) {
 
         const q = query(
             collection(db, "registro-clientes"),
-            where("fecha", ">=", startOfYear),
-            where("fecha", "<=", endOfYear),
-            orderBy("fecha", "desc") // Ordenar por fecha descendente
+            where("fecha_envio", ">=", startOfYear),
+            where("fecha_envio", "<=", endOfYear),
+            orderBy("fecha_envio", "desc") // Ordenar por fecha descendente
         );
 
         const querySnapshot = await getDocs(q);
