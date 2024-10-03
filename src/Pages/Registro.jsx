@@ -238,7 +238,6 @@ const Registro = () => {
 
         const startOfMonth = Timestamp.fromDate(startDate);
         const endOfMonth = Timestamp.fromDate(endDate);
-
         const q = query(
             collection(db, 'registro-clientes'),
             where('fecha_envio', '>=', startOfMonth),
