@@ -101,16 +101,18 @@ const Graficos = () => {
             {
                 data: Object.values(enviosPorTipo),
                 backgroundColor: [
-                    '#f9b52f',
                     '#ebe5d9',
+                    '#f9b52f',
                     '#ea1c23',
                     '#ffddae',
+                    "#d3eabc"
                 ],
                 hoverBackgroundColor: [
-                    '#f9b52f',
                     '#ebe5d9',
+                    '#f9b52f',
                     '#ea1c23',
                     '#ffddae',
+                    "#d3eabc"
                 ],
             },
         ],
@@ -154,7 +156,7 @@ const Graficos = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Top 5 distritos con más envíos */}
-                        <div className="p-4 bg-bg-base-white rounded-lg w-full h-full">
+                        <div className="p-4 bg-bg-base-white rounded-3xl w-full h-full">
                             <h2 className="text-xl font-semibold">Top 5 Distritos con más envíos</h2>
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (

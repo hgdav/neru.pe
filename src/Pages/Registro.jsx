@@ -51,11 +51,10 @@ const Registro = () => {
             collection(db, 'registro-clientes'),
             where('fecha_envio', '>=', startOfMonth),
             where('fecha_envio', '<=', endOfMonth),
-            orderBy('fecha_envio', 'desc'),  // Ordena por fecha_envio en lugar de fecha
+            orderBy('fecha_envio', 'desc'),
             orderBy('ticket', 'desc'),
             limit(15)
         );
-
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedRecords = [];
@@ -88,8 +87,7 @@ const Registro = () => {
 
     useEffect(() => {
         if (searchTerm === '' && !isFilteredByStatus) {
-            // Ordena los registros por fecha_envio y ticket
-            const sortedRecords = records.sort((a, b) => {
+            const sortedRecords = [...records].sort((a, b) => {
                 if (b.fecha_envio && a.fecha_envio) {
                     return b.fecha_envio.toMillis() - a.fecha_envio.toMillis();
                 }
@@ -129,12 +127,11 @@ const Registro = () => {
                         });
                     }
 
-                    // Ordenar los registros por fecha_envio y ticket
                     const sortedRecords = currentRecords.sort((a, b) => {
                         if (b.fecha_envio && a.fecha_envio) {
                             return b.fecha_envio.toMillis() - a.fecha_envio.toMillis();
                         }
-                        return b.ticket - a.ticket;  // Orden alternativo si no hay fecha_envio
+                        return b.ticket - a.ticket;
                     });
 
                     setFilteredRecords(sortedRecords);
@@ -148,6 +145,7 @@ const Registro = () => {
     }, [searchTerm, isFilteredByStatus, records]);
 
 
+    // Agrupación por fechas y estado
     useEffect(() => {
         if (isFilteredByStatus) {
             const grouped = filteredRecords.reduce((groups, record) => {
@@ -156,7 +154,6 @@ const Registro = () => {
                 if (fechaEnvioTimestamp) {
                     let dateObj;
 
-                    // Verificar si es un Timestamp, Date o un string de fecha
                     if (fechaEnvioTimestamp instanceof Timestamp) {
                         dateObj = fechaEnvioTimestamp.toDate();
                     } else if (fechaEnvioTimestamp instanceof Date) {
@@ -193,7 +190,6 @@ const Registro = () => {
                 return groups;
             }, {});
 
-            // Ordenar los grupos por fecha
             Object.keys(grouped).forEach((dateKey) => {
                 grouped[dateKey].records.sort((a, b) => b.ticket - a.ticket);
             });
@@ -219,7 +215,6 @@ const Registro = () => {
         }
     }, [filteredRecords, isFilteredByStatus]);
 
-
     const loadMoreRecords = () => {
         if (isLoading || !lastVisible || isFilteredByStatus || searchTerm !== '') return;
 
@@ -238,6 +233,7 @@ const Registro = () => {
 
         const startOfMonth = Timestamp.fromDate(startDate);
         const endOfMonth = Timestamp.fromDate(endDate);
+
         const q = query(
             collection(db, 'registro-clientes'),
             where('fecha_envio', '>=', startOfMonth),
@@ -279,6 +275,7 @@ const Registro = () => {
     const handleFilterByStatus = () => {
         setIsFilteredByStatus(!isFilteredByStatus);
     };
+
 
     return (
         <div className="registro-container p-4 bg-bg-base">

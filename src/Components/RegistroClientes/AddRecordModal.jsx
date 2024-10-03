@@ -127,7 +127,6 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             distrito,
             dedicatoria,
             empaque_regalo: empaqueRegalo,
-            fecha: Timestamp.now(),
             estado_tracking: estadoTracking,
             cod_tracking: codTracking,
             nro_seguimiento: nroSeguimiento,

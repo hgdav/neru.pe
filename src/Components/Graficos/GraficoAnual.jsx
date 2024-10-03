@@ -82,7 +82,7 @@ const GraficosAnuales = () => {
                 const tempCostByTipo = {}; // Variable temporal para acumular costos por tipo
 
                 currentYearRecords.forEach((record) => {
-                    const { distrito, costo_envio, costo_pedido, tipo_envio, fecha } = record;
+                    const { distrito, costo_envio, costo_pedido, tipo_envio, fecha_envio } = record;
 
                     // Normalizar distrito y tipo de envío
                     const normalizedDistrict = normalizeText(distrito);
@@ -105,7 +105,7 @@ const GraficosAnuales = () => {
                     totalVentasAmount += ventaAmount;
 
                     // Acumular mensualmente
-                    const month = fecha.toDate().getMonth(); // 0-11
+                    const month = fecha_envio.toDate().getMonth(); // 0-11
                     monthlyEnvios[month] += envioCost;
                     monthlyVentas[month] += ventaAmount;
                     monthlyRegistros[month] += 1;
@@ -177,27 +177,31 @@ const GraficosAnuales = () => {
         datasets: [
             {
                 label: 'Gastos de Envío',
-                data: monthlyData.envios,
+                data: monthlyData.envios.map(value => value || 0),  // Asegurar que haya un valor (incluso si es 0)
                 borderColor: '#ffddae',
                 backgroundColor: 'rgba(255, 221, 174, 0.2)',
                 fill: true,
+                spanGaps: true,  // Permitir que las líneas conecten aunque haya datos faltantes o gaps
             },
             {
                 label: 'Total de Ventas',
-                data: monthlyData.ventas,
+                data: monthlyData.ventas.map(value => value || 0),  // Asegurar que haya un valor (incluso si es 0)
                 borderColor: '#d3eabc',
                 backgroundColor: 'rgba(211, 234, 188, 0.2)',
                 fill: true,
+                spanGaps: true,  // Conectar líneas aunque haya valores de 0
             },
             {
                 label: 'Total de Registros',
-                data: monthlyData.registros,
+                data: monthlyData.registros.map(value => value || 0),  // Asegurar que haya un valor (incluso si es 0)
                 borderColor: '#405231',
                 backgroundColor: 'rgba(64, 82, 49, 0.2)',
                 fill: true,
+                spanGaps: true,  // Conectar las líneas
             },
         ],
     });
+
 
     const generateCostByTypeChartData = () => ({
         labels: Object.keys(enviosPorTipo).map((label) => label.toUpperCase()),
