@@ -4,6 +4,7 @@ import ClientCard from '../Components/RegistroClientes/ClientCard';
 import FloatingButton from '../Components/RegistroClientes/FloatingButton';
 import SearchBar from '../Components/RegistroClientes/SearchBar';
 import FilterByStatus from '../Components/RegistroClientes/FilterByStatus';
+import { LoadingRecords } from '../Components/RegistroClientes/LoadingRecords';
 import {
     collection,
     query,
@@ -51,8 +52,8 @@ const Registro = () => {
             collection(db, 'registro-clientes'),
             where('fecha_envio', '>=', startOfMonth),
             where('fecha_envio', '<=', endOfMonth),
-            orderBy('fecha_envio', 'desc'),
             orderBy('ticket', 'desc'),
+            orderBy('fecha_envio', 'desc'),
             limit(15)
         );
 
@@ -238,8 +239,8 @@ const Registro = () => {
             collection(db, 'registro-clientes'),
             where('fecha_envio', '>=', startOfMonth),
             where('fecha_envio', '<=', endOfMonth),
-            orderBy('fecha_envio', 'desc'),
             orderBy('ticket', 'desc'),
+            orderBy('fecha_envio', 'desc'),
             startAfter(lastVisible),
             limit(20)
         );
@@ -297,9 +298,20 @@ const Registro = () => {
                 <div className="container mx-auto">
                     {isFilteredByStatus ? (
                         isLoading ? (
-                            <div className="text-center mt-6">
-                                <p>Cargando registros...</p>
-                            </div>
+                            <>
+                                <div className="text-center mt-6">
+                                    <div className="mb-8">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            <LoadingRecords />
+                                            <LoadingRecords />
+                                            <LoadingRecords />
+                                            <LoadingRecords />
+                                            <LoadingRecords />
+                                            <LoadingRecords />
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         ) : orderedDates.length > 0 ? (
                             orderedDates.map((dateKey) => (
                                 <div key={dateKey} className="mb-8">
