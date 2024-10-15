@@ -6,56 +6,54 @@ import DetailsModal from '../Modal';
 import { MdAddCircle, MdClose, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { toast } from 'react-toastify';
 
+const users = [
+    { id: 0, name: "Todos", color: "#000000" },
+    { id: 1, name: "Jean Pierre", color: "#FF6384" },
+    { id: 2, name: "Alex", color: "#36A2EB" },
+    { id: 3, name: "Diana", color: "#FFCE56" },
+    { id: 4, name: "David", color: "#4BC0C0" }
+];
+
 const Calendario = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [events, setEvents] = useState([]);
     const [newEventTitle, setNewEventTitle] = useState("");
+    const [selectedUser, setSelectedUser] = useState(users[0].id);
     const [selectedDate, setSelectedDate] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isAdding, setIsAdding] = useState(false); // Estado para gestionar la acción de agregar
 
     // Obtener los días del mes actual
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 
-    // Obtener la fecha actual para compararla en el calendario
     const today = new Date();
 
-    // Fetch de eventos desde la base de datos
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const tasks = await getTasks(); // Obtener tareas desde la API
+                const tasks = await getTasks();
                 const mappedEvents = tasks.map((task) => {
                     let eventDate = null;
-
                     if (task.date) {
                         if (task.date.seconds !== undefined) {
-                            // Timestamp de Firestore
                             eventDate = new Date(task.date.seconds * 1000);
                         } else if (task.date instanceof Date) {
                             eventDate = task.date;
                         } else {
-                            // Asumir que es una cadena de fecha válida
                             eventDate = new Date(task.date);
                         }
                     }
-
-                    return {
-                        ...task,
-                        date: eventDate,
-                    };
+                    return { ...task, date: eventDate };
                 });
                 setEvents(mappedEvents);
             } catch (error) {
-                console.error('Error al obtener los eventos:', error);
                 toast.error('Error al obtener los eventos');
             }
         };
-
         fetchEvents();
     }, []);
 
-    // Navegación entre meses
     const prevMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     };
@@ -64,18 +62,16 @@ const Calendario = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     };
 
-    // Agregar un nuevo evento
     const addEvent = async () => {
         if (newEventTitle && selectedDate) {
-            const newEvent = { title: newEventTitle, date: selectedDate };
+            setIsAdding(true); // Cambiamos el estado a true antes de agregar el evento
+            const newEvent = { title: newEventTitle, date: selectedDate, userId: selectedUser };
             try {
                 const addedEvent = await addTask(newEvent);
                 if (addedEvent) {
-                    // Después de agregar el evento, actualizamos la lista de eventos desde la base de datos
                     const updatedTasks = await getTasks();
                     const mappedEvents = updatedTasks.map((task) => {
                         let eventDate = null;
-
                         if (task.date) {
                             if (task.date.seconds !== undefined) {
                                 eventDate = new Date(task.date.seconds * 1000);
@@ -85,14 +81,9 @@ const Calendario = () => {
                                 eventDate = new Date(task.date);
                             }
                         }
-
-                        return {
-                            ...task,
-                            date: eventDate,
-                        };
+                        return { ...task, date: eventDate };
                     });
                     setEvents(mappedEvents);
-
                     setNewEventTitle("");
                     toast.success('Evento agregado exitosamente');
                     closeModal();
@@ -100,21 +91,19 @@ const Calendario = () => {
                     toast.error('Error al agregar el evento');
                 }
             } catch (error) {
-                console.error('Error al agregar el evento:', error);
                 toast.error('Error al agregar el evento');
+            } finally {
+                setIsAdding(false); // Cambiamos el estado a false una vez que se ha completado la acción
             }
         }
     };
 
-    // Eliminar un evento
     const removeEvent = async (eventId) => {
         try {
-            await deleteTask(eventId); // Eliminar evento de la base de datos
-            // Actualizar la lista de eventos desde la base de datos
+            await deleteTask(eventId);
             const updatedTasks = await getTasks();
             const mappedEvents = updatedTasks.map((task) => {
                 let eventDate = null;
-
                 if (task.date) {
                     if (task.date.seconds !== undefined) {
                         eventDate = new Date(task.date.seconds * 1000);
@@ -124,22 +113,15 @@ const Calendario = () => {
                         eventDate = new Date(task.date);
                     }
                 }
-
-                return {
-                    ...task,
-                    date: eventDate,
-                };
+                return { ...task, date: eventDate };
             });
             setEvents(mappedEvents);
-
             toast.success('Evento eliminado exitosamente');
         } catch (error) {
-            console.error('Error al eliminar el evento:', error);
             toast.error('Error al eliminar el evento');
         }
     };
 
-    // Obtener eventos para una fecha específica
     const getEventsForDate = (date) => {
         return events.filter(
             (event) =>
@@ -157,21 +139,25 @@ const Calendario = () => {
 
     const closeModal = () => {
         setModalOpen(false);
-        setNewEventTitle(""); // Resetear el campo del nuevo evento
+        setNewEventTitle("");
+    };
+
+    const getUserColor = (userId) => {
+        const user = users.find((user) => user.id === userId);
+        return user ? user.color : "#000000";
     };
 
     return (
         <div className="bg-main p-4">
-            {/* Resto del código del componente */}
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">
                     {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
                 </h1>
                 <div className="flex items-center">
-                    <button onClick={prevMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-accent-primary">
+                    <button onClick={prevMonth} className="bg-accent-secondary rounded-lg p-2">
                         <MdChevronLeft size={24} />
                     </button>
-                    <button onClick={nextMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2 ml-2 focus:outline-none focus:ring-2 focus:ring-accent-primary">
+                    <button onClick={nextMonth} className="bg-accent-secondary rounded-lg p-2 ml-2">
                         <MdChevronRight size={24} />
                     </button>
                 </div>
@@ -185,7 +171,6 @@ const Calendario = () => {
                 ))}
             </div>
 
-            {/* Días del mes, ajustable en pantallas móviles */}
             <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                 {Array.from({ length: firstDayOfMonth }, (_, i) => (
                     <div key={`empty-${i}`} className="h-24 bg-gray-100 rounded-lg"></div>
@@ -194,7 +179,6 @@ const Calendario = () => {
                     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1);
                     const dayEvents = getEventsForDate(date);
 
-                    // Verifica si el día actual es el mismo que hoy
                     const isToday = today.getDate() === date.getDate() &&
                         today.getMonth() === date.getMonth() &&
                         today.getFullYear() === date.getFullYear();
@@ -209,8 +193,8 @@ const Calendario = () => {
                                 {dayEvents.slice(0, 2).map((event) => (
                                     <div
                                         key={event.id}
-                                        className="text-xs bg-accent-primary p-1 mb-1 rounded overflow-hidden text-ellipsis whitespace-nowrap"
-                                        style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
+                                        className="text-xs p-1 mb-1 rounded overflow-hidden text-ellipsis whitespace-nowrap"
+                                        style={{ backgroundColor: getUserColor(event.userId), color: "#fff" }}
                                     >
                                         {event.title}
                                     </div>
@@ -221,42 +205,55 @@ const Calendario = () => {
                 })}
             </div>
 
-            {/* Modal para ver eventos y agregar un nuevo evento */}
             {isModalOpen && (
                 <DetailsModal isOpen={isModalOpen} onClose={closeModal}>
                     <h2 className="text-xl font-bold mb-4">
                         {selectedDate && format(selectedDate, "EEEE, d MMMM yyyy", { locale: es })}
                     </h2>
                     <div className="py-4">
-                        {getEventsForDate(selectedDate).length > 0 ? (
-                            getEventsForDate(selectedDate).map((event) => (
-                                <div key={event.id} className="bg-accent-primary p-2 rounded mb-2 flex justify-between items-center">
-                                    <span className="text-accent-primary-dark">{event.title}</span>
-                                    <button
-                                        onClick={() => removeEvent(event.id)}
-                                        className="text-red-500 hover:text-red-700 ml-2"
-                                    >
-                                        <MdClose size={20} />
+                        {getEventsForDate(selectedDate).map((event) => (
+                            <div key={event.id} className="bg-gray-100 p-2 mb-2 rounded-md">
+                                <div className="flex justify-between items-center">
+                                    <span>{event.title}</span>
+                                    <button onClick={() => removeEvent(event.id)}>
+                                        <MdClose size={16} />
                                     </button>
                                 </div>
-                            ))
-                        ) : (
-                            <p>No hay eventos para este día.</p>
-                        )}
+                                <div className="text-xs text-gray-500">
+                                    Asignado a: {users.find((user) => user.id === event.userId)?.name}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
-                        <div className="mt-12">
-                            <input
-                                type="text"
-                                value={newEventTitle}
-                                onChange={(e) => setNewEventTitle(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded bg-input-bg"
-                                placeholder="Nuevo evento"
-                            />
-                            <button onClick={addEvent} className="w-full bg-accent-secondary text-accent-secondary-dark p-2 mt-2 rounded-md flex items-center gap-2 justify-center">
-                                <MdAddCircle size={24} />
-                                Agregar
-                            </button>
-                        </div>
+                    <div className="py-4 border-t">
+
+                        <textarea className="w-full p-2 border rounded-md mb-4"
+                            placeholder="Nueva tarea"
+                            value={newEventTitle}
+                            onChange={(e) => setNewEventTitle(e.target.value)}>
+
+                        </textarea>
+
+                        <select
+                            className="w-full p-2 border rounded-md mb-4"
+                            value={selectedUser}
+                            onChange={(e) => setSelectedUser(parseInt(e.target.value))}
+                        >
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            onClick={addEvent}
+                            className="w-full bg-accent-secondary text-accent-dark p-2 rounded-md"
+                            disabled={isAdding} // Deshabilita el botón cuando está agregando
+                        >
+                            {isAdding ? "Agregando..." : <><MdAddCircle className="inline mr-2" /> Agregar Evento</>} {/* Cambia el texto del botón */}
+                        </button>
                     </div>
                 </DetailsModal>
             )}
