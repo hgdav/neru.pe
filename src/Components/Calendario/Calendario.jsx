@@ -5,6 +5,7 @@ import { getTasks, addTask, deleteTask } from "../../utils/EventosApiFunctions";
 import DetailsModal from '../Modal';
 import { MdAddCircle, MdClose, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const users = [
     { id: 0, name: "Todos", color: "#000000" },
@@ -13,6 +14,15 @@ const users = [
     { id: 3, name: "Diana", color: "#FFCE56" },
     { id: 4, name: "David", color: "#4BC0C0" }
 ];
+
+const userEmails = {
+    0: "neruclothing@gmail.com", // Todos
+    1: "jean@example.com", // Jean Pierre
+    2: "alex@example.com", // Alex
+    3: "diana@example.com", // Diana
+    4: "aes.hur.v@gmail.com" // David
+};
+
 
 const Calendario = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -64,11 +74,15 @@ const Calendario = () => {
 
     const addEvent = async () => {
         if (newEventTitle && selectedDate) {
-            setIsAdding(true); // Cambiamos el estado a true antes de agregar el evento
+            setIsAdding(true);
             const newEvent = { title: newEventTitle, date: selectedDate, userId: selectedUser };
+
             try {
                 const addedEvent = await addTask(newEvent);
                 if (addedEvent) {
+                    // Envía un correo de notificación
+                    await sendEmail(userEmails[selectedUser], newEventTitle, selectedDate);
+
                     const updatedTasks = await getTasks();
                     const mappedEvents = updatedTasks.map((task) => {
                         let eventDate = null;
@@ -93,7 +107,7 @@ const Calendario = () => {
             } catch (error) {
                 toast.error('Error al agregar el evento');
             } finally {
-                setIsAdding(false); // Cambiamos el estado a false una vez que se ha completado la acción
+                setIsAdding(false);
             }
         }
     };
@@ -119,6 +133,26 @@ const Calendario = () => {
             toast.success('Evento eliminado exitosamente');
         } catch (error) {
             toast.error('Error al eliminar el evento');
+        }
+    };
+
+    const sendEmail = async (to, title, date) => {
+        const emailData = {
+            to: to,
+            subject: 'Ups! Se te asignó una nueva tarea',
+            text: `Se ha agregado un nuevo evento: "${title}" para la fecha ${date.toLocaleString()}.`
+        };
+
+        try {
+            await axios.post('https://api.resend.com/emails', emailData, {
+                headers: {
+                    'Authorization': `Bearer re_bhzm82gA_kPbeAqdiEvWtsMCDN9h7A3Hi`, // Reemplaza con tu API key
+                    'Content-Type': 'application/json',
+                },
+            });
+        } catch (error) {
+            console.error('Error al enviar el correo:', error);
+            toast.error('Error al enviar la notificación por correo');
         }
     };
 
