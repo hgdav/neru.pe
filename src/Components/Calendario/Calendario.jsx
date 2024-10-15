@@ -186,9 +186,9 @@ const Calendario = () => {
                     return (
                         <div
                             key={i}
-                            className={`relative h-24 bg-bg-base border rounded-lg p-2 overflow-y-auto text-left hover:bg-gray-50 ${isToday ? "border-2 border-accent-primary-dark" : ""}`}
+                            className={`relative h-24 bg-bg-base border rounded-lg p-2 overflow-hidden text-left hover:bg-gray-50 ${isToday ? "border-2 border-accent-primary-dark" : ""}`}
                         >
-                            <button className="w-full h-full text-left" onClick={() => handleDayClick(date)}>
+                            <button className="w-full h-full text-left overflow-hidden" onClick={() => handleDayClick(date)}>
                                 <div className="font-bold mb-1">{i + 1}</div>
                                 {dayEvents.slice(0, 2).map((event) => (
                                     <div
