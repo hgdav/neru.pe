@@ -1,5 +1,5 @@
 {
-  "short_name": "Neru DB",
+  "short_name": "Registro de Clientes",
   "name": "Team Neru",
   "icons": [
     {
@@ -8,7 +8,7 @@
       "type": "image/x-icon"
     },
     {
-      "src": "192x192.png",
+      "src": "192x192-2.png",
       "type": "image/png",
       "sizes": "192x192"
     },
@@ -20,7 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#f0eee5",
-  "background_color": "#f0eee5",
+  "theme_color": "#ebe5d9",
+  "background_color": "#ebe5d9",
   "orientation": "portrait"
 }

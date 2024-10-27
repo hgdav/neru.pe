@@ -162,7 +162,7 @@ const Graficos = () => {
                             <h2 className="text-xl font-semibold">Top 5 Distritos con más envíos</h2>
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (
-                                    <li key={district} className="flex justify-between text-lg">
+                                    <li key={district} className="flex justify-between text-md">
                                         <span>{index + 1}. {district.toUpperCase()}</span>
                                         <span>{count} envíos</span>
                                     </li>
@@ -172,8 +172,8 @@ const Graficos = () => {
 
                         {/* Gráfico de tipos de envío */}
                         <div className="p-4 bg-input-bg rounded-lg w-full h-full">
-                            <h2 className="text-xl font-semibold">Registros según tipo de envío</h2>
-                            <div className="h-64 w-full">
+                            <h2 className="text-xl font-semibold text-center">Registros según tipo de envío</h2>
+                            <div className="h-64 w-full flex justify-center">
                                 <Pie data={generatePieChartData()} />
                             </div>
                         </div>
