@@ -124,7 +124,7 @@ const Graficos = () => {
         const data = [totalEnvios, totalVentas, totalRegistros];
 
         return {
-            labels: ['Gastos de Envío', 'Total de Ventas', 'Total de Registros'],
+            labels: ['Gastos Envío', 'Ventas', 'Registros'],
             datasets: [
                 {
                     label: 'Cantidad',
@@ -150,11 +150,12 @@ const Graficos = () => {
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                     {/* Total de envíos, ventas y registros */}
                     <div className="p-4 bg-input-bg rounded-lg w-full h-full">
-                        <h2 className="text-xl font-semibold">Totales</h2>
-                        <div className="h-64 w-full">
-                            <Bar data={generateBarChartData()} />
+                        <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Totales</h2>
+                        <div className="h-72 w-full sm:h-64 lg:h-72">
+                            <Bar data={generateBarChartData()} options={{ maintainAspectRatio: false }} />
                         </div>
                     </div>
+
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Top 5 distritos con más envíos */}
