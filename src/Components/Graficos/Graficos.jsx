@@ -101,18 +101,20 @@ const Graficos = () => {
             {
                 data: Object.values(enviosPorTipo),
                 backgroundColor: [
-                    '#ebe5d9',
-                    '#f9b52f',
-                    '#ea1c23',
-                    '#ffddae',
-                    "#d3eabc"
+                    '#a3c4f3',
+                    '#f2b8d6',
+                    '#c2e0b4',
+                    '#ffd7a3',
+                    '#e8c3f7',
+                    '#b9e4dd'
                 ],
                 hoverBackgroundColor: [
-                    '#ebe5d9',
-                    '#f9b52f',
-                    '#ea1c23',
-                    '#ffddae',
-                    "#d3eabc"
+                    '#a3c4f3',
+                    '#f2b8d6',
+                    '#c2e0b4',
+                    '#ffd7a3',
+                    '#e8c3f7',
+                    '#b9e4dd'
                 ],
             },
         ],
