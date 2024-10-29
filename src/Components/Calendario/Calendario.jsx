@@ -157,7 +157,7 @@ const Calendario = () => {
 
 
     return (
-        <div className="bg-main p-4">
+        <div className="bg-bg-base-white p-4">
             {isMobile ? (
                 // VISTA SIMPLIFICADA PARA MÓVILES
                 <div>
@@ -180,7 +180,7 @@ const Calendario = () => {
                         ))}
                     </div>
                     <div className="flex justify-center">
-                        <button onClick={() => setModalOpen(true)} className="bg-accent-secondary text-accent-dark p-2 rounded-md">
+                        <button onClick={() => setModalOpen(true)} className="bg-accent-secondary text-accent-secondary-dark p-2 rounded-md">
                             <MdAddCircle className="inline mr-2" /> Agregar Evento
                         </button>
                     </div>
@@ -192,10 +192,10 @@ const Calendario = () => {
                             {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
                         </h1>
                         <div className="flex items-center">
-                            <button onClick={prevMonth} className="bg-accent-secondary rounded-lg p-2">
+                            <button onClick={prevMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2">
                                 <MdChevronLeft size={24} />
                             </button>
-                            <button onClick={nextMonth} className="bg-accent-secondary rounded-lg p-2 ml-2">
+                            <button onClick={nextMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2 ml-2">
                                 <MdChevronRight size={24} />
                             </button>
                         </div>
@@ -289,7 +289,7 @@ const Calendario = () => {
 
                         <button
                             onClick={addEvent}
-                            className="w-full bg-accent-secondary text-accent-dark p-2 rounded-md"
+                            className="w-full bg-accent-secondary text-bg-base-white p-2 rounded-md"
                             disabled={isAdding} // Deshabilita el botón cuando está agregando
                         >
                             {isAdding ? "Agregando..." : <><MdAddCircle className="inline mr-2" /> Agregar Evento</>} {/* Cambia el texto del botón */}

@@ -136,7 +136,7 @@ const Graficos = () => {
     };
 
     return (
-        <div className="bg-base-lg p-6">
+        <div className="bg-base-white p-6">
             {/* Navegador de Meses */}
             <MonthNavigator
                 currentMonth={currentDate.getMonth()}
@@ -149,7 +149,7 @@ const Graficos = () => {
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                     {/* Total de envíos, ventas y registros */}
-                    <div className="p-4 bg-input-bg rounded-lg w-full h-full">
+                    <div className="p-4 bg-base rounded-lg w-full h-full">
                         <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Totales</h2>
                         <div className="h-72 w-full sm:h-64 lg:h-72">
                             <Bar data={generateBarChartData()} options={{ maintainAspectRatio: false }} />

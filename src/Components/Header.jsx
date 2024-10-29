@@ -33,13 +33,13 @@ function Header() {
 
                 {/* Menú de navegación */}
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
-                    <Link to="/registro" className="text-contrast hover:text-accent-warm">
+                    <Link to="/registro" className="text-contrast hover:text-gray-400">
                         <SparklesText text="Registro" sparklesCount={5} />
                     </Link>
-                    <Link to="/tallas" className="text-contrast hover:text-accent-warm">
+                    <Link to="/tallas" className="text-contrast hover:text-gray-400">
                         Tallas
                     </Link>
-                    <Link to="/destinos" className="text-contrast hover:text-accent-warm">
+                    <Link to="/destinos" className="text-contrast hover:text-gray-400">
                         Destinos
                     </Link>
 
@@ -47,16 +47,16 @@ function Header() {
                     <div className="relative">
                         <button
                             onClick={toggleSubMenu}
-                            className="text-contrast hover:text-accent-warm focus:outline-none"
+                            className="text-contrast hover:text-gray-400 focus:outline-none"
                         >
                             Feature Flags
                         </button>
                         {isSubMenuOpen && (
                             <div className="absolute top-full mt-2 bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-32">
-                                <Link to="/colores" className="block px-4 py-2 text-contrast hover:text-accent-warm">
+                                <Link to="/colores" className="block px-4 py-2 text-contrast hover:text-gray-400">
                                     Colores
                                 </Link>
-                                <Link to="/packs" className="block px-4 py-2 text-contrast hover:text-accent-warm">
+                                <Link to="/packs" className="block px-4 py-2 text-contrast hover:text-gray-400">
                                     Packs
                                 </Link>
                                 <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">

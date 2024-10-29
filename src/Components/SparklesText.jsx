@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 
 const SparklesText = ({
     text,
-    colors = { first: "#d3eabc", second: "#ffddae" },
+    colors = { first: "#9da4b0", second: "#fcfcfc" },
     className,
-    sparklesCount = 2,
+    sparklesCount = 1, // Cambiado a 1
     ...props
 }) => {
     const [sparkles, setSparkles] = useState([]);
@@ -33,14 +33,14 @@ const SparklesText = ({
                     if (star.lifespan <= 0) {
                         return generateStar();
                     } else {
-                        return { ...star, lifespan: star.lifespan - 0.1 };
+                        return { ...star, lifespan: star.lifespan - 0.05 }; // Decrementación más lenta
                     }
                 }),
             );
         };
 
         initializeStars();
-        const interval = setInterval(updateStars, 100);
+        const interval = setInterval(updateStars, 200); // Intervalo más lento
 
         return () => clearInterval(interval);
     }, [colors.first, colors.second, sparklesCount]);
@@ -75,7 +75,7 @@ const Sparkle = ({ id, x, y, color, delay, scale }) => {
                 scale: [0, scale, 0],
                 rotate: [75, 120, 150],
             }}
-            transition={{ duration: 0.8, repeat: Infinity, delay }}
+            transition={{ duration: 1.6, repeat: Infinity, delay }} // Duración más larga
             width="21"
             height="21"
             viewBox="0 0 21 21"
