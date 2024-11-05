@@ -3,6 +3,7 @@ import Papa from 'papaparse';
 
 const Packs = () => {
     const [packAvailability, setPackAvailability] = useState([]);
+    const [originalData, setOriginalData] = useState([]); // Guardar los datos originales del CSV
     const [modalContent, setModalContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -13,6 +14,7 @@ const Packs = () => {
             Papa.parse(file, {
                 header: true,
                 complete: function (results) {
+                    setOriginalData(results.data); // Guardar los datos originales para la descarga
                     processCSVData(results.data);
                 },
             });
@@ -96,6 +98,35 @@ const Packs = () => {
         setPackAvailability(sortedData);
     };
 
+    // Nueva función para generar y descargar el CSV actualizado con toda la información original
+    const generateUpdatedCSV = () => {
+        const updatedData = originalData.map(product => {
+            const packMatch = packAvailability.find(pack => 
+                pack.packName === product.Title &&
+                pack.packSize === product['Option1 Value']
+            );
+
+            // Si es un pack y está disponible, actualizamos 'Available' a 1, caso contrario a 0
+            if (packMatch) {
+                return {
+                    ...product,
+                    Available: packMatch.available ? '1' : '0',
+                };
+            }
+            return product; // Mantener los datos originales si no es un pack o no necesita actualización
+        });
+
+        const csv = Papa.unparse(updatedData);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'updated_packs.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className="flex flex-col items-center justify-center p-8">
             <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full max-w-lg">
@@ -155,6 +186,12 @@ const Packs = () => {
                             ))}
                         </tbody>
                     </table>
+                    <button
+                        onClick={generateUpdatedCSV}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
+                    >
+                        Descargar CSV Actualizado
+                    </button>
                 </div>
             )}
 

@@ -123,6 +123,7 @@ const Calendario = () => {
     };
 
     const getEventsForDate = (date) => {
+        if (!date) return [];
         return events.filter(
             (event) =>
                 event.date &&
@@ -131,6 +132,7 @@ const Calendario = () => {
                 event.date.getFullYear() === date.getFullYear()
         );
     };
+
 
     const handleDayClick = (date) => {
         setSelectedDate(date);
@@ -159,7 +161,6 @@ const Calendario = () => {
     return (
         <div className="bg-bg-base-white p-4">
             {isMobile ? (
-                // VISTA SIMPLIFICADA PARA MÓVILES
                 <div>
                     <h1 className="text-3xl font-bold mb-4">
                         {format(today, "EEEE, d MMMM yyyy", { locale: es })}
@@ -179,11 +180,7 @@ const Calendario = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex justify-center">
-                        <button onClick={() => setModalOpen(true)} className="bg-accent-secondary text-accent-secondary-dark p-2 rounded-md">
-                            <MdAddCircle className="inline mr-2" /> Agregar Evento
-                        </button>
-                    </div>
+
                 </div>
             ) : (
                 <div>
@@ -248,7 +245,7 @@ const Calendario = () => {
             {isModalOpen && (
                 <DetailsModal isOpen={isModalOpen} onClose={closeModal}>
                     <h2 className="text-xl font-bold mb-4">
-                        {selectedDate && format(selectedDate, "EEEE, d MMMM yyyy", { locale: es })}
+                        {selectedDate ? format(selectedDate, "EEEE, d MMMM yyyy", { locale: es }) : "Selecciona una fecha"}
                     </h2>
                     <div className="py-4">
                         {getEventsForDate(selectedDate).map((event) => (
