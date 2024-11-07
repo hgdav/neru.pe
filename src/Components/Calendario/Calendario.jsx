@@ -13,7 +13,6 @@ const users = [
     { id: 3, name: "Diana", color: "#FFCE56" },
     { id: 4, name: "David", color: "#4BC0C0" }
 ];
-
 const Calendario = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [events, setEvents] = useState([]);
@@ -124,15 +123,25 @@ const Calendario = () => {
 
     const getEventsForDate = (date) => {
         if (!date) return [];
-        return events.filter(
+        // Filtra los eventos por la fecha exacta
+        let dayEvents = events.filter(
             (event) =>
                 event.date &&
                 event.date.getDate() === date.getDate() &&
                 event.date.getMonth() === date.getMonth() &&
                 event.date.getFullYear() === date.getFullYear()
         );
-    };
 
+        // Si estamos en la vista móvil, agregar todos los eventos asignados a "Todos"
+        if (isMobile) {
+            dayEvents = [
+                ...dayEvents,
+                ...events.filter((event) => event.userId === 0), // Asignados a "Todos"
+            ];
+        }
+
+        return dayEvents;
+    };
 
     const handleDayClick = (date) => {
         setSelectedDate(date);
@@ -166,6 +175,7 @@ const Calendario = () => {
                         {format(today, "EEEE, d MMMM yyyy", { locale: es })}
                     </h1>
                     <div className="py-4">
+                        {/* Mostrar los eventos asignados a 'Todos' y a otros usuarios en el día actual */}
                         {getEventsForDate(today).map((event) => (
                             <div key={event.id} className="bg-accent-primary p-2 mb-2 rounded-md">
                                 <div className="flex justify-between items-center">
@@ -180,7 +190,6 @@ const Calendario = () => {
                             </div>
                         ))}
                     </div>
-
                 </div>
             ) : (
                 <div>
@@ -242,6 +251,8 @@ const Calendario = () => {
                 </div>
             )}
 
+
+
             {isModalOpen && (
                 <DetailsModal isOpen={isModalOpen} onClose={closeModal}>
                     <h2 className="text-xl font-bold mb-4">
@@ -264,14 +275,11 @@ const Calendario = () => {
                     </div>
 
                     <div className="py-4 border-t">
-
                         <textarea className="w-full p-2 border rounded-md mb-4"
                             placeholder="Nueva tarea"
                             value={newEventTitle}
-                            onChange={(e) => setNewEventTitle(e.target.value)}>
-
-                        </textarea>
-
+                            onChange={(e) => setNewEventTitle(e.target.value)}
+                        />
                         <select
                             className="w-full p-2 border rounded-md mb-4"
                             value={selectedUser}
@@ -287,9 +295,9 @@ const Calendario = () => {
                         <button
                             onClick={addEvent}
                             className="w-full bg-accent-secondary text-bg-base-white p-2 rounded-md"
-                            disabled={isAdding} // Deshabilita el botón cuando está agregando
+                            disabled={isAdding}
                         >
-                            {isAdding ? "Agregando..." : <><MdAddCircle className="inline mr-2" /> Agregar Evento</>} {/* Cambia el texto del botón */}
+                            {isAdding ? "Agregando..." : <><MdAddCircle className="inline mr-2" /> Agregar Evento</>}
                         </button>
                     </div>
                 </DetailsModal>
@@ -299,3 +307,4 @@ const Calendario = () => {
 };
 
 export default Calendario;
+
