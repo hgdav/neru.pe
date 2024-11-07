@@ -132,11 +132,10 @@ const Calendario = () => {
                 event.date.getFullYear() === date.getFullYear()
         );
 
-        // Si estamos en la vista móvil, agregar todos los eventos asignados a "Todos"
         if (isMobile) {
             dayEvents = [
                 ...dayEvents,
-                ...events.filter((event) => event.userId === 0), // Asignados a "Todos"
+                ...events.filter((event) => event.userId === 0),
             ];
         }
 
@@ -177,7 +176,7 @@ const Calendario = () => {
                     <div className="py-4">
                         {/* Mostrar los eventos asignados a 'Todos' y a otros usuarios en el día actual */}
                         {getEventsForDate(today).map((event) => (
-                            <div key={event.id} className="bg-accent-primary p-2 mb-2 rounded-md">
+                            <div key={event.id} className="bg-accent-primary p-2 mb-2 rounded-xl">
                                 <div className="flex justify-between items-center">
                                     <span>{event.title}</span>
                                     <button onClick={() => removeEvent(event.id)}>

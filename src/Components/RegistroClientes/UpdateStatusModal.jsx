@@ -87,18 +87,25 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
         }
     };
 
+    const [copied, setCopied] = useState(false);
+
+    const handleCopyClick = () => {
+        navigator.clipboard.writeText(client.telefono).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1000);
+        });
+    };
+
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-
                 <div
-                    onClick={() => {
-                        navigator.clipboard.writeText(client.telefono);
-                    }}
+                    onClick={handleCopyClick}
                     className="flex flex-row items-center"
                 >
                     <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
-                    <MdContentCopy className='text-green-600 flex items-center mb-4 ml-2 cursor-pointer' title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
+                    <MdContentCopy className={`mb-4 ml-2 transition-transform duration-100 ease-in-out 
+                            ${copied ? 'text-green-800 scale-125' : 'text-green-600'}`} title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
                 </div>
                 <div className='flex flex-row gap-2'>
                     <div className="space-y-2 w-1/2">
@@ -111,7 +118,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                         />
                     </div>
                     <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary">Número de Registro:</label>
+                        <label className="block text-sm font-medium text-text-primary inline-flex">Número de Registro:&nbsp; <MdContentCopy size={14} onClick={() => navigator.clipboard.writeText('TRACKING:' + codTracking + ' - ' + nroSeguimiento)} title='Copia códigos de seguimiento para Shoppify' /></label>
                         <input
                             type="text"
                             value={nroSeguimiento}
@@ -187,7 +194,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                         onClick={() => {
                             navigator.clipboard.writeText(mensajeWsp);
                         }}
-                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer"
+                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer hover:bg-gray-600"
                     >
                         <MdContentCopy title='Copiar mensaje de tracking para WhatsApp' />
                     </div>
