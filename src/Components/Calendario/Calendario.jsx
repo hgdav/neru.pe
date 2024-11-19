@@ -7,11 +7,10 @@ import { MdAddCircle, MdClose, MdChevronLeft, MdChevronRight } from "react-icons
 import { toast } from 'react-toastify';
 
 const users = [
-    { id: 0, name: "Todos", color: "#000000" },
-    { id: 1, name: "Jean Pierre", color: "#FF6384" },
-    { id: 2, name: "Alex", color: "#36A2EB" },
-    { id: 3, name: "Diana", color: "#FFCE56" },
-    { id: 4, name: "David", color: "#4BC0C0" }
+    { id: 0, name: "Jean Pierre", color: "#FF6384" },
+    { id: 1, name: "Alex", color: "#36A2EB" },
+    { id: 2, name: "Diana", color: "#FFCE56" },
+    { id: 3, name: "David", color: "#4BC0C0" }
 ];
 const Calendario = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -249,8 +248,6 @@ const Calendario = () => {
                     </div>
                 </div>
             )}
-
-
 
             {isModalOpen && (
                 <DetailsModal isOpen={isModalOpen} onClose={closeModal}>
