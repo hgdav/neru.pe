@@ -99,29 +99,57 @@ const Packs = () => {
     };
 
     // Nueva función para generar y descargar el CSV actualizado con toda la información original
+
     const generateUpdatedCSV = () => {
-        const updatedData = originalData.map(product => {
-            const packMatch = packAvailability.find(pack => 
-                pack.packName === product.Title &&
-                pack.packSize === product['Option1 Value']
+        const updatedPackData = packAvailability.filter(pack => pack.available).map(pack => {
+            const originalProduct = originalData.find(product =>
+                product.Title === pack.packName &&
+                product['Option1 Value'] === pack.packSize
             );
 
-            // Si es un pack y está disponible, actualizamos 'Available' a 1, caso contrario a 0
-            if (packMatch) {
-                return {
-                    ...product,
-                    Available: packMatch.available ? '1' : '0',
-                };
+            const newPackData = {
+                Handle: "",
+                Title: "",
+                'Option1 Name': "",
+                'Option1 Value': "",
+                'Option2 Name': "",
+                'Option2 Value': "",
+                'Option3 Name': "",
+                'Option3 Value': "",
+                SKU: "",
+                'HS Code': "",
+                COO: "",
+                Location: "",
+                Incoming: "",
+                Unavailable: "",
+                Committed: "",
+                Available: "",
+                'On hand': ""
+            };
+
+            // Copiar los valores del pack original si existe
+            if (originalProduct) {
+                for (const key in newPackData) {
+                    newPackData[key] = originalProduct[key] || "";
+                }
             }
-            return product; // Mantener los datos originales si no es un pack o no necesita actualización
+
+            // Actualizar los valores específicos del pack disponible
+            newPackData.Title = pack.packName;
+            newPackData['Option1 Value'] = pack.packSize;
+            newPackData['Option2 Value'] = pack.packColors;
+            newPackData.Available = '1';
+
+
+            return newPackData;
         });
 
-        const csv = Papa.unparse(updatedData);
+        const csv = Papa.unparse(updatedPackData);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'updated_packs.csv');
+        link.setAttribute('download', 'available_packs.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -142,6 +170,12 @@ const Packs = () => {
 
             {packAvailability.length > 0 && (
                 <div className="card bg-input-bg shadow-md rounded-3xl p-6 w-full mt-4">
+                    <button
+                        onClick={generateUpdatedCSV}
+                        className="bg-accent-secondary text-white px-4 py-2 rounded-md mt-4 mb-4 float-right"
+                    >
+                        CSV Actualizado
+                    </button>
                     <table className="w-full text-left">
                         <thead>
                             <tr>
@@ -186,12 +220,7 @@ const Packs = () => {
                             ))}
                         </tbody>
                     </table>
-                    <button
-                        onClick={generateUpdatedCSV}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
-                    >
-                        Descargar CSV Actualizado
-                    </button>
+
                 </div>
             )}
 
