@@ -336,9 +336,14 @@ const Registro = () => {
                                         <ClientCard key={record.id} client={record} />
                                     ))
                                 ) : (
-                                    <p className="text-center text-gray-500">
-                                        No hay registros para el término de búsqueda ingresado o estado seleccionado.
-                                    </p>
+                                    <>
+                                        <LoadingRecords />
+                                        <LoadingRecords />
+                                        <LoadingRecords />
+                                        <LoadingRecords />
+                                        <LoadingRecords />
+                                        <LoadingRecords />
+                                    </>
                                 )}
                             </div>
                             {lastVisible && !isFilteredByStatus && searchTerm === '' && (

@@ -3,12 +3,13 @@ import { Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebaseConfig';
 import { Header } from '../Components/Header';
+import { LoadingIndex } from '../Components/LoadingIndex';
 
 const PrivateRoute = ({ children }) => {
     const [user, loading] = useAuthState(auth);
 
     if (loading) {
-        return <p>Cargando...</p>;
+        return <LoadingIndex />;
     }
 
     return user ? (

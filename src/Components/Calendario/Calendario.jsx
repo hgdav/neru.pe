@@ -3,15 +3,24 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { getTasks, addTask, deleteTask } from "../../utils/EventosApiFunctions";
 import DetailsModal from '../Modal';
-import { MdAddCircle, MdClose, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdAddCircle, MdClose, MdChevronLeft, MdChevronRight, MdDoNotDisturb } from "react-icons/md";
 import { toast } from 'react-toastify';
+import emailjs from '@emailjs/browser';
+
 
 const users = [
-    { id: 0, name: "Jean Pierre", color: "#FF6384" },
-    { id: 1, name: "Alex", color: "#36A2EB" },
-    { id: 2, name: "Diana", color: "#FFCE56" },
-    { id: 3, name: "David", color: "#4BC0C0" }
+    { id: 0, name: "Jean Pierre", color: "#FF6384", email: "jeanpierrel.hu@gmail.com" },
+    { id: 1, name: "Alex", color: "#36A2EB", email: "alex.recoil@gmail.com" },
+    { id: 2, name: "Diana", color: "#FFCE56", email: "neruclothing@gmail.com" },
+    { id: 3, name: "David", color: "#4BC0C0", email: "aes.hur.v@gmail.com" }
 ];
+
+(function () {
+    emailjs.init({
+        publicKey: "GPwbrOJ0Wdjhl0wbB",
+    });
+})();
+
 const Calendario = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [events, setEvents] = useState([]);
@@ -19,7 +28,8 @@ const Calendario = () => {
     const [selectedUser, setSelectedUser] = useState(users[0].id);
     const [selectedDate, setSelectedDate] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isAdding, setIsAdding] = useState(false); // Estado para gestionar la acción de agregar
+    const [isAdding, setIsAdding] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Obtener los días del mes actual
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -62,7 +72,7 @@ const Calendario = () => {
 
     const addEvent = async () => {
         if (newEventTitle && selectedDate) {
-            setIsAdding(true); // Cambiamos el estado a true antes de agregar el evento
+            setIsAdding(true);
             const newEvent = { title: newEventTitle, date: selectedDate, userId: selectedUser };
             try {
                 const addedEvent = await addTask(newEvent);
@@ -83,6 +93,7 @@ const Calendario = () => {
                     });
                     setEvents(mappedEvents);
                     setNewEventTitle("");
+                    sendNotify(selectedUser);
                     toast.success('Evento agregado exitosamente');
                     closeModal();
                 } else {
@@ -91,14 +102,39 @@ const Calendario = () => {
             } catch (error) {
                 toast.error('Error al agregar el evento');
             } finally {
-                setIsAdding(false); // Cambiamos el estado a false una vez que se ha completado la acción
+                setIsAdding(false);
             }
         }
     };
 
+    const sendNotify = async (userId) => {
+        const user = users.find((user) => user.id === userId);
+
+        if (user && user.email) {
+            const email = user.email;
+
+            const templateParams = {
+                to_email: email,
+            };
+
+            try {
+                const response = await emailjs.send(
+                    'service_gny6l1b',
+                    'template_5ibgcun',
+                    templateParams,
+                );
+                console.log("Correo enviado con éxito:", response);
+            } catch (error) {
+                console.error("Error al enviar el correo:", error);
+            }
+        }
+    };
+
+
     const removeEvent = async (eventId) => {
         try {
             await deleteTask(eventId);
+            setIsDeleting(true);
             const updatedTasks = await getTasks();
             const mappedEvents = updatedTasks.map((task) => {
                 let eventDate = null;
@@ -115,8 +151,11 @@ const Calendario = () => {
             });
             setEvents(mappedEvents);
             toast.success('Evento eliminado exitosamente');
+
         } catch (error) {
             toast.error('Error al eliminar el evento');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -259,8 +298,8 @@ const Calendario = () => {
                             <div key={event.id} className="bg-accent-primary p-2 mb-2 rounded-md">
                                 <div className="flex justify-between items-center">
                                     <span>{event.title}</span>
-                                    <button onClick={() => removeEvent(event.id)}>
-                                        <MdClose size={16} />
+                                    <button onClick={() => removeEvent(event.id)} disabled={isDeleting}>
+                                        {isDeleting ? <MdDoNotDisturb size={16} /> : <MdClose size={16} />}
                                     </button>
                                 </div>
                                 <div className="text-xs text-accent-primary-dark">
