@@ -74,7 +74,7 @@ const Graficos = () => {
                 // Ordenar distritos por más frecuentes y limitar a los top 5
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5);
+                    .slice(0, 10);
 
                 setMostFrequentDistrict(sortedDistricts);
                 setTotalEnvios(totalEnviosCost);
@@ -145,7 +145,7 @@ const Graficos = () => {
             />
 
             {loading ? (
-                <p>Cargando...</p>
+                <p>Graficando...</p>
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                     {/* Total de envíos, ventas y registros */}
@@ -155,8 +155,6 @@ const Graficos = () => {
                             <Bar data={generateBarChartData()} options={{ maintainAspectRatio: false }} />
                         </div>
                     </div>
-
-
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Top 5 distritos con más envíos */}
                         <div className="p-4 bg-bg-base-white rounded-3xl w-full h-full">

@@ -88,6 +88,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
     };
 
     const [copied, setCopied] = useState(false);
+    const [copiado, setCopiado] = useState(false);
 
     const handleCopyClick = () => {
         navigator.clipboard.writeText(client.telefono).then(() => {
@@ -103,7 +104,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     onClick={handleCopyClick}
                     className="flex flex-row items-center"
                 >
-                    <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento</h3>
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento - #{client.ticket}</h3>
                     <MdContentCopy className={`mb-4 ml-2 transition-transform duration-100 ease-in-out 
                             ${copied ? 'text-green-800 scale-125' : 'text-green-600'}`} title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
                 </div>
@@ -193,10 +194,13 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     <div
                         onClick={() => {
                             navigator.clipboard.writeText(mensajeWsp);
+                            setCopiado(true);
+                            setTimeout(() => setCopiado(false), 1000);
                         }}
-                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer hover:bg-gray-600"
+                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer"
                     >
-                        <MdContentCopy title='Copiar mensaje de tracking para WhatsApp' />
+                        <MdContentCopy title='Copiar mensaje de tracking para WhatsApp' className={`transition-transform duration-100 ease-in-out 
+                            ${copiado ? ' scale-125' : 'text-white'}`} />
                     </div>
                 </div>
             </form>

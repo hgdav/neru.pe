@@ -11,7 +11,7 @@ import emailjs from '@emailjs/browser';
 const users = [
     { id: 0, name: "Jean Pierre", color: "#FF6384", email: "jeanpierrel.hu@gmail.com" },
     { id: 1, name: "Alex", color: "#36A2EB", email: "alex.recoil@gmail.com" },
-    { id: 2, name: "Diana", color: "#FFCE56", email: "neruclothing@gmail.com" },
+    { id: 2, name: "Diana", color: "#FFCE56", email: "diana.auristela@gmail.com" },
     { id: 3, name: "David", color: "#4BC0C0", email: "aes.hur.v@gmail.com" }
 ];
 
