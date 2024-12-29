@@ -15,8 +15,8 @@ module.exports = {
         'accent-primary-dark': '#405231', // para el texto del primary
 
         // Negro
-        'accent-secondary': '#010101', // Color de acento secundario #ffddae Canela
-        'accent-secondary-dark': '#f6f6f6', // para el texto del secondary #271904
+        'accent-secondary': '#010101', // Color de acento secundario #010101 Canela
+        'accent-secondary-dark': '#f6f6f6', // para el texto del secondary #f6f6f6
 
         'accent-muted': '#c4c3bb', // Color de acento suave o neutral
         'accent-warm': '#d4a37f', // Color de acento cálido (ideal para detalles)
@@ -24,7 +24,7 @@ module.exports = {
         'text-primary': '#010101', // Color principal para texto #3d3929
         'text-contrast': '#141413', // Color de texto de alto contraste
 
-        'input-bg': '#fcfcfc', // Color de fondo para inputs o formularios #f2efe8
+        'input-bg': '#f5f5f5', // Color de fondo para inputs o formularios #f2efe8
         'input-bg-warm': '#ffddae',
 
         'button-bg': '#010101', // Color de fondo para botones

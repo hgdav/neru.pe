@@ -3,6 +3,8 @@ import { fetchRecords } from '../../utils/apiFunctions';
 import { Pie, Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import MonthNavigator from '../RegistroClientes/MonthNavigator';
+import { Link } from 'react-router-dom';
+import { MdInsertChartOutlined } from "react-icons/md";
 
 const Graficos = () => {
     const [mostFrequentDistrict, setMostFrequentDistrict] = useState([]);
@@ -124,7 +126,7 @@ const Graficos = () => {
         const data = [totalEnvios, totalVentas, totalRegistros];
 
         return {
-            labels: ['Gastos Envío', 'Ventas', 'Registros'],
+            labels: ['Gastos Envío', 'Ventas', 'Cantidad Registros'],
             datasets: [
                 {
                     label: 'Cantidad',
@@ -136,21 +138,25 @@ const Graficos = () => {
     };
 
     return (
-        <div className="bg-base-white p-6">
+        <div className="bg-bg-base px-6 py-1">
             {/* Navegador de Meses */}
-            <MonthNavigator
-                currentMonth={currentDate.getMonth()}
-                currentYear={currentDate.getFullYear()}
-                onMonthChange={handleMonthChange}
-            />
-
+            <div className="flex justify-between items-center mb-4">
+                <MonthNavigator
+                    currentMonth={currentDate.getMonth()}
+                    currentYear={currentDate.getFullYear()}
+                    onMonthChange={handleMonthChange}
+                />
+                <Link to="/resumen" className="bg-bg-base-white text-accent-secondary rounded-lg flex-end p-1 float-right">
+                    <MdInsertChartOutlined size={24} />
+                </Link>
+            </div>
             {loading ? (
                 <p>Graficando...</p>
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                     {/* Total de envíos, ventas y registros */}
                     <div className="p-4 bg-base rounded-lg w-full h-full">
-                        <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Totales</h2>
+                        <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Resumen de ventas y gastos</h2>
                         <div className="h-72 w-full sm:h-64 lg:h-72">
                             <Bar data={generateBarChartData()} options={{ maintainAspectRatio: false }} />
                         </div>
@@ -161,9 +167,9 @@ const Graficos = () => {
                             <h2 className="text-xl font-semibold">Top 5 Distritos con más envíos</h2>
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (
-                                    <li key={district} className="flex justify-between text-md">
-                                        <span className='border-b-2 border-accent-primary'>{index + 1}. {district.toUpperCase()}</span>
-                                        <span>{count} envíos</span>
+                                    <li key={district} className="flex justify-between text-md border-b-2 border-gray-200">
+                                        <span className='border-accent-primary flex-1 text-left'>{index + 1}. {district.toUpperCase()}</span>
+                                        <span className='flex-1 text-right'>{count} envíos</span>
                                     </li>
                                 ))}
                             </ul>

@@ -21,7 +21,7 @@ const MonthNavigator = ({ currentMonth, currentYear, onMonthChange }) => {
     return (
         <div className="flex items-center justify-center gap-4 my-4">
             <button
-                className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="bg-bg-base-white text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 onClick={handlePrevious}
             >
                 <MdChevronLeft size={24} />
@@ -30,7 +30,7 @@ const MonthNavigator = ({ currentMonth, currentYear, onMonthChange }) => {
                 {months[currentMonth]} {currentYear}
             </h3>
             <button
-                className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="bg-bg-base-white text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                 onClick={handleNext}
             >
                 <MdChevronRight size={24} />

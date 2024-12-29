@@ -3,7 +3,7 @@ import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
-import { MdRemoveRedEye, MdChecklistRtl, MdDelete, MdCardGiftcard } from "react-icons/md";
+import { MdRemoveRedEye, MdChecklistRtl, MdDelete, MdCardGiftcard, MdImageAspectRatio } from "react-icons/md";
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -67,6 +67,10 @@ const ClientCard = ({ client }) => {
         return client.empaque_regalo === true;
     };
 
+    const verifyDedicatoria = () => {
+        return client.dedicatoria === true;
+    };
+
     // ClientCard.jsx
 
     const fechaEnvio = client.fecha_envio;
@@ -97,17 +101,22 @@ const ClientCard = ({ client }) => {
 
     return (
         <div className="rounded-3xl p-6 mb-4 bg-bg-base-white">
-            <div className="card-header">
+            <div className="card-header border-b border-gray-300 pb-4">
                 <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
-                    {verifyEmpaque() && (
-                        <MdCardGiftcard size={24} />
-                    )}
+                    <div className='inline-flex items-center gap-1'>
+                        {verifyEmpaque() && (
+                            <MdCardGiftcard size={24} />
+                        )}
+                        {verifyDedicatoria() && (
+                            <MdImageAspectRatio size={24} />
+                        )}
+                    </div>
+                    <h3 className="text-md text-gray-500"><b>#{client.ticket}</b> | {fechaEnvioString}</h3>
                 </div>
-                <h3 className="text-md text-gray-500">#{client.ticket}</h3>
             </div>
             <div className="my-2">
-                <div className="info-row">
+                <h2 className="text-lg font-semibold text-text-primary">{client.nombre}</h2>
+                <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Courier:</span>
                     <span className={`${getCourierClass(client.tipo_envio)}  ml-2 p-1 rounded text-text-primary`}>{client.tipo_envio}</span>
                 </div>
@@ -116,15 +125,11 @@ const ClientCard = ({ client }) => {
                     <span className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}>{client.estado_empaque}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-bold text-text-primary">Fecha de envío:</span>
-                    <span className="ml-2 text-text-primary">{fechaEnvioString}</span>
-                </div>
-                <div className="info-row mt-2">
                     <span className="font-bold text-text-primary">Tracking:</span>
                     <span className={`${getStatusClass(client.estado_tracking)} ml-2 p-1 rounded text-text-primary`}>{client.estado_tracking}</span>
                 </div>
                 <div className="info-row mt-2">
-                    <span className="font-bold text-text-primary">Distrito:</span>
+                    <span className="font-bold text-text-primary">Destino:</span>
                     <span className="ml-2 text-text-primary">{client.distrito.toUpperCase()}</span>
                 </div>
             </div>

@@ -205,7 +205,7 @@ const Calendario = () => {
 
 
     return (
-        <div className="bg-bg-base-white p-4">
+        <div className="bg-bg-base p-4">
             {isMobile ? (
                 <div>
                     <h1 className="text-3xl font-bold mb-4">
@@ -235,10 +235,10 @@ const Calendario = () => {
                             {currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
                         </h1>
                         <div className="flex items-center">
-                            <button onClick={prevMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2">
+                            <button onClick={prevMonth} className="bg-bg-base-white text-accent-secondary rounded-lg p-2">
                                 <MdChevronLeft size={24} />
                             </button>
-                            <button onClick={nextMonth} className="bg-accent-secondary text-accent-secondary-dark rounded-lg p-2 ml-2">
+                            <button onClick={nextMonth} className="bg-bg-base-white text-accent-secondary rounded-lg p-2 ml-2">
                                 <MdChevronRight size={24} />
                             </button>
                         </div>

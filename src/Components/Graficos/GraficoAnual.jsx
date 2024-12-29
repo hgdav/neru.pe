@@ -242,7 +242,7 @@ const GraficosAnuales = () => {
     const margen = totalVentas - totalEnvios;
 
     return (
-        <div className="bg-base-lg p-6">
+        <div className="bg-bg-base p-6">
             <h1 className="text-2xl font-bold mb-6 text-center">Resumen Anual</h1>
 
             {/* Selector de Año */}
@@ -257,7 +257,7 @@ const GraficosAnuales = () => {
                     className="p-2 border rounded"
                 >
                     {/* Generar los últimos 10 años */}
-                    {[...Array(10)].map((_, index) => {
+                    {[...Array(2)].map((_, index) => {
                         const y = new Date().getFullYear() - index;
                         return (
                             <option key={y} value={y}>
@@ -271,7 +271,7 @@ const GraficosAnuales = () => {
             {loading ? (
                 <div className="flex justify-center items-center">
                     {/* Spinner de carga */}
-                    <div className="loader"></div>
+                    <div className="text-gray-600">Graficando...</div>
                 </div>
             ) : error ? (
                 <p className="text-red-500">{error}</p>
@@ -299,18 +299,18 @@ const GraficosAnuales = () => {
                         </div>
                         <div className="p-4 bg-input-bg rounded-3xl text-center">
                             <h3 className="text-lg font-semibold">Costo Promedio por Envío</h3>
-                            <p className="text-2xl">S/ {averageEnvios.toFixed(2)}</p>
+                            <p className="text-2xl text-red-600">S/ {averageEnvios.toFixed(2)}</p>
                         </div>
                         <div className="p-4 bg-input-bg rounded-3xl text-center">
                             <h3 className="text-lg font-semibold">Venta Promedio</h3>
-                            <p className="text-2xl">S/ {averageVentas.toFixed(2)}</p>
+                            <p className="text-2xl text-green-600">S/ {averageVentas.toFixed(2)}</p>
                         </div>
                     </div>
 
                     {/* Margen de Ganancia Anual */}
                     <div className="p-4 bg-input-bg rounded-3xl text-center flex justify-center items-center">
                         <div>
-                            <h3 className="text-lg font-semibold">Margen de Ganancia Anual</h3>
+                            <h3 className="text-lg font-semibold">Margen de Ganancia Anual (Ventas - Envíos)</h3>
                             <p
                                 className={`text-3xl font-bold ${margen >= 0 ? 'text-green-600' : 'text-red-600'
                                     }`}

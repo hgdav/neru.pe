@@ -325,7 +325,7 @@ const Registro = () => {
                             ))
                         ) : (
                             <p className="text-center text-gray-500">
-                                No hay registros para el término de búsqueda ingresado o estado seleccionado.
+                                No hay registros para el día de hoy :c.
                             </p>
                         )
                     ) : (
