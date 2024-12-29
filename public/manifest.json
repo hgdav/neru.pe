@@ -1,6 +1,6 @@
 {
   "short_name": "Registro de Clientes",
-  "name": "Team Neru",
+  "name": "Registro Neru",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ebe5d9",
-  "background_color": "#ebe5d9",
+  "theme_color": "#f5f5f5",
+  "background_color": "#f5f5f5",
   "orientation": "portrait"
 }

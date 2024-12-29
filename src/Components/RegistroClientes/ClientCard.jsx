@@ -96,7 +96,7 @@ const ClientCard = ({ client }) => {
 
 
     return (
-        <div className="shadow-lg rounded-3xl p-6 mb-4 bg-bg-base-white">
+        <div className="rounded-3xl p-6 mb-4 bg-bg-base-white">
             <div className="card-header">
                 <div className="flex items-center justify-between gap-2">
                     <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>

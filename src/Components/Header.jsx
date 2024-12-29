@@ -72,58 +72,84 @@ function Header() {
 
                 {/* Menú desplegable en móviles */}
                 {isMenuOpen && (
-                    <div className="absolute top-16 left-0 w-full bg-bg-base md:hidden shadow-lg z-50 rounded-3xl">
-                        <nav className="flex flex-col items-center py-4 space-y-4">
+                    <div className={`fixed top-0 left-0 w-full h-full bg-bg-base z-50 transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                        {/* Botón para cerrar */}
+                        <button
+                            onClick={toggleMenu}
+                            className="absolute top-4 right-4 text-3xl text-accent-secondary hover:text-accent-muted focus:outline-none"
+                        >
+                            ✕
+                        </button>
+
+                        {/* Navegación */}
+                        <nav className="flex flex-col items-center justify-center h-full space-y-6">
+                            {/* Link: Registro */}
                             <Link
                                 to="/registro"
-                                className="text-contrast hover:text-accent-warm text-2xl px-4 py-2"
+                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
                                 onClick={toggleMenu}
                             >
                                 Registro
                             </Link>
+
+                            {/* Link: Tallas */}
                             <Link
                                 to="/tallas"
-                                className="text-contrast hover:text-accent-warm text-2xl"
+                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
                                 onClick={toggleMenu}
                             >
                                 Tallas
                             </Link>
+
+                            {/* Link: Destinos */}
                             <Link
                                 to="/destinos"
-                                className="text-contrast hover:text-accent-warm text-2xl"
+                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
                                 onClick={toggleMenu}
                             >
                                 Destinos
                             </Link>
 
-                            {/* Menú desplegable móvil para "Próximas Funcionalidades" */}
-                            <div className="relative w-full text-center">
+                            {/* Feature Flags - Menú desplegable */}
+                            <div className="w-10/12">
                                 <button
                                     onClick={toggleSubMenu}
-                                    className="text-contrast hover:text-accent-warm focus:outline-none text-2xl"
+                                    className="w-full flex justify-between items-center text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
                                 >
                                     Feature Flags
+                                    <span className="material-icons text-accent-secondary">
+                                        {isSubMenuOpen ? '-' : '+'}
+                                    </span>
                                 </button>
+
                                 {isSubMenuOpen && (
-                                    <div className="bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-full mt-2">
+                                    <div className="bg-bg-base border border-accent-muted shadow-lg rounded-lg py-4 mt-2 space-y-2 transition-all duration-200">
                                         <Link
                                             to="/colores"
-                                            className="block px-4 py-2 text-contrast hover:text-accent-warm"
+                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
                                             onClick={toggleMenu}
                                         >
                                             Colores
                                         </Link>
                                         <Link
                                             to="/packs"
-                                            className="block px-4 py-2 text-contrast hover:text-accent-warm"
+                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
                                             onClick={toggleMenu}
                                         >
                                             Packs
                                         </Link>
-                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
+                                        <Link
+                                            to="/facturacion"
+                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
+                                            onClick={toggleMenu}
+                                        >
                                             Facturación electrónica
                                         </Link>
-                                        <Link to="/" className="block px-4 py-2 text-contrast hover:bg-accent-muted" onClick={toggleMenu}>
+                                        <Link
+                                            to="/shopify-api"
+                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
+                                            onClick={toggleMenu}
+                                        >
                                             Shopify API
                                         </Link>
                                     </div>
@@ -131,6 +157,7 @@ function Header() {
                             </div>
                         </nav>
                     </div>
+
                 )}
             </div>
         </header>

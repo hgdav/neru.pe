@@ -6,8 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bg-base': '#f5f5f5', // Color de fondo base #ebe5d9
-        'bg-base-white': '#fcfcfc', // para diferenciar el fondo de la pagina
+        'bg-base-white': '#f5f5f5', // actual fondo gris que será blanco
+        'bg-base': '#fcfcfc', // actual blanco claro que será fondo gris
         'base-lg': '#f5f5f5',
 
         // Verde

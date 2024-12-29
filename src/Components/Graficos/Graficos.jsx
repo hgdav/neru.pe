@@ -162,7 +162,7 @@ const Graficos = () => {
                             <ul className="mt-4">
                                 {mostFrequentDistrict.map(([district, count], index) => (
                                     <li key={district} className="flex justify-between text-md">
-                                        <span>{index + 1}. {district.toUpperCase()}</span>
+                                        <span className='border-b-2 border-accent-primary'>{index + 1}. {district.toUpperCase()}</span>
                                         <span>{count} envíos</span>
                                     </li>
                                 ))}
