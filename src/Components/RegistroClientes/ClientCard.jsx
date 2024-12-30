@@ -135,7 +135,7 @@ const ClientCard = ({ client }) => {
             </div>
             <div className="flex justify-between mt-6">
                 <button
-                    className="flex items-center justify-center gap-2 text-button-bg bg-button-bg-dark border border-button-bg rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
+                    className="flex items-center justify-center gap-2 text-button-bg bg-gray-200 rounded-lg px-4 py-2 sm:px-4 sm:py-2 font-sans"
                     onClick={toggleModal}
                 >
                     <MdRemoveRedEye size={24} />
@@ -143,7 +143,7 @@ const ClientCard = ({ client }) => {
                 </button>
 
                 <button
-                    className="flex items-center justify-center gap-2 text-button-bg bg-button-bg-dark border border-button-bg rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
+                    className="flex items-center justify-center gap-2 text-button-bg bg-gray-200 rounded-lg px-4 py-2 sm:px-4 sm:py-2 font-sans"
                     onClick={handleUpdateClick}
                 >
                     <MdChecklistRtl size={24} />
@@ -151,7 +151,7 @@ const ClientCard = ({ client }) => {
                 </button>
 
                 <button
-                    className="text-button-bg bg-button-bg-dark border border-button-bg p-1 px-2 rounded-lg"
+                    className="text-button-bg bg-gray-200 p-1 px-2 rounded-lg"
                     onClick={handleDeleteClick}
                 >
                     <MdDelete size={20} />
