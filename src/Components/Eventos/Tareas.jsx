@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTasks, deleteTask } from '../../utils/EventosApiFunctions';  
+import { getTasks, deleteTask } from '../../utils/EventosApiFunctions';
 import { toast } from 'react-toastify';
 import { MdClose } from 'react-icons/md';
 import { format } from 'date-fns'; // Asegúrate de tener esta importación
@@ -42,7 +42,7 @@ const Tareas = () => {
     };
 
     return (
-        <div className="min-h-screen bg-input-bg py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-bg-base py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {users.map(user => (

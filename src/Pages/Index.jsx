@@ -29,7 +29,7 @@ const Index = () => {
             </div>
 
             <div className="bg-bg-base shadow rounded-3xl p-4">
-                <div className="bg-input-bg p-4">
+                <div className="bg-bg-base p-4">
                     <h2 className="text-2xl text-center font-bold mb-4">Resumen de Tareas Asignadas</h2>
                     <Tareas />
                 </div>

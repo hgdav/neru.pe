@@ -176,7 +176,7 @@ const Graficos = () => {
                         </div>
 
                         {/* Gráfico de tipos de envío */}
-                        <div className="p-4 bg-input-bg rounded-lg w-full h-full">
+                        <div className="p-4 bg-bg-base rounded-lg w-full h-full">
                             <h2 className="text-xl font-semibold text-center">Registros según tipo de envío</h2>
                             <div className="h-64 w-full flex justify-center">
                                 <Pie data={generatePieChartData()} />

@@ -5,14 +5,9 @@ import SparklesText from './SparklesText';
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
-    };
-
-    const toggleSubMenu = () => {
-        setIsSubMenuOpen(!isSubMenuOpen);
     };
 
     return (
@@ -43,31 +38,6 @@ function Header() {
                         Destinos
                     </Link>
 
-                    {/* Menú desplegable para "Próximas Funcionalidades" */}
-                    <div className="relative">
-                        <button
-                            onClick={toggleSubMenu}
-                            className="text-contrast hover:text-gray-400 focus:outline-none"
-                        >
-                            Feature Flags
-                        </button>
-                        {isSubMenuOpen && (
-                            <div className="absolute top-full mt-2 bg-bg-base border border-accent-muted shadow-lg rounded-lg py-2 w-32">
-                                <Link to="/colores" className="block px-4 py-2 text-contrast hover:text-gray-400">
-                                    Colores
-                                </Link>
-                                <Link to="/packs" className="block px-4 py-2 text-contrast hover:text-gray-400">
-                                    Packs
-                                </Link>
-                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
-                                    Facturación electrónica
-                                </Link>
-                                <Link to="/" className="block px-4 py-2 text-gray-400 hover:bg-accent-muted">
-                                    Shopify API
-                                </Link>
-                            </div>
-                        )}
-                    </div>
                 </nav>
 
                 {/* Menú desplegable en móviles */}
@@ -109,52 +79,6 @@ function Header() {
                             >
                                 Destinos
                             </Link>
-
-                            {/* Feature Flags - Menú desplegable */}
-                            <div className="w-10/12">
-                                <button
-                                    onClick={toggleSubMenu}
-                                    className="w-full flex justify-between items-center text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
-                                >
-                                    Feature Flags
-                                    <span className="material-icons text-accent-secondary">
-                                        {isSubMenuOpen ? '-' : '+'}
-                                    </span>
-                                </button>
-
-                                {isSubMenuOpen && (
-                                    <div className="bg-bg-base border border-accent-muted shadow-lg rounded-lg py-4 mt-2 space-y-2 transition-all duration-200">
-                                        <Link
-                                            to="/colores"
-                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
-                                            onClick={toggleMenu}
-                                        >
-                                            Colores
-                                        </Link>
-                                        <Link
-                                            to="/packs"
-                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
-                                            onClick={toggleMenu}
-                                        >
-                                            Packs
-                                        </Link>
-                                        <Link
-                                            to="/facturacion"
-                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
-                                            onClick={toggleMenu}
-                                        >
-                                            Facturación electrónica
-                                        </Link>
-                                        <Link
-                                            to="/shopify-api"
-                                            className="block px-6 py-2 text-contrast hover:bg-accent-muted/20 rounded-md transition-all duration-200"
-                                            onClick={toggleMenu}
-                                        >
-                                            Shopify API
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
                         </nav>
                     </div>
 
