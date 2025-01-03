@@ -13,9 +13,9 @@ const FilterByStatus = ({ handleFilter }) => {
         <div className="mb-6">
             <button
                 onClick={handleClick}
-                className={`px-3 py-2 rounded-xl text-sm transition duration-300 ${isClicked ? 'bg-accent-secondary text-accent-secondary-dark' : 'bg-bg-base-white text-text-primary'}`}
+                className={`px-3 py-3 rounded-xl text-sm transition duration-300 ${isClicked ? 'bg-accent-secondary text-accent-secondary-dark' : 'bg-bg-base-white text-text-primary'}`}
             >
-                Hoy
+                Para hoy
             </button>
         </div>
     );
