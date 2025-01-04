@@ -3,7 +3,8 @@ import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import { toast } from 'react-toastify';
-import { MdContentCopy } from 'react-icons/md';
+import { MdContentCopy, MdWhatsapp } from 'react-icons/md';
+
 
 const UpdateStatusModal = ({ isOpen, onClose, client }) => {
     const [codTracking, setCodTracking] = useState(client.cod_tracking || '');
@@ -104,12 +105,12 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     onClick={handleCopyClick}
                     className="flex flex-row items-center"
                 >
-                    <h3 className="text-xl font-semibold text-text-primary mb-4">Códigos de Seguimiento - #{client.ticket}</h3>
-                    <MdContentCopy className={`mb-4 ml-2 transition-transform duration-100 ease-in-out 
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Seguimiento - #{client.ticket}</h3>
+                    <MdWhatsapp className={`mb-4 ml-2 transition-transform duration-100 ease-in-out 
                             ${copied ? 'text-green-800 scale-125' : 'text-green-600'}`} title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
                 </div>
                 <div className='flex flex-row gap-2'>
-                    <div className="space-y-2 w-1/2">
+                    <div className="space-y-2 w-1/2 mt-1">
                         <label className="block text-sm font-medium text-text-primary">Código de Tracking:</label>
                         <input
                             type="text"

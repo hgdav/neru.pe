@@ -209,97 +209,24 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div className="flex items-center p-2">
+                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-gray-700" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>Empaque Regalo</label>
+                        <label className="text-gray-700">Empaque Regalo</label>
                     </div>
-                    <div className="flex items-center p-2">
+                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setDedicatoria(!dedicatoria)}>
                         <input
                             type="checkbox"
                             checked={dedicatoria}
                             onChange={(e) => setDedicatoria(e.target.checked)}
                             className="mr-2"
                         />
-                        <label className="text-text-primary" onClick={() => setDedicatoria(!dedicatoria)}>Dedicatoria</label>
+                        <label className="text-gray-700">Dedicatoria</label>
                     </div>
-
-                    {/* <div>
-                        <label className="block mb-1 text-text-primary">Número de Registro:</label>
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                value={nroSeguimiento}
-                                onChange={(e) => setNroSeguimiento(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(nroSeguimiento);
-                                }}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                <MdContentCopy />
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Tracking:</label>
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                value={codigoTracking}
-                                onChange={(e) => setCodigoTracking(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(codigoTracking);
-                                }}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                <MdContentCopy />
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Código de Recojo:</label>
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                value={codigoRecojo}
-                                onChange={(e) => setCodigoRecojo(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(codigoRecojo);
-                                }}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                <MdContentCopy />
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Estado de Tracking:</label>
-                        <select
-                            value={estadoTracking}
-                            onChange={(e) => setEstadoTracking(e.target.value)}
-                            required
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Enviado">Enviado</option>
-                        </select>
-                    </div> */}
 
                 </div>
                 <button

@@ -29,7 +29,7 @@ function Header() {
                 {/* Menú de navegación */}
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
                     <Link to="/registro" className="text-contrast hover:text-gray-400">
-                        <SparklesText text="Registro" sparklesCount={5} />
+                        <SparklesText text="Registros" sparklesCount={5} />
                     </Link>
                     <Link to="/tallas" className="text-contrast hover:text-gray-400">
                         Tallas
@@ -59,7 +59,7 @@ function Header() {
                                 className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
                                 onClick={toggleMenu}
                             >
-                                Registro
+                                Registros
                             </Link>
 
                             {/* Link: Tallas */}
