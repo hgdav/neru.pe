@@ -15,7 +15,6 @@ const Graficos = () => {
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date());
 
-    // Función para limpiar y normalizar texto
     const normalizeText = (text) => {
         return text ? text.trim().toLowerCase() : '';
     };
@@ -51,7 +50,6 @@ const Graficos = () => {
                         }
                     }
 
-                    // Convertir costos a números y acumular
                     const envioCost = parseFloat(costo_envio);
                     if (!isNaN(envioCost)) {
                         totalEnviosCost += envioCost;
@@ -62,7 +60,6 @@ const Graficos = () => {
                         totalVentasAmount += ventaAmount;
                     }
 
-                    // Contar tipos de envío
                     if (normalizedEnvioType) {
                         if (envioTypeCount[normalizedEnvioType]) {
                             envioTypeCount[normalizedEnvioType]++;
@@ -73,7 +70,6 @@ const Graficos = () => {
                 });
 
 
-                // Ordenar distritos por más frecuentes y limitar a los top 5
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 10);
@@ -154,7 +150,6 @@ const Graficos = () => {
                 <p>Graficando...</p>
             ) : (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
-                    {/* Total de envíos, ventas y registros */}
                     <div className="p-4 bg-base rounded-lg w-full h-full">
                         <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Resumen de ventas y gastos</h2>
                         <div className="h-72 w-full sm:h-64 lg:h-72">
@@ -162,23 +157,21 @@ const Graficos = () => {
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Top 5 distritos con más envíos */}
                         <div className="p-4 bg-bg-base-white rounded-3xl w-full h-full">
-                            <h2 className="text-xl font-semibold">Top 5 Distritos con más envíos</h2>
+                            <h2 className="text-xl font-semibold">Distritos con más envíos</h2>
                             <ul className="mt-4">
-                                {mostFrequentDistrict.map(([district, count], index) => (
-                                    <li key={district} className="flex justify-between text-md border-b-2 border-gray-200">
-                                        <span className='border-accent-primary flex-1 text-left'>{index + 1}. {district.toUpperCase()}</span>
+                                {mostFrequentDistrict.map(([district, count]) => (
+                                    <li key={district} className="flex justify-between items-center text-md border-b-2 border-gray-200">
+                                        <span className='border-accent-primary flex-1 text-left'> {district.toUpperCase()}</span>
                                         <span className='flex-1 text-right'>{count} envíos</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
-                        {/* Gráfico de tipos de envío */}
                         <div className="p-4 bg-bg-base rounded-lg w-full h-full">
                             <h2 className="text-xl font-semibold text-center">Registros según tipo de envío</h2>
-                            <div className="h-64 w-full flex justify-center">
+                            <div className="h-70 w-full flex justify-center">
                                 <Pie data={generatePieChartData()} />
                             </div>
                         </div>

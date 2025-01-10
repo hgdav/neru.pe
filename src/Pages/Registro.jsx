@@ -296,23 +296,22 @@ const Registro = () => {
 
             <div id="recordsContainer" className="w-full bg-bg-base">
                 <div className="container mx-auto">
-                    {isFilteredByStatus ? (
-                        isLoading ? (
-                            <>
-                                <div className="text-center mt-6">
-                                    <div className="mb-8">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            <LoadingRecords />
-                                            <LoadingRecords />
-                                            <LoadingRecords />
-                                            <LoadingRecords />
-                                            <LoadingRecords />
-                                            <LoadingRecords />
-                                        </div>
-                                    </div>
+                    {isLoading ? (
+                        // Mostrar el efecto de carga mientras se realiza la búsqueda o carga de registros
+                        <div className="text-center mt-6">
+                            <div className="mb-8">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <LoadingRecords />
+                                    <LoadingRecords />
+                                    <LoadingRecords />
+                                    <LoadingRecords />
+                                    <LoadingRecords />
+                                    <LoadingRecords />
                                 </div>
-                            </>
-                        ) : orderedDates.length > 0 ? (
+                            </div>
+                        </div>
+                    ) : isFilteredByStatus ? (
+                        orderedDates.length > 0 ? (
                             orderedDates.map((dateKey) => (
                                 <div key={dateKey} className="mb-8">
                                     <h2 className="text-xl font-semibold mb-4">{dateKey}</h2>
@@ -336,14 +335,10 @@ const Registro = () => {
                                         <ClientCard key={record.id} client={record} />
                                     ))
                                 ) : (
-                                    <>
-                                        <LoadingRecords />
-                                        <LoadingRecords />
-                                        <LoadingRecords />
-                                        <LoadingRecords />
-                                        <LoadingRecords />
-                                        <LoadingRecords />
-                                    </>
+                                    // Mostrar mensaje cuando no hay registros disponibles o coincidencias
+                                    <p className="text-center text-gray-500">
+                                        {searchTerm === '' ? 'No hay registros disponibles :c.' : 'No se encontraron coincidencias :c.'}
+                                    </p>
                                 )}
                             </div>
                             {lastVisible && !isFilteredByStatus && searchTerm === '' && (
@@ -362,6 +357,7 @@ const Registro = () => {
                     )}
                 </div>
             </div>
+
         </div>
     );
 };

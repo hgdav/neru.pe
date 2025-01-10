@@ -15,7 +15,8 @@ const FilterByStatus = ({ handleFilter }) => {
                 onClick={handleClick}
                 className={`px-3 py-3 rounded-xl text-sm transition duration-300 ${isClicked ? 'bg-accent-secondary text-accent-secondary-dark' : 'bg-bg-base-white text-text-primary'}`}
             >
-                Para hoy
+                <span className="hidden sm:block">Para hoy</span>
+                <span className="block sm:hidden">Hoy</span>
             </button>
         </div>
     );
