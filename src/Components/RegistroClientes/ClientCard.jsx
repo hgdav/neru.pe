@@ -202,16 +202,16 @@ const ClientCard = ({ client }) => {
                                     <div className="space-y-1">
                                         <div className="flex flex-wrap items-center gap-1">
                                             <p className="text-xs text-muted-foreground">
-                                                #{client.ticket} | {client.distrito.toUpperCase()}
+                                                <b>#{client.ticket}</b> | {client.distrito.toUpperCase()}
                                             </p>
                                         </div>
                                         <p className="font-medium text-sm sm:text-base">{client.nombre}</p>
                                     </div>
                                 </td>
-                                <td className="w-1/4 sm:w-1/3">
-                                    <div className="space-y-1 text-left sm:text-center flex flex-wrap gap-2 justify-center">
+                                <td className="w-1/4 sm:w-1/3 min-w-[150px]">
+                                    <div className="flex flex-col gap-1 text-center">
                                         <span
-                                            className={`${getCourierClass(client.tipo_envio)} px-1 rounded text-xs sm:text-sm text-text-primary`}
+                                            className={`${getCourierClass(client.tipo_envio)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary`}
                                         >
                                             {client.tipo_envio}
                                         </span>
@@ -243,6 +243,8 @@ const ClientCard = ({ client }) => {
                             </tr>
                         </tbody>
                     </table>
+
+
                     {/* Modal con todos los detalles del cliente */}
                     <DetailsModal isOpen={isModalOpen} onClose={toggleModal} client={client} />
 
