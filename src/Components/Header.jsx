@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MdMenu } from "react-icons/md";
+import { MdMenu, MdClose, MdOutlineAssignment, MdOutlineStraighten, MdOutlinePlace, MdUpdate } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import SparklesText from './SparklesText';
 
@@ -37,7 +37,9 @@ function Header() {
                     <Link to="/destinos" className="text-contrast hover:text-gray-400">
                         Destinos
                     </Link>
-
+                    <Link to="/inventario" className="text-contrast hover:text-gray-400">
+                        Inventario
+                    </Link>
                 </nav>
 
                 {/* Menú desplegable en móviles */}
@@ -48,36 +50,44 @@ function Header() {
                             onClick={toggleMenu}
                             className="absolute top-4 right-4 text-3xl text-accent-secondary hover:text-accent-muted focus:outline-none"
                         >
-                            ✕
+                            <MdClose size={32} />
                         </button>
 
                         {/* Navegación */}
                         <nav className="flex flex-col items-center justify-center h-full space-y-6">
-                            {/* Link: Registro */}
                             <Link
                                 to="/registro"
-                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
+                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
                                 onClick={toggleMenu}
                             >
-                                Registros
+                                <MdOutlineAssignment className="mr-4 text-3xl" /> Registros
                             </Link>
 
                             {/* Link: Tallas */}
                             <Link
                                 to="/tallas"
-                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
+                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
                                 onClick={toggleMenu}
                             >
-                                Tallas
+                                <MdOutlineStraighten className="mr-4 text-3xl" /> Tallas
                             </Link>
 
                             {/* Link: Destinos */}
                             <Link
                                 to="/destinos"
-                                className="w-10/12 text-center px-6 py-4 bg-accent-muted/10 text-contrast hover:bg-accent-muted/30 rounded-lg shadow-md text-2xl transition-all duration-200"
+                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
                                 onClick={toggleMenu}
                             >
-                                Destinos
+                                <MdOutlinePlace className="mr-4 text-3xl" /> Destinos
+                            </Link>
+
+                            {/* Link: Inventario */}
+                            <Link
+                                to="/inventario"
+                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
+                                onClick={toggleMenu}
+                            >
+                                <MdUpdate className="mr-4 text-3xl" /> Recepción Inventario
                             </Link>
                         </nav>
                     </div>

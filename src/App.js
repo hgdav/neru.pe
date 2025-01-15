@@ -1,12 +1,11 @@
-import { HashRouter as Router, Route, Routes } from 'react-router-dom'; // Cambia BrowserRouter por HashRouter
-import { Colores } from './Pages/Colores';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { Tallas } from './Pages/Tallas';
 import { Destinos } from './Pages/Destinos';
-import { Packs } from './Pages/Packs';
 import { Registro } from './Pages/Registro';
 import { Index } from './Pages/Index';
 import { Login } from './Pages/Login';
 import { Resumen } from './Pages/Resumen';
+import { Inventario } from './Pages/Inventario';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
 import { ToastContainer } from 'react-toastify';
@@ -28,14 +27,6 @@ function App() {
           }
         />
         <Route
-          path="/colores"
-          element={
-            <PrivateRoute>
-              <Colores />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/tallas"
           element={
             <PrivateRoute>
@@ -52,14 +43,6 @@ function App() {
           }
         />
         <Route
-          path="/packs"
-          element={
-            <PrivateRoute>
-              <Packs />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/registro"
           element={
             <PrivateRoute>
@@ -72,6 +55,14 @@ function App() {
           element={
             <PrivateRoute>
               <Resumen />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/inventario"
+          element={
+            <PrivateRoute>
+              <Inventario />
             </PrivateRoute>
           }
         />

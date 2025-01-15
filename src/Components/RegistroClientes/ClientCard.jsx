@@ -39,7 +39,7 @@ const ClientCard = ({ client }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    const [isntMobile, setIsntMobile] = useState(false);
+    const [isntMobile, setIsntMobile] = useState(true);
 
     useEffect(() => {
         const handleResize = () => {
@@ -92,13 +92,10 @@ const ClientCard = ({ client }) => {
         let fechaDate;
 
         if (fechaEnvio instanceof Timestamp) {
-            // Si es un Timestamp
             fechaDate = fechaEnvio.toDate();
         } else if (fechaEnvio instanceof Date) {
-            // Si es un objeto Date
             fechaDate = fechaEnvio;
         } else if (typeof fechaEnvio === 'string') {
-            // Si es una cadena, intentar parsearla
             const [year, month, day] = fechaEnvio.split('-').map(Number);
             fechaDate = new Date(year, month - 1, day);
         } else {
@@ -208,7 +205,7 @@ const ClientCard = ({ client }) => {
                                         <p className="font-medium text-sm sm:text-base">{client.nombre}</p>
                                     </div>
                                 </td>
-                                <td className="w-1/4 sm:w-1/3 min-w-[150px]">
+                                <td className="w-1/4 sm:w-1/3 min-w-[150px] px-4">
                                     <div className="flex flex-col gap-1 text-center">
                                         <span
                                             className={`${getCourierClass(client.tipo_envio)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary`}
@@ -216,7 +213,7 @@ const ClientCard = ({ client }) => {
                                             {client.tipo_envio}
                                         </span>
                                         <span
-                                            className={`${getStatusClass(client.estado_empaque)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary`}
+                                            className={`${getStatusClass(client.estado_empaque)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary cursor-pointer`}
                                             onClick={handleUpdateClick}
                                         >
                                             {client.estado_empaque}
