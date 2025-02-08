@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRecords } from '../../utils/apiFunctions';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import MonthNavigator from '../RegistroClientes/MonthNavigator';
 import { Link } from 'react-router-dom';
@@ -25,8 +25,6 @@ const Graficos = () => {
             try {
                 const month = currentDate.getMonth();
                 const year = currentDate.getFullYear();
-
-                // Obtener registros del mes actual
                 const records = await fetchRecords(month, year);
 
                 const districtCount = {};
@@ -36,43 +34,24 @@ const Graficos = () => {
 
                 records.forEach((record) => {
                     const { distrito, costo_envio, costo_pedido, tipo_envio } = record;
-
-                    // Normalizar distrito y tipo de envío
                     const normalizedDistrict = normalizeText(distrito);
                     const normalizedEnvioType = normalizeText(tipo_envio);
 
-                    // Contar distritos
                     if (normalizedDistrict) {
-                        if (districtCount[normalizedDistrict]) {
-                            districtCount[normalizedDistrict]++;
-                        } else {
-                            districtCount[normalizedDistrict] = 1;
-                        }
+                        districtCount[normalizedDistrict] = (districtCount[normalizedDistrict] || 0) + 1;
                     }
 
-                    const envioCost = parseFloat(costo_envio);
-                    if (!isNaN(envioCost)) {
-                        totalEnviosCost += envioCost;
-                    }
-
-                    const ventaAmount = parseFloat(costo_pedido);
-                    if (!isNaN(ventaAmount)) {
-                        totalVentasAmount += ventaAmount;
-                    }
+                    totalEnviosCost += parseFloat(costo_envio) || 0;
+                    totalVentasAmount += parseFloat(costo_pedido) || 0;
 
                     if (normalizedEnvioType) {
-                        if (envioTypeCount[normalizedEnvioType]) {
-                            envioTypeCount[normalizedEnvioType]++;
-                        } else {
-                            envioTypeCount[normalizedEnvioType] = 1;
-                        }
+                        envioTypeCount[normalizedEnvioType] = (envioTypeCount[normalizedEnvioType] || 0) + 1;
                     }
                 });
 
-
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
+                    .slice(0, 5);
 
                 setMostFrequentDistrict(sortedDistricts);
                 setTotalEnvios(totalEnviosCost);
@@ -81,7 +60,7 @@ const Graficos = () => {
                 setEnviosPorTipo(envioTypeCount);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching records or calculating data:', error);
+                console.error('Error:', error);
                 setLoading(false);
             }
         };
@@ -93,86 +72,125 @@ const Graficos = () => {
         setCurrentDate(newDate);
     };
 
+    const formatCurrency = (value) => {
+        return value.toLocaleString('es-PE', {
+            style: 'currency',
+            currency: 'PEN',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    };
+
     const generatePieChartData = () => ({
         labels: Object.keys(enviosPorTipo),
-        datasets: [
-            {
-                data: Object.values(enviosPorTipo),
-                backgroundColor: [
-                    '#a3c4f3',
-                    '#f2b8d6',
-                    '#c2e0b4',
-                    '#ffd7a3',
-                    '#e8c3f7',
-                    '#b9e4dd'
-                ],
-                hoverBackgroundColor: [
-                    '#a3c4f3',
-                    '#f2b8d6',
-                    '#c2e0b4',
-                    '#ffd7a3',
-                    '#e8c3f7',
-                    '#b9e4dd'
-                ],
-            },
-        ],
+        datasets: [{
+            data: Object.values(enviosPorTipo),
+            backgroundColor: ['#a3c4f3', '#f2b8d6', '#c2e0b4', '#ffd7a3', '#e8c3f7', '#b9e4dd'],
+            hoverBackgroundColor: ['#a3c4f3', '#f2b8d6', '#c2e0b4', '#ffd7a3', '#e8c3f7', '#b9e4dd'],
+        }],
     });
-
-    const generateBarChartData = () => {
-        const data = [totalEnvios, totalVentas, totalRegistros];
-
-        return {
-            labels: ['Gastos Envío', 'Ventas', 'Cantidad Registros'],
-            datasets: [
-                {
-                    label: 'Cantidad',
-                    data: data,
-                    backgroundColor: ['#ffddae', '#d3eabc', '#405231'],
-                },
-            ],
-        };
-    };
 
     return (
         <div className="bg-bg-base px-6 py-1">
-            {/* Navegador de Meses */}
             <div className="flex justify-between items-center mb-4">
                 <MonthNavigator
                     currentMonth={currentDate.getMonth()}
                     currentYear={currentDate.getFullYear()}
                     onMonthChange={handleMonthChange}
                 />
-                <Link to="/resumen" className="bg-bg-base-white text-accent-secondary rounded-lg flex-end p-1 float-right">
+                <Link to="/resumen" className="bg-bg-base-white text-accent-secondary rounded-lg p-1">
                     <MdInsertChartOutlined size={24} />
                 </Link>
             </div>
+
             {loading ? (
-                <p>Graficando...</p>
+                <p className="text-center py-8">Cargando datos...</p>
             ) : (
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
-                    <div className="p-4 bg-base rounded-lg w-full h-full">
-                        <h2 className="text-xl text-center font-semibold sm:text-center lg:text-left">Resumen de ventas y gastos</h2>
-                        <div className="h-72 w-full sm:h-64 lg:h-72">
-                            <Bar data={generateBarChartData()} options={{ maintainAspectRatio: false }} />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="p-4 bg-bg-base-white rounded-3xl w-full h-full">
-                            <h2 className="text-xl font-semibold">Distritos con más envíos</h2>
-                            <ul className="mt-4">
-                                {mostFrequentDistrict.map(([district, count]) => (
-                                    <li key={district} className="flex justify-between items-center text-md border-b-2 border-gray-200">
-                                        <span className='border-accent-primary flex-1 text-left'> {district.toUpperCase()}</span>
-                                        <span className='flex-1 text-right'>{count} envíos</span>
-                                    </li>
-                                ))}
-                            </ul>
+                <div className="space-y-6">
+                    {/* Sección de Estadísticas */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-1">Gastos de envío</p>
+                                    <p className="text-2xl font-bold text-red-600">
+                                        {formatCurrency(totalEnvios)}
+                                    </p>
+                                </div>
+                                <div className="bg-red-100 p-3 rounded-full ml-3">
+                                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="p-4 bg-bg-base rounded-lg w-full h-full">
-                            <h2 className="text-xl font-semibold text-center">Registros según tipo de envío</h2>
-                            <div className="h-70 w-full flex justify-center">
-                                <Pie data={generatePieChartData()} />
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-1">Ventas totales</p>
+                                    <p className="text-2xl font-bold text-green-600">
+                                        {formatCurrency(totalVentas)}
+                                    </p>
+                                </div>
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 mb-1">Total registros</p>
+                                    <p className="text-2xl font-bold text-black-600">
+                                        {totalRegistros.toLocaleString()}
+                                    </p>
+                                </div>
+                                <div className="bg-gray-100 p-3 rounded-full ml-3">
+                                    <svg className="w-5 h-5 text-black-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Sección de Gráficos y Distritos */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <h2 className="text-xl font-semibold mb-4">Distritos más frecuentes</h2>
+                            <div className="space-y-3">
+                                {mostFrequentDistrict.map(([district, count]) => (
+                                    <div key={district} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <span className="font-medium capitalize">{district}</span>
+                                        <span className="bg-accent-secondary text-accent-secondary-dark px-3 py-1 rounded-full text-sm">
+                                            {count} envíos
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-xl shadow-sm">
+                            <h2 className="text-xl font-semibold mb-4 text-center">Tipos de envío</h2>
+                            <div className="h-72">
+                                <Pie
+                                    data={generatePieChartData()}
+                                    options={{
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            legend: {
+                                                position: 'bottom',
+                                                labels: {
+                                                    padding: 20
+                                                }
+                                            }
+                                        }
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>

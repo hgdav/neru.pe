@@ -315,6 +315,7 @@ const Calendario = () => {
                             value={newEventTitle}
                             onChange={(e) => setNewEventTitle(e.target.value)}
                         />
+                        <label className="block text-sm font-medium mb-1">Asignar a:</label>
                         <select
                             className="w-full p-2 border rounded-md mb-4"
                             value={selectedUser}
