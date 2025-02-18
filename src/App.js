@@ -6,6 +6,7 @@ import { Index } from './Pages/Index';
 import { Login } from './Pages/Login';
 import { Resumen } from './Pages/Resumen';
 import { Inventario } from './Pages/Inventario';
+import { Hora } from './Pages/Hora';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
 import { ToastContainer } from 'react-toastify';
@@ -63,6 +64,14 @@ function App() {
           element={
             <PrivateRoute>
               <Inventario />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/hora"
+          element={
+            <PrivateRoute>
+              <Hora />
             </PrivateRoute>
           }
         />

@@ -67,4 +67,35 @@ async function fetchRecordsByYear(year) {
     }
 }
 
-export { fetchRecords, fetchRecordsByYear };
+// utils/apiFunctions.js
+async function fetchAvailableYears() {
+    try {
+        const q = query(
+            collection(db, "registro-clientes"),
+            orderBy("fecha_envio", "desc")
+        );
+
+        const querySnapshot = await getDocs(q);
+        const years = new Set();
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            // Verificar que existe fecha_envio y es un Timestamp válido
+            if (data.fecha_envio && typeof data.fecha_envio.toDate === 'function') {
+                try {
+                    const fecha = data.fecha_envio.toDate();
+                    years.add(fecha.getFullYear());
+                } catch (error) {
+                    console.warn('Fecha inválida en documento', doc.id, error);
+                }
+            }
+        });
+
+        return Array.from(years).sort((a, b) => b - a);
+    } catch (error) {
+        console.error("Error fetching available years:", error);
+        return [];
+    }
+}
+
+export { fetchRecords, fetchRecordsByYear, fetchAvailableYears }

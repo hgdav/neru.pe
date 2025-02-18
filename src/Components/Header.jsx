@@ -40,6 +40,9 @@ function Header() {
                     <Link to="/inventario" className="text-contrast hover:text-gray-400">
                         Inventario
                     </Link>
+                    <Link to="/hora" className="text-contrast hover:text-gray-400">
+                        Hora
+                    </Link>
                 </nav>
 
                 {/* Menú desplegable en móviles */}
@@ -91,7 +94,6 @@ function Header() {
                             </Link>
                         </nav>
                     </div>
-
                 )}
             </div>
         </header>
