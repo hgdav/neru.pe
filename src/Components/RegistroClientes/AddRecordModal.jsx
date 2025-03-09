@@ -251,7 +251,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center p-2">
+                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
@@ -265,7 +265,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                             Empaque Regalo
                         </label>
                     </div>
-                    <div className="flex items-center p-2">
+                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setDedicatoria(!dedicatoria)}>
                         <input
                             type="checkbox"
                             checked={dedicatoria}
@@ -288,7 +288,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                     {isSubmitting ? 'Agregando...' : 'Agregar Registro'}
                 </button>
             </form>
-        </Modal>
+        </Modal >
     );
 };
 

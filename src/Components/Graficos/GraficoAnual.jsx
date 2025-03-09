@@ -12,7 +12,9 @@ const GraficosAnuales = () => {
         monthlyVentas: Array(12).fill(0),
         giftPackaging: Array(12).fill(0),
         costByTipo: {},
-        costosMensualesPorCourier: {}
+        countByTipo: {},
+        costosMensualesPorCourier: {},
+        enviosMensualesPorCourier: {} // Nuevo estado añadido
     });
 
     const [previousYearData, setPreviousYearData] = useState({
@@ -32,10 +34,12 @@ const GraficosAnuales = () => {
             envios: Array(12).fill(0),
             ventas: Array(12).fill(0),
             giftPackaging: Array(12).fill(0),
-            costosMensualesPorCourier: {}
+            costosMensualesPorCourier: {},
+            enviosMensualesPorCourier: {} // Nuevo dato procesado
         };
 
         const costByTipo = {};
+        const countByTipo = {};
 
         records.forEach(record => {
             const month = record.fecha_envio.toDate().getMonth();
@@ -51,15 +55,25 @@ const GraficosAnuales = () => {
                 monthlyData.giftPackaging[month] += 1;
             }
 
-            // Procesar costos por tipo de courier
+            // Procesar costos y conteos por tipo de courier
             if (tipoEnvio) {
+                // Costos totales
                 costByTipo[tipoEnvio] = (costByTipo[tipoEnvio] || 0) + costoEnvio;
 
-                // Procesar costos mensuales por courier
+                // Conteo total de envíos
+                countByTipo[tipoEnvio] = (countByTipo[tipoEnvio] || 0) + 1;
+
+                // Costos mensuales por courier
                 if (!monthlyData.costosMensualesPorCourier[tipoEnvio]) {
                     monthlyData.costosMensualesPorCourier[tipoEnvio] = Array(12).fill(0);
                 }
                 monthlyData.costosMensualesPorCourier[tipoEnvio][month] += costoEnvio;
+
+                // Envíos mensuales por courier (nuevo)
+                if (!monthlyData.enviosMensualesPorCourier[tipoEnvio]) {
+                    monthlyData.enviosMensualesPorCourier[tipoEnvio] = Array(12).fill(0);
+                }
+                monthlyData.enviosMensualesPorCourier[tipoEnvio][month] += 1;
             }
         });
 
@@ -77,7 +91,9 @@ const GraficosAnuales = () => {
                 monthlyVentas: monthlyData.ventas,
                 giftPackaging: monthlyData.giftPackaging,
                 costByTipo: costByTipo,
-                costosMensualesPorCourier: monthlyData.costosMensualesPorCourier
+                countByTipo: countByTipo,
+                costosMensualesPorCourier: monthlyData.costosMensualesPorCourier,
+                enviosMensualesPorCourier: monthlyData.enviosMensualesPorCourier // Nuevo dato
             });
         }
     }, [normalizeText]);
@@ -131,6 +147,17 @@ const GraficosAnuales = () => {
         }))
     };
 
+    const enviosPorCourierMensual = {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        datasets: Object.entries(yearData.enviosMensualesPorCourier).map(([courier, datos], index) => ({
+            label: courier.toUpperCase(),
+            data: datos,
+            borderColor: `hsl(${index * 90}, 70%, 50%)`,
+            tension: 0.3,
+            fill: false
+        }))
+    };
+
     if (loading) return <div className="p-6 text-center">Cargando datos...</div>;
     if (error) return <div className="p-6 text-red-500">{error}</div>;
 
@@ -151,31 +178,31 @@ const GraficosAnuales = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <KPIBox
-                    title="Ventas Totales"
+                    title="Ventas Totales (Anual)"
                     value={yearData.totalVentas}
                     currency
                     comparison={previousYearData.monthlyVentas.reduce((a, b) => a + b, 0)}
                 />
                 <KPIBox
-                    title="Costos de Envío"
+                    title="Costos de Envío (Anual)"
                     value={yearData.totalEnvios}
                     currency
                     comparison={previousYearData.monthlyEnvios.reduce((a, b) => a + b, 0)}
                 />
                 <KPIBox
-                    title="Pedidos"
+                    title="Pedidos (Anual)"
                     value={yearData.totalRegistros}
                     comparison={previousYearData.monthlyVentas.length}
                 />
                 <KPIBox
-                    title="Empaques Regalo"
+                    title="Empaques Regalo (Anual)"
                     value={yearData.giftPackaging.reduce((a, b) => a + b, 0)}
                     comparison={0}
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ChartCard title="Comparativo de Ventas">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <ChartCard title="Comparativo de Ventas (Anual)">
                     <Line data={{
                         labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                         datasets: [
@@ -195,7 +222,7 @@ const GraficosAnuales = () => {
                     }} />
                 </ChartCard>
 
-                <ChartCard title="Costos por Courier">
+                <ChartCard title="Costos por Courier (Anual)">
                     <Bar data={{
                         labels: Object.keys(yearData.costByTipo).map(t => t.toUpperCase()),
                         datasets: [{
@@ -206,7 +233,7 @@ const GraficosAnuales = () => {
                     }} />
                 </ChartCard>
 
-                <ChartCard title="Empaques de Regalo">
+                <ChartCard title="Empaques de Regalo (Mensual)">
                     <Bar data={{
                         labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                         datasets: [{
@@ -227,6 +254,27 @@ const GraficosAnuales = () => {
                                     title: {
                                         display: true,
                                         text: 'Costo total (S/)'
+                                    }
+                                }
+                            }
+                        }}
+                    />
+                </ChartCard>
+
+                {/* Nuevo gráfico de cantidad de envíos por courier */}
+                <ChartCard title="Cantidad de Envíos por Courier (Mensual)">
+                    <Line
+                        data={enviosPorCourierMensual}
+                        options={{
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        precision: 0
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Cantidad de envíos'
                                     }
                                 }
                             }

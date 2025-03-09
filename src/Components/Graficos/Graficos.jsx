@@ -104,7 +104,7 @@ const Graficos = () => {
             </div>
 
             {loading ? (
-                <p className="text-center py-8">Cargando datos...</p>
+                <p className="text-center py-8">Graficando...</p>
             ) : (
                 <div className="space-y-6">
                     {/* Sección de Estadísticas */}
@@ -165,8 +165,13 @@ const Graficos = () => {
                             <div className="space-y-3">
                                 {mostFrequentDistrict.map(([district, count]) => (
                                     <div key={district} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                        <span className="font-medium capitalize">{district}</span>
-                                        <span className="bg-accent-secondary text-accent-secondary-dark px-3 py-1 rounded-full text-sm">
+                                        {/* Texto con truncado y efecto de desvanecimiento */}
+                                        <span className="font-medium capitalize flex-1 truncate max-w-[70%]">
+                                            {district}
+                                        </span>
+
+                                        {/* Contador con forma circular fija */}
+                                        <span className="bg-accent-secondary text-accent-secondary-dark px-3 py-1 rounded-full text-sm shrink-0">
                                             {count} envíos
                                         </span>
                                     </div>
