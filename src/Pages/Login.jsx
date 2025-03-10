@@ -45,7 +45,7 @@ const Login = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         <div>
@@ -57,13 +57,13 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <button
                             type="submit"
-                            className="w-full bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-3xl hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
+                            className="w-full bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
                             disabled={isLoading}
                         >
                             {isLoading ? (

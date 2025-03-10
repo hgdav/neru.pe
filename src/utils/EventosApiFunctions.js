@@ -2,7 +2,45 @@
 import { db } from './firebaseConfig';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 
-// Función existente para obtener tareas (sin cambios)
+// Funciones para el Calendario (Tickets diarios)
+export const getCalendarEvents = async () => {
+    try {
+        const snapshot = await getDocs(collection(db, 'calendar-events'));
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            date: doc.data().date?.toDate() // Convertir Firestore Timestamp a Date
+        }));
+    } catch (error) {
+        console.error('Error al obtener tickets:', error);
+        return [];
+    }
+};
+
+export const addCalendarEvent = async (event) => {
+    try {
+        const docRef = await addDoc(collection(db, 'calendar-events'), {
+            ...event,
+            date: event.date || new Date(),
+            createdAt: new Date()
+        });
+        return { id: docRef.id, ...event };
+    } catch (error) {
+        console.error('Error al crear ticket:', error);
+        throw error;
+    }
+};
+
+export const deleteCalendarEvent = async (eventId) => {
+    try {
+        await deleteDoc(doc(db, 'calendar-events', eventId));
+    } catch (error) {
+        console.error('Error al eliminar ticket:', error);
+        throw error;
+    }
+};
+
+
 export const getTasks = async () => {
     try {
         const querySnapshot = await getDocs(collection(db, 'eventos-calendario'));
@@ -13,7 +51,6 @@ export const getTasks = async () => {
     }
 };
 
-// Función existente para agregar tareas (sin cambios)
 export const addTask = async (task) => {
     try {
         const docRef = await addDoc(collection(db, 'eventos-calendario'), task);
@@ -24,7 +61,6 @@ export const addTask = async (task) => {
     }
 };
 
-// Función existente para eliminar tareas (sin cambios)
 export const deleteTask = async (taskId) => {
     try {
         await deleteDoc(doc(db, 'eventos-calendario', taskId));

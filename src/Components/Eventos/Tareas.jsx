@@ -44,8 +44,8 @@ const USERS = [
         id: 4,
         name: "David",
         color: {
-            background: 'bg-purple-50',
-            border: 'border-purple-200'
+            background: 'bg-cyan-50',
+            border: 'border-cyan-200'
         }
     }
 ];
@@ -199,7 +199,7 @@ const Tareas = () => {
                                                                     const nextStatus = STATUSES[currentIndex + 1]?.id;
                                                                     if (nextStatus) handleMoveTask(task, nextStatus);
                                                                 }}
-                                                                className="text-gray-400 hover:text-blue-500"
+                                                                className="text-black hover:text-green-500"
                                                             >
                                                                 <MdChevronRight size={20} />
                                                             </button>
@@ -221,18 +221,18 @@ const Tareas = () => {
                             <input
                                 type="text"
                                 placeholder="Título de la tarea"
-                                className="w-full p-2 mb-3 border rounded"
+                                className="w-full p-2 mb-3 border rounded-md"
                                 value={newTask.title}
                                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                             />
                             <textarea
                                 placeholder="Descripción (opcional)"
-                                className="w-full p-2 mb-3 border rounded"
+                                className="w-full p-2 mb-3 border rounded-md"
                                 value={newTask.description}
                                 onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                             />
                             <select
-                                className="w-full p-2 mb-4 border rounded"
+                                className="w-full p-2 mb-4 border rounded-md"
                                 value={newTask.assignee}
                                 onChange={(e) => setNewTask({ ...newTask, assignee: parseInt(e.target.value) })}
                             >
@@ -244,13 +244,13 @@ const Tareas = () => {
                             <div className="flex justify-end gap-2">
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleCreateTask}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    className="px-4 py-2 bg-accent-secondary text-accent-secondary-dark rounded-md"
                                 >
                                     Crear Tarea
                                 </button>
