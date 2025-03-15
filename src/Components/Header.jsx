@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { MdMenu, MdClose, MdOutlineAssignment, MdOutlineStraighten, MdOutlinePlace, MdUpdate } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import React from 'react';
+import {
+    MdOutlineAssignment,
+    MdOutlineStraighten,
+    MdHomeFilled,
+    MdUpdate
+} from "react-icons/md";
+import { Link, useLocation } from 'react-router-dom';
 import SparklesText from './SparklesText';
 
 function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    // Función para determinar la clase activa
+    const isActive = (path) =>
+        location.pathname === path ? 'text-black' : 'text-gray-500';
 
     return (
         <header className="bg-bg-base py-4">
@@ -18,80 +23,60 @@ function Header() {
                         <img
                             src="logo.svg"
                             alt="Logo"
-                            className="w-8 h-8 ml-4"
+                            className="w-8 h-8 ml-4 md:ml-0"
                         />
                     </a>
                 </div>
-                {/* Hamburguesa en móviles */}
-                <MdMenu className="text-contrast md:hidden focus:outline-none mr-4"
-                    onClick={toggleMenu} size={32} />
 
-                {/* Menú de navegación */}
+                {/* Menú de escritorio */}
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
-                    <Link to="/registro" className="text-contrast hover:text-gray-400">
+                    <Link to="/registro" className={`hover:text-gray-400 ${isActive('/registro')}`}>
                         <SparklesText text="Registros" sparklesCount={5} />
                     </Link>
-                    <Link to="/tallas" className="text-contrast hover:text-gray-400">
+                    <Link to="/tallas" className={`hover:text-gray-400 ${isActive('/tallas')}`}>
                         Tallas
                     </Link>
-                    <Link to="/destinos" className="text-contrast hover:text-gray-400">
-                        Destinos
-                    </Link>
-                    <Link to="/inventario" className="text-contrast hover:text-gray-400">
+                    <Link to="/inventario" className={`hover:text-gray-400 ${isActive('/inventario')}`}>
                         Inventario
                     </Link>
                 </nav>
 
-                {/* Menú desplegable en móviles */}
-                {isMenuOpen && (
-                    <div className={`fixed top-0 left-0 w-full h-full bg-bg-base z-50 transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                        {/* Botón para cerrar */}
-                        <button
-                            onClick={toggleMenu}
-                            className="absolute top-4 right-4 text-3xl text-accent-secondary hover:text-accent-muted focus:outline-none"
+                {/* Menú móvil estilo Google Bottom Navigation */}
+                <nav className="md:hidden fixed bottom-0 left-0 w-full bg-bg-base border-t border-contrast/10 z-40">
+                    <div className="grid grid-cols-4 py-2">
+                        <Link
+                            to="/"
+                            className={`flex flex-col items-center text-sm hover:text-gray-400 ${isActive('/')}`}
                         >
-                            <MdClose size={32} />
-                        </button>
+                            <MdHomeFilled className="text-2xl mb-1" />
+                            <span>Inicio</span>
+                        </Link>
 
-                        {/* Navegación */}
-                        <nav className="flex flex-col items-center justify-center h-full space-y-6">
-                            <Link
-                                to="/registro"
-                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
-                                onClick={toggleMenu}
-                            >
-                                <MdOutlineAssignment className="mr-4 text-3xl" /> Registros
-                            </Link>
+                        <Link
+                            to="/registro"
+                            className={`flex flex-col items-center text-sm hover:text-gray-400 ${isActive('/registro')}`}
+                        >
+                            <MdOutlineAssignment className="text-2xl mb-1" />
+                            <span>Registros</span>
+                        </Link>
 
-                            {/* Link: Tallas */}
-                            <Link
-                                to="/tallas"
-                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
-                                onClick={toggleMenu}
-                            >
-                                <MdOutlineStraighten className="mr-4 text-3xl" /> Tallas
-                            </Link>
+                        <Link
+                            to="/tallas"
+                            className={`flex flex-col items-center text-sm hover:text-gray-400 ${isActive('/tallas')}`}
+                        >
+                            <MdOutlineStraighten className="text-2xl mb-1" />
+                            <span>Tallas</span>
+                        </Link>
 
-                            {/* Link: Destinos */}
-                            <Link
-                                to="/destinos"
-                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
-                                onClick={toggleMenu}
-                            >
-                                <MdOutlinePlace className="mr-4 text-3xl" /> Destinos
-                            </Link>
-
-                            {/* Link: Inventario */}
-                            <Link
-                                to="/inventario"
-                                className="w-11/12 flex items-center justify-start px-6 py-4 bg-bg-base-white rounded-lg"
-                                onClick={toggleMenu}
-                            >
-                                <MdUpdate className="mr-4 text-3xl" /> Recepción Inventario
-                            </Link>
-                        </nav>
+                        <Link
+                            to="/inventario"
+                            className={`flex flex-col items-center text-sm hover:text-gray-400 ${isActive('/inventario')}`}
+                        >
+                            <MdUpdate className="text-2xl mb-1" />
+                            <span>Inventario</span>
+                        </Link>
                     </div>
-                )}
+                </nav>
             </div>
         </header>
     );

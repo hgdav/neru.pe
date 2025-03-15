@@ -91,7 +91,7 @@ const Graficos = () => {
     });
 
     return (
-        <div className="bg-bg-base px-6 py-1">
+        <div className="bg-bg-base sm:px-6 py-1 px-2">
             <div className="flex justify-between items-center mb-4">
                 <MonthNavigator
                     currentMonth={currentDate.getMonth()}
