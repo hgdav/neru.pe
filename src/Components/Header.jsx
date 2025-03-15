@@ -11,9 +11,9 @@ import SparklesText from './SparklesText';
 function Header() {
     const location = useLocation();
 
-    // Función para determinar la clase activa
+    // Función mejorada para manejar rutas exactas y subrutas
     const isActive = (path) =>
-        location.pathname === path ? 'text-black' : 'text-gray-500';
+        location.pathname === path ? '!text-black' : 'text-gray-400';
 
     return (
         <header className="bg-bg-base py-4">
@@ -30,18 +30,29 @@ function Header() {
 
                 {/* Menú de escritorio */}
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
-                    <Link to="/registro" className={`hover:text-gray-400 ${isActive('/registro')}`}>
-                        <SparklesText text="Registros" sparklesCount={5} />
+                    <Link
+                        to="/registro"
+                        className={`hover:text-gray-400 ${isActive('/registro')}`}
+                    >
+                        {location.pathname === '/registro' ? (
+                            <SparklesText text="Registros" sparklesCount={5} />
+                        ) : "Registros"}
                     </Link>
-                    <Link to="/tallas" className={`hover:text-gray-400 ${isActive('/tallas')}`}>
+                    <Link
+                        to="/tallas"
+                        className={`hover:text-gray-400 ${isActive('/tallas')}`}
+                    >
                         Tallas
                     </Link>
-                    <Link to="/inventario" className={`hover:text-gray-400 ${isActive('/inventario')}`}>
+                    <Link
+                        to="/inventario"
+                        className={`hover:text-gray-400 ${isActive('/inventario')}`}
+                    >
                         Inventario
                     </Link>
                 </nav>
 
-                {/* Menú móvil estilo Google Bottom Navigation */}
+                {/* Menú móvil */}
                 <nav className="md:hidden fixed bottom-0 left-0 w-full bg-bg-base border-t border-contrast/10 z-40">
                     <div className="grid grid-cols-4 py-2">
                         <Link
