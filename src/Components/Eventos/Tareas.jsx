@@ -131,7 +131,7 @@ const Tareas = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {STATUSES.map((status) => (
-                        <div key={status.id} className="bg-gray-50 rounded-lg shadow-sm p-4">
+                        <div key={status.id} className="bg-bg-base-white rounded-lg shadow-sm p-4">
                             <div className={`${status.color} px-4 py-2 rounded-t-lg mb-4`}>
                                 <h3 className="font-semibold">
                                     {status.title} ({tasks.filter(t => t.status === status.id).length})

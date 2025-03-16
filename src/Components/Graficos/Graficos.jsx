@@ -164,7 +164,7 @@ const Graficos = () => {
                             <h2 className="text-xl font-semibold mb-4">Distritos más frecuentes</h2>
                             <div className="space-y-3">
                                 {mostFrequentDistrict.map(([district, count]) => (
-                                    <div key={district} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <div key={district} className="flex justify-between items-center p-3 bg-bg-base-white rounded-lg">
                                         {/* Texto con truncado y efecto de desvanecimiento */}
                                         <span className="font-medium capitalize flex-1 truncate max-w-[70%]">
                                             {district}
@@ -198,6 +198,7 @@ const Graficos = () => {
                                 />
                             </div>
                         </div>
+
                     </div>
                 </div>
             )}
