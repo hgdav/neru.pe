@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRecords } from '../../utils/apiFunctions';
-import { Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import MonthNavigator from '../RegistroClientes/MonthNavigator';
 import { Link } from 'react-router-dom';
@@ -9,12 +9,13 @@ import { MdInsertChartOutlined } from "react-icons/md";
 const Graficos = () => {
     const [mostFrequentDistrict, setMostFrequentDistrict] = useState([]);
     const [totalEnvios, setTotalEnvios] = useState(0);
-    const [totalVentas, setTotalVentas] = useState(0);
+    const [totalVentas, setTotalVentas] = useState(0);         // Ventas del mes/año actual
+    const [ventasMesAnterior, setVentasMesAnterior] = useState(0); // Ventas del mismo mes/año anterior
     const [totalRegistros, setTotalRegistros] = useState(0);
-    const [enviosPorTipo, setEnviosPorTipo] = useState({});
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date());
 
+    // Normaliza texto (ej. distritos) a minúsculas, sin espacios extra
     const normalizeText = (text) => {
         return text ? text.trim().toLowerCase() : '';
     };
@@ -23,19 +24,28 @@ const Graficos = () => {
         const getRecordsData = async () => {
             setLoading(true);
             try {
+                // Mes y año actuales
                 const month = currentDate.getMonth();
                 const year = currentDate.getFullYear();
-                const records = await fetchRecords(month, year);
 
+                // 1) Registros de ESTE año
+                const recordsThisYear = await fetchRecords(month, year);
+
+                // 2) Registros del AÑO ANTERIOR, mismo mes
+                const recordsLastYear = await fetchRecords(month, year - 1);
+
+                // Variables para conteos y sumas
                 const districtCount = {};
                 let totalEnviosCost = 0;
                 let totalVentasAmount = 0;
-                const envioTypeCount = {};
 
-                records.forEach((record) => {
-                    const { distrito, costo_envio, costo_pedido, tipo_envio } = record;
+                // Suma de ventas del año anterior
+                let totalVentasAmountLastYear = 0;
+
+                // Procesar registros del año actual
+                recordsThisYear.forEach((record) => {
+                    const { distrito, costo_envio, costo_pedido } = record;
                     const normalizedDistrict = normalizeText(distrito);
-                    const normalizedEnvioType = normalizeText(tipo_envio);
 
                     if (normalizedDistrict) {
                         districtCount[normalizedDistrict] = (districtCount[normalizedDistrict] || 0) + 1;
@@ -43,21 +53,26 @@ const Graficos = () => {
 
                     totalEnviosCost += parseFloat(costo_envio) || 0;
                     totalVentasAmount += parseFloat(costo_pedido) || 0;
-
-                    if (normalizedEnvioType) {
-                        envioTypeCount[normalizedEnvioType] = (envioTypeCount[normalizedEnvioType] || 0) + 1;
-                    }
                 });
 
+                // Procesar registros del año anterior
+                recordsLastYear.forEach((record) => {
+                    // Solo nos interesa costo_pedido para comparar ventas
+                    const { costo_pedido } = record;
+                    totalVentasAmountLastYear += parseFloat(costo_pedido) || 0;
+                });
+
+                // Ordenar distritos más frecuentes (solo top 5)
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 5);
 
+                // Actualizar estados
                 setMostFrequentDistrict(sortedDistricts);
                 setTotalEnvios(totalEnviosCost);
                 setTotalVentas(totalVentasAmount);
-                setTotalRegistros(records.length);
-                setEnviosPorTipo(envioTypeCount);
+                setVentasMesAnterior(totalVentasAmountLastYear);
+                setTotalRegistros(recordsThisYear.length); // Solo registros del mes/año actual
                 setLoading(false);
             } catch (error) {
                 console.error('Error:', error);
@@ -68,10 +83,12 @@ const Graficos = () => {
         getRecordsData();
     }, [currentDate]);
 
+    // Para cambiar el mes/año con MonthNavigator
     const handleMonthChange = (newDate) => {
         setCurrentDate(newDate);
     };
 
+    // Formatea un número como moneda (S/ 1,234.56)
     const formatCurrency = (value) => {
         return value.toLocaleString('es-PE', {
             style: 'currency',
@@ -81,13 +98,15 @@ const Graficos = () => {
         });
     };
 
-    const generatePieChartData = () => ({
-        labels: Object.keys(enviosPorTipo),
-        datasets: [{
-            data: Object.values(enviosPorTipo),
-            backgroundColor: ['#a3c4f3', '#f2b8d6', '#c2e0b4', '#ffd7a3', '#e8c3f7', '#b9e4dd'],
-            hoverBackgroundColor: ['#a3c4f3', '#f2b8d6', '#c2e0b4', '#ffd7a3', '#e8c3f7', '#b9e4dd'],
-        }],
+    const generateBarChartData = () => ({
+        labels: ['Este año', 'Año anterior'],
+        datasets: [
+            {
+                label: 'Ventas (S/)',
+                data: [totalVentas, ventasMesAnterior],
+                backgroundColor: ['#010101', '#f5f5f5'],
+            }
+        ]
     });
 
     return (
@@ -129,7 +148,7 @@ const Graficos = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-500 mb-1">Ventas totales</p>
-                                    <p className="text-2xl font-bold text-green-600">
+                                    <p className="text-xl font-bold text-green-600">
                                         {formatCurrency(totalVentas)}
                                     </p>
                                 </div>
@@ -158,19 +177,17 @@ const Graficos = () => {
                         </div>
                     </div>
 
-                    {/* Sección de Gráficos y Distritos */}
+                    {/* Sección Distritos + Gráfico de barras */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Distritos más frecuentes */}
                         <div className="bg-white p-6 rounded-xl shadow-sm">
                             <h2 className="text-xl font-semibold mb-4">Distritos más frecuentes</h2>
                             <div className="space-y-3">
                                 {mostFrequentDistrict.map(([district, count]) => (
                                     <div key={district} className="flex justify-between items-center p-3 bg-bg-base-white rounded-lg">
-                                        {/* Texto con truncado y efecto de desvanecimiento */}
                                         <span className="font-medium capitalize flex-1 truncate max-w-[70%]">
                                             {district}
                                         </span>
-
-                                        {/* Contador con forma circular fija */}
                                         <span className="bg-accent-secondary text-accent-secondary-dark px-3 py-1 rounded-full text-sm shrink-0">
                                             {count} envíos
                                         </span>
@@ -179,11 +196,14 @@ const Graficos = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-xl shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4 text-center">Tipos de envío</h2>
+                        {/* NUEVO: Gráfico comparativo de ventas */}
+                        <div className="bg-white p-6 rounded-xl shadow-sm hidden lg:block">
+                            <h2 className="text-xl font-semibold mb-4 text-center">
+                                Comparativo de meses
+                            </h2>
                             <div className="h-72">
-                                <Pie
-                                    data={generatePieChartData()}
+                                <Bar
+                                    data={generateBarChartData()}
                                     options={{
                                         maintainAspectRatio: false,
                                         plugins: {
@@ -198,7 +218,6 @@ const Graficos = () => {
                                 />
                             </div>
                         </div>
-
                     </div>
                 </div>
             )}

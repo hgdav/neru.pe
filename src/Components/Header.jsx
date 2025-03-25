@@ -18,12 +18,12 @@ function Header() {
     return (
         <header className="bg-bg-base py-4">
             <div className="container mx-auto flex justify-between items-center">
-                <div className="logo">
+                <div className="logo flex justify-center md:justify-start w-full">
                     <a href="/">
                         <img
                             src="logo.svg"
                             alt="Logo"
-                            className="w-8 h-8 ml-4 md:ml-0"
+                            className="w-8 h-8"
                         />
                     </a>
                 </div>
@@ -90,6 +90,7 @@ function Header() {
                 </nav>
             </div>
         </header>
+
     );
 }
 

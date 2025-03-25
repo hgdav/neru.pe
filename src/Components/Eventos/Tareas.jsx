@@ -127,7 +127,7 @@ const Tareas = () => {
     };
 
     return (
-        <div className="min-h-screen bg-bg-base py-8 px-2 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-bg-base py-8 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {STATUSES.map((status) => (

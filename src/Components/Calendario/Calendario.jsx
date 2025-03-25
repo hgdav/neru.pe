@@ -339,7 +339,7 @@ const Calendario = () => {
                 {/* Lista de todos los pendientes futuros */}
                 <div className="space-y-2">
                     {upcomingEvents.length === 0 ? (
-                        <p className="text-gray-500">No hay tickets pendientes.</p>
+                        <p className="text-gray-500">No hay tickets pendientes. Toca un día para crear uno.</p>
                     ) : (
                         upcomingEvents.map((event) => (
                             <div
@@ -403,7 +403,7 @@ const Calendario = () => {
                                                 className="bg-gray-50 p-2 rounded flex justify-between items-center"
                                             >
                                                 <div>
-                                                    <p className="font-medium text-sm">{event.title}</p>
+                                                    <p className="font-medium text-sm" style={{ whiteSpace: "pre-wrap" }}>{event.title}</p>
                                                     <p className="text-xs text-gray-500">
                                                         Asignado a {userName}
                                                     </p>
@@ -421,12 +421,12 @@ const Calendario = () => {
                             )}
 
                             {/* Formulario para agregar un nuevo ticket */}
-                            <input
-                                type="text"
+                            <textarea
                                 placeholder="Nuevo ticket..."
                                 className="w-full p-2 border rounded"
                                 value={newEventTitle}
                                 onChange={(e) => setNewEventTitle(e.target.value)}
+                                rows={4}
                             />
 
                             <select
