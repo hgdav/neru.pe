@@ -41,11 +41,11 @@ const Login = () => {
                             <input
                                 type="email"
                                 id="email"
-                                placeholder="neru@mail.com"
+                                placeholder="usuario@neru.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
+                                className="w-full p-2 border border-black bg-bg-base rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         <div>
@@ -53,17 +53,17 @@ const Login = () => {
                             <input
                                 type="password"
                                 id="password"
-                                placeholder="Contraseña"
+                                placeholder="Contraseña1234"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
+                                className="w-full p-2 border border-black rounded-md bg-bg-base focus:outline-none focus:ring-2 focus:ring-accent-secondary focus:border-transparent"
                             />
                         </div>
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <button
                             type="submit"
-                            className="w-full bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
+                            className="w-full h-12 bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md hover:bg-accent-secondary transition duration-300 flex items-center justify-center"
                             disabled={isLoading}
                         >
                             {isLoading ? (

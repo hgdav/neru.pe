@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
 import ClientCard from '../Components/RegistroClientes/ClientCard';
-import FloatingButton from '../Components/RegistroClientes/FloatingButton';
 import SearchBar from '../Components/RegistroClientes/SearchBar';
 import FilterByStatus from '../Components/RegistroClientes/FilterByStatus';
 import { LoadingRecords } from '../Components/RegistroClientes/LoadingRecords';
@@ -15,10 +14,12 @@ import {
     getDocs,
     startAfter,
     Timestamp,
+    addDoc
 } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
 import { format, isToday, compareAsc } from 'date-fns';
 import { es } from 'date-fns/locale';
+import AddRecordModal from '../Components/RegistroClientes/AddRecordModal';
 
 const Registro = () => {
     const [records, setRecords] = useState([]);
@@ -30,6 +31,7 @@ const Registro = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [isFilteredByStatus, setIsFilteredByStatus] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const fetchInitialRecords = useCallback(() => {
         setIsLoading(true);
@@ -92,7 +94,7 @@ const Registro = () => {
                 if (b.fecha_envio && a.fecha_envio) {
                     return b.fecha_envio.toMillis() - a.fecha_envio.toMillis();
                 }
-                return b.ticket - a.ticket;  // Orden alternativo si no hay fecha_envio
+                return b.ticket - a.ticket;
             });
             setFilteredRecords(sortedRecords);
         } else {
@@ -113,7 +115,6 @@ const Registro = () => {
 
                     let currentRecords = fetchedRecords;
 
-                    // Filtrar por término de búsqueda
                     if (searchTerm !== '') {
                         currentRecords = currentRecords.filter((record) => {
                             const nombre = record.nombre ? record.nombre.toLowerCase() : '';
@@ -145,8 +146,6 @@ const Registro = () => {
         }
     }, [searchTerm, isFilteredByStatus, records]);
 
-
-    // Agrupación por fechas y estado
     useEffect(() => {
         if (isFilteredByStatus) {
             const grouped = filteredRecords.reduce((groups, record) => {
@@ -277,27 +276,70 @@ const Registro = () => {
         setIsFilteredByStatus(!isFilteredByStatus);
     };
 
+    const handleAddRecord = async (newRecordData) => {
+        try {
+            await addDoc(collection(db, 'registro-clientes'), {
+                ...newRecordData,
+                fecha_envio: Timestamp.fromDate(new Date(newRecordData.fecha_envio)),
+                estado_tracking: 'Pendiente',
+                cod_tracking: '',
+                nro_seguimiento: '',
+                clave_recojo: '',
+            });
+            setIsAddModalOpen(false);
+            fetchInitialRecords();
+        } catch (error) {
+            console.error('Error al agregar registro:', error);
+        }
+    };
 
     return (
         <div className="registro-container p-4 bg-bg-base">
-            <div className="container mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
-                    <MonthNavigator
-                        currentMonth={currentDate.getMonth()}
-                        currentYear={currentDate.getFullYear()}
-                        onMonthChange={handleMonthChange}
-                    />
-                    <div className="flex flex-row justify-between items-center mb-4 gap-4">
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-                        <FilterByStatus handleFilter={handleFilterByStatus} />
+            <AddRecordModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onSubmit={handleAddRecord}
+            />
+
+            <div className="container mx-auto px-4">
+                <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-stretch mb-6">
+                    {/* Month Navigator a la izquierda */}
+                    <div className="md:mr-4">
+                        <MonthNavigator
+                            currentMonth={currentDate.getMonth()}
+                            currentYear={currentDate.getFullYear()}
+                            onMonthChange={handleMonthChange}
+                        />
+                    </div>
+
+                    {/* Contenedor derecho - Alineación horizontal en todos los tamaños */}
+                    <div className="flex flex-1 flex-row items-center justify-center sm:justify-end gap-2 sm:gap-4 overflow-x-auto">
+                        {/* Búsqueda con ancho controlado */}
+                        <div className="min-w-[120px] max-w-[200px] sm:max-w-[300px] flex-1">
+                            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                        </div>
+
+                        {/* Grupo de botones */}
+                        <div className="flex flex-row items-center gap-2 sm:gap-4 flex-shrink-0">
+                            <FilterByStatus handleFilter={handleFilterByStatus} />
+                            <button
+                                onClick={() => setIsAddModalOpen(true)}
+                                className="mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark
+                     hover:bg-accent-secondary hover:text-accent-secondary-dark transition-colors 
+                     whitespace-nowrap"
+                            >
+                                <span className="sm:hidden">Nuevo</span>
+                                <span className="hidden sm:block">Nuevo Registro</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div id="recordsContainer" className="w-full bg-bg-base">
                 <div className="container mx-auto">
                     {isLoading ? (
-                        // Mostrar el efecto de carga mientras se realiza la búsqueda o carga de registros
                         <div className="text-center mt-6">
                             <div className="mb-8">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -335,7 +377,6 @@ const Registro = () => {
                                         <ClientCard key={record.id} client={record} />
                                     ))
                                 ) : (
-                                    // Mostrar mensaje cuando no hay registros disponibles o coincidencias
                                     <p className="text-center text-gray-500">
                                         {searchTerm === '' ? 'No hay registros disponibles :c.' : 'No se encontraron coincidencias :c.'}
                                     </p>
@@ -352,12 +393,10 @@ const Registro = () => {
                                     </button>
                                 </div>
                             )}
-                            <FloatingButton />
                         </>
                     )}
                 </div>
             </div>
-
         </div>
     );
 };

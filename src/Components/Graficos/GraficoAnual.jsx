@@ -158,17 +158,17 @@ const GraficosAnuales = () => {
         }))
     };
 
-    if (loading) return <div className="p-6 text-center">Cargando datos...</div>;
+    if (loading) return <div className="p-6 text-center">Graficando...</div>;
     if (error) return <div className="p-6 text-red-500">{error}</div>;
 
     return (
-        <div className="p-6 space-y-8">
+        <div className="p-6 space-y-8 bg-bg-base">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h1 className="text-2xl font-bold">Reporte Anual {year}</h1>
                 <select
                     value={year}
                     onChange={(e) => setYear(Number(e.target.value))}
-                    className="p-2 border rounded-lg w-full md:w-64"
+                    className="p-2 border border-solid border-black bg-bg-base rounded-lg w-full md:w-64"
                 >
                     {availableYears.sort((a, b) => b - a).map(y => (
                         <option key={y} value={y}>{y}</option>
@@ -289,14 +289,14 @@ const GraficosAnuales = () => {
 const KPIBox = ({ title, value, currency = false, comparison }) => {
     const difference = value - comparison;
     return (
-        <div className="bg-white p-4 rounded-xl shadow-sm">
+        <div className="border p-4 rounded-xl shadow-sm">
             <h3 className="text-gray-500 text-sm mb-1">{title}</h3>
             <div className="text-2xl font-bold">
                 {currency ? 'S/ ' : ''}{value.toFixed(2)}
             </div>
             {comparison !== undefined && comparison !== 0 && (
                 <div className={`text-xs mt-1 ${difference >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {difference >= 0 ? '▲' : '▼'} {Math.abs(difference).toFixed(2)} vs anterior
+                    {difference >= 0 ? '▲' : '▼'} S/. {Math.abs(difference).toFixed(2)} que el año anterior
                 </div>
             )}
         </div>
@@ -304,7 +304,7 @@ const KPIBox = ({ title, value, currency = false, comparison }) => {
 };
 
 const ChartCard = ({ title, children }) => (
-    <div className="bg-white p-4 rounded-xl shadow-sm">
+    <div className="border p-4 rounded-xl shadow-sm">
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         <div className="h-64">{children}</div>
     </div>

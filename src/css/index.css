@@ -21,5 +21,31 @@ body {
   font-family: "CircularStd-book", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fcfcfc;
+  background-color: #f0eee6;
+}
+
+
+/* Smooth transitions */
+.modal-container {
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Custom scrollbar for modal */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  padding: 4px;
+}
+
+.modal-body {
+  -webkit-overflow-scrolling: touch;
+  /* Scroll suave en iOS */
 }

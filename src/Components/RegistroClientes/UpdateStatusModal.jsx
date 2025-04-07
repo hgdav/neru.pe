@@ -101,107 +101,134 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div
-                    onClick={handleCopyClick}
-                    className="flex flex-row items-center"
-                >
-                    <h3 className="text-xl font-semibold text-text-primary mb-4">Seguimiento - #{client.ticket}</h3>
-                    <MdWhatsapp className={`mb-4 ml-2 transition-transform duration-100 ease-in-out 
-                            ${copied ? 'text-green-800 scale-125' : 'text-green-600'}`} title='Copiar Número de Teléfono para enviar trackeo por WhatsApp' />
-                </div>
-                <div className='flex flex-row gap-2'>
-                    <div className="space-y-2 w-1/2 mt-1">
-                        <label className="block text-sm font-medium text-text-primary">Código de Tracking:</label>
-                        <input
-                            type="text"
-                            value={codTracking}
-                            onChange={(e) => setCodTracking(e.target.value)}
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                        />
-                    </div>
-                    <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary inline-flex">Número de Registro:&nbsp; <MdContentCopy size={14} onClick={() => navigator.clipboard.writeText('TRACKING:' + codTracking + ' - ' + nroSeguimiento)} title='Copia códigos de seguimiento para Shoppify' /></label>
-                        <input
-                            type="text"
-                            value={nroSeguimiento}
-                            onChange={(e) => setNroSeguimiento(e.target.value)}
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                        />
-                    </div>
-                </div>
-                <div className='flex flex-row gap-2'>
-                    <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary">Clave de Recojo:</label>
-                        <input
-                            type="text"
-                            value={claveRecojo}
-                            onChange={(e) => setClaveRecojo(e.target.value)}
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                        />
-                    </div>
-                    <div className="space-y-2 w-1/2">
-                        <label className="block text-sm font-medium text-text-primary">Costo de Envío:</label>
+                {/* Header con espaciado mejorado */}
+                <div className="relative pb-4 border-b">
+                    <h3 className="text-lg font-semibold pr-10">Seguimiento - #{client.ticket}</h3>
 
-                        <div className="flex items-center border border-gray-300 rounded-md">
-                            <span className="bg-gray-200 text-gray-700 px-3 py-2 border-r border-gray-300">S/</span>
+                    <div
+                        className="absolute top-0 right-0 cursor-pointer transform hover:scale-105"
+                        onClick={handleCopyClick}
+                    >
+                        <MdWhatsapp
+                            className={`transition-transform duration-150 ${copied ? 'text-green-800 scale-110' : 'text-green-600'}`}
+                            size={26}
+                            title='Copiar número de WhatsApp'
+                        />
+                    </div>
+                </div>
+
+                {/* Grid principal con espaciado óptimo */}
+                <div className="grid grid-cols-2 gap-3">
+                    {/* Columna Izquierda */}
+                    <div className="space-y-3">
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">Código Tracking</label>
                             <input
-                                type="number"
-                                value={costoEnvio}
-                                onChange={(e) => setCostoEnvio(e.target.value)}
-                                className="w-full p-2 focus:outline-none rounded-md"
-                                placeholder="0.00"
-                                min="0"
-                                step="0.01"
+                                value={codTracking}
+                                onChange={(e) => setCodTracking(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-accent-secondary"
                             />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">Clave Recojo</label>
+                            <input
+                                value={claveRecojo}
+                                onChange={(e) => setClaveRecojo(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-accent-secondary"
+                            />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">Estado Tracking</label>
+                            <select
+                                value={estadoTracking}
+                                onChange={(e) => setEstadoTracking(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-accent-secondary"
+                            >
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Enviado">Enviado</option>
+                            </select>
                         </div>
                     </div>
 
+                    {/* Columna Derecha */}
+                    <div className="space-y-3">
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">
+                                N° Registro
+                                <MdContentCopy
+                                    size={16}
+                                    className="ml-1.5 inline cursor-pointer text-gray-500 hover:text-blue-600 transition-colors"
+                                    onClick={() => navigator.clipboard.writeText('TRACKING:' + codTracking + ' - ' + nroSeguimiento)}
+                                    title='Copia códigos de seguimiento para Shoppify'
+                                />
+                            </label>
+                            <input
+                                value={nroSeguimiento}
+                                onChange={(e) => setNroSeguimiento(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-accent-secondary"
+                            />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">Costo Envío</label>
+                            <div className="flex border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-accent-secondary">
+                                <span className="bg-gray-200 px-2.5 py-2.5 text-sm border-r">S/</span>
+                                <input
+                                    type="number"
+                                    value={costoEnvio}
+                                    onChange={(e) => setCostoEnvio(e.target.value)}
+                                    className="w-full p-2 focus:outline-none text-sm"
+                                    placeholder="0.00"
+                                    step="0.01"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="block text-sm text-gray-600 mb-1.5">Estado Empaque</label>
+                            <select
+                                value={estadoEmpaque}
+                                onChange={(e) => setEstadoEmpaque(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-accent-secondary"
+                            >
+                                {opcionesEstadoEmpaque.map(opcion => (
+                                    <option key={opcion} value={opcion}>{opcion}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-text-primary">Estado de Empaque:</label>
-                    <select
-                        value={estadoEmpaque}
-                        onChange={(e) => setEstadoEmpaque(e.target.value)}
-                        required
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                    >
-                        {opcionesEstadoEmpaque.map((opcion) => (
-                            <option key={opcion} value={opcion}>
-                                {opcion}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-text-primary">Tracking:</label>
-                    <select
-                        value={estadoTracking}
-                        onChange={(e) => setEstadoTracking(e.target.value)}
-                        required
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                    >
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Enviado">Enviado</option>
-                    </select>
-                </div>
-                <div className='flex flex-row gap-2'>
+
+                {/* Botones con espaciado perfecto */}
+                <div className="flex gap-3 pt-4">
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-accent-secondary text-accent-secondary-dark w-full p-2 rounded-md mt-4 disabled:opacity-50"
+                        className="bg-accent-secondary text-white py-2.5 rounded-md w-full text-sm font-medium
+                     active:scale-95 transition-transform disabled:opacity-70"
                     >
-                        {isSubmitting ? 'Actualizando...' : 'Actualizar'}
+                        {isSubmitting ? (
+                            <span className="inline-flex items-center justify-center">
+                                <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12H19C19 15.866 15.866 19 12 19V22Z" fill="currentColor" />
+                                    <path d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z" fill="currentColor" />
+                                </svg>
+                                Actualizando...
+                            </span>
+                        ) : 'Actualizar'}
                     </button>
+
                     <div
                         onClick={() => {
                             navigator.clipboard.writeText(mensajeWsp);
                             setCopiado(true);
                             setTimeout(() => setCopiado(false), 1000);
                         }}
-                        className="ml-2 flex items-center justify-center p-2 mt-4 bg-text-contrast text-white w-10 h-10 rounded-md cursor-pointer"
+                        className="flex items-center justify-center p-2.5 bg-text-contrast text-white w-12 h-12 rounded-md cursor-pointer hover:bg-opacity-90 transition-opacity"
                     >
-                        <MdContentCopy title='Copiar mensaje de tracking para WhatsApp' className={`transition-transform duration-100 ease-in-out 
-                            ${copiado ? ' scale-125' : 'text-white'}`} />
+                        <MdContentCopy className={`text-lg transition-transform duration-150 ease-out ${copiado ? 'scale-125' : ''}`} />
                     </div>
                 </div>
             </form>

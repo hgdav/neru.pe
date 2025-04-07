@@ -202,10 +202,10 @@ const Calendario = () => {
                         {format(currentDate, "MMMM yyyy", { locale: es })}
                     </h1>
                     <div className="flex gap-2">
-                        <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded">
+                        <button onClick={prevMonth} className="p-1 border border-solid border-black rounded rounded-lg">
                             <MdChevronLeft size={24} />
                         </button>
-                        <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded">
+                        <button onClick={nextMonth} className="p-1 border border-solid border-black rounded rounded-lg">
                             <MdChevronRight size={24} />
                         </button>
                     </div>
@@ -250,22 +250,24 @@ const Calendario = () => {
                                 onClick={() => handleDayClick(date)}
                             >
                                 <div className="font-bold mb-1">{i + 1}</div>
-                                {dayEvents.map((event) => {
-                                    const userColor =
-                                        users.find((u) => u.id === event.userId)?.color || "#333";
-                                    return (
-                                        <div
-                                            key={event.id}
-                                            className="text-xs p-1 mb-1 rounded truncate"
-                                            style={{
-                                                backgroundColor: userColor,
-                                                color: "white"
-                                            }}
-                                        >
-                                            {event.title}
-                                        </div>
-                                    );
-                                })}
+                                <div className="h-[calc(100%-24px)] overflow-y-hidden">
+                                    {dayEvents.map((event) => {
+                                        const userColor =
+                                            users.find((u) => u.id === event.userId)?.color || "#333";
+                                        return (
+                                            <div
+                                                key={event.id}
+                                                className="text-xs p-1 mb-1 rounded truncate"
+                                                style={{
+                                                    backgroundColor: userColor,
+                                                    color: "white"
+                                                }}
+                                            >
+                                                {event.title}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         );
                     })}
@@ -294,14 +296,14 @@ const Calendario = () => {
             <div className="space-y-4">
                 {/* Encabezado: navegación semanal */}
                 <div className="flex items-center justify-between">
-                    <button onClick={prevWeek} className="bg-bg-base-white text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary">
+                    <button onClick={prevWeek} className="border border-solid border-black text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary">
                         <MdChevronLeft size={24} />
                     </button>
                     <h1 className="text-xl font-bold">
                         {format(selectedWeekStart, "d MMM", { locale: es })} -{" "}
                         {format(addDays(selectedWeekStart, 6), "d MMM yyyy", { locale: es })}
                     </h1>
-                    <button onClick={nextWeek} className="bg-bg-base-white text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary">
+                    <button onClick={nextWeek} className="border border-solid border-black text-accent-secondary rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-accent-primary">
                         <MdChevronRight size={24} />
                     </button>
                 </div>

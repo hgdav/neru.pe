@@ -34,7 +34,7 @@ function Header() {
                         to="/registro"
                         className={`hover:text-gray-400 ${isActive('/registro')}`}
                     >
-                        {location.pathname === '/registro' ? (
+                        {location.pathname === '/' ? (
                             <SparklesText text="Registros" sparklesCount={5} />
                         ) : "Registros"}
                     </Link>

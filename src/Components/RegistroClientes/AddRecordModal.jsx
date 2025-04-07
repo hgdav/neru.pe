@@ -146,149 +146,163 @@ const AddRecordModal = ({ isOpen, onClose }) => {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-xl font-semibold">Nuevo Registro</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Pedido #:</label>
+            <form onSubmit={handleSubmit} className="space-y-3">
+                <h3 className="text-md font-semibold px-1 mb-3 text-center">Nuevo Registro</h3>
+
+                {/* Sección Principal - 2 columnas */}
+                <div className="grid grid-cols-2 gap-2">
+                    {/* Fila 1 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">N° Pedido</label>
                         <input
-                            type="text"
                             value={ticket}
                             onChange={(e) => setTicket(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Tipo de Envío:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Tipo Envío</label>
                         <select
                             value={tipoEnvio}
                             onChange={(e) => setTipoEnvio(e.target.value)}
+                            className="w-full p-2.5 border border-gray-300 rounded-md text-sm bg-white"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         >
-                            {opcionesTipoEnvio.map((opcion) => (
-                                <option key={opcion} value={opcion}>
-                                    {opcion}
-                                </option>
+                            {opcionesTipoEnvio.map(opcion => (
+                                <option key={opcion} value={opcion} className="text-sm">{opcion}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Estado de Empaque:</label>
+
+                    {/* Fila 2 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Estado</label>
                         <select
                             value={estadoEmpaque}
                             onChange={(e) => setEstadoEmpaque(e.target.value)}
+                            className="w-full p-2.5 border border-gray-300 rounded-md text-sm bg-white"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         >
-                            {opcionesEstadoEmpaque.map((opcion) => (
-                                <option key={opcion} value={opcion}>
-                                    {opcion}
-                                </option>
+                            {opcionesEstadoEmpaque.map(opcion => (
+                                <option key={opcion} value={opcion} className="text-sm">{opcion}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Fecha de Envío:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Fecha</label>
                         <input
                             type="date"
                             value={fechaEnvio}
                             onChange={(e) => setFechaEnvio(e.target.value)}
+                            className="w-full p-1.5 border border-gray-300 rounded-md text-sm"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Nombre:</label>
+
+                    {/* Fila 3 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Nombre</label>
                         <input
-                            type="text"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Teléfono:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Teléfono</label>
                         <input
-                            type="text"
                             value={telefono}
                             onChange={(e) => setTelefono(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-gray-700">Distrito:</label>
+
+                    {/* Fila 4 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Distrito</label>
                         <input
-                            type="text"
                             value={distrito}
                             onChange={(e) => setDistrito(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
                             required
-                            className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
-                        <label className="block mb-1 text-gray-700">Precio del Pedido:</label>
-                        <div className="flex items-center border border-gray-300 rounded-md">
-                            <span className="bg-gray-200 text-gray-700 px-3 py-2 border-r border-gray-300">S/</span>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600 font-medium">Total</label>
+                        <div className="flex border border-gray-200 rounded-md bg-white">
+                            <span className="bg-gray-100 px-2 py-1.5 text-sm text-sm border-r">S/</span>
                             <input
                                 type="number"
                                 value={costoPedido}
                                 onChange={(e) => setCostoPedido(e.target.value)}
-                                required
-                                className="w-full p-2 focus:outline-none rounded-md"
+                                className="w-full p-2 text-sm focus:outline-none"
                                 placeholder="0.00"
-                                min="0"
                                 step="0.01"
+                                required
                             />
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>
+
+                {/* Checkboxes en línea */}
+                <div className="grid grid-cols-2 gap-2">
+                    <div
+                        className="flex items-center p-2 bg-gray-100 rounded-md cursor-pointer"
+                        onClick={() => setEmpaqueRegalo(!empaqueRegalo)}
+                    >
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
-                            className="mr-2"
+                            className="h-4 w-4 border-gray-300 rounded"
                         />
-                        <label
-                            className="text-gray-700"
-                            onClick={() => setEmpaqueRegalo(!empaqueRegalo)}
-                        >
-                            Empaque Regalo
+                        <label className="ml-2 text-gray-700 cursor-pointer">
+                            Regalo
                         </label>
                     </div>
-                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setDedicatoria(!dedicatoria)}>
+
+                    <div
+                        className="flex items-center p-2 bg-gray-100 rounded-md cursor-pointer"
+                        onClick={() => setDedicatoria(!dedicatoria)}
+                    >
                         <input
                             type="checkbox"
                             checked={dedicatoria}
                             onChange={(e) => setDedicatoria(e.target.checked)}
-                            className="mr-2"
+                            className="h-4 w-4 border-gray-300 rounded"
                         />
-                        <label
-                            className="text-gray-700"
-                            onClick={() => setDedicatoria(!dedicatoria)}
-                        >
+                        <label className="ml-2 text-gray-700 cursor-pointer">
                             Dedicatoria
                         </label>
                     </div>
                 </div>
                 <button
                     type="submit"
-                    className="bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md w-full mt-4"
+                    className="bg-accent-secondary text-white py-2.5 rounded-md w-full h-12 text-sm font-medium
+                     active:scale-95 transition-transform disabled:opacity-70"
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? 'Agregando...' : 'Agregar Registro'}
+                    {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                            <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            Guardando...
+                        </span>
+                    ) : (
+                        'Crear Registro'
+                    )}
                 </button>
             </form>
-        </Modal >
+        </Modal>
     );
 };
 

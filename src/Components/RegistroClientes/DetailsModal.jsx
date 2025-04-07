@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
-import { MdContentCopy } from 'react-icons/md';
+import { MdContentCopy, MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Timestamp } from 'firebase/firestore';
 
@@ -99,143 +99,186 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
         }
     };
 
+    const handleDeleteClick = async () => {
+        const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este registro?');
+        if (!confirmDelete) return;
+
+        try {
+            await deleteDoc(doc(db, 'registro-clientes', client.id));
+            toast.success('Eliminado exitosamente');
+        } catch (error) {
+            console.error('Error eliminando el registro:', error);
+        }
+    };
+
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-sm font-semibold text-text-primary">{client.nombre}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-1 text-text-primary">Pedido #:</label>
+                <h3 className="text-md font-semibold mb-2 px-1 text-center">{client.nombre}</h3>
+
+                <div className="grid grid-cols-2 gap-2">
+                    {/* Fila 1 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Pedido #</label>
                         <input
-                            type="text"
                             value={ticket}
                             onChange={(e) => setTicket(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
+                            className="w-full p-1.5 text-sm border border-gray-200 rounded-md"
                         />
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Tipo de Envío:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Tipo Envío</label>
                         <select
                             value={tipoEnvio}
                             onChange={(e) => setTipoEnvio(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
+                            className="w-full p-2 text-sm border border-gray-200 rounded-md"
                         >
-                            {opcionesTipoEnvio.map((opcion) => (
-                                <option key={opcion} value={opcion}>
-                                    {opcion}
-                                </option>
+                            {opcionesTipoEnvio.map(opcion => (
+                                <option key={opcion} value={opcion}>{opcion}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Estado de Empaque:</label>
+
+                    {/* Fila 2 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Estado</label>
                         <select
                             value={estadoEmpaque}
                             onChange={(e) => setEstadoEmpaque(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
+                            className="w-full p-2 text-sm border border-gray-200 rounded-md"
                         >
-                            {opcionesEstadoEmpaque.map((opcion) => (
-                                <option key={opcion} value={opcion}>
-                                    {opcion}
-                                </option>
+                            {opcionesEstadoEmpaque.map(opcion => (
+                                <option key={opcion} value={opcion}>{opcion}</option>
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Fecha de Envío:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Fecha Envío</label>
                         <input
                             type="date"
                             value={fechaEnvio}
                             onChange={(e) => setFechaEnvio(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
+                            className="w-full p-1.5 text-sm border border-gray-200 rounded-md"
                         />
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Costo de Envío:</label>
-                        <div className="flex items-center border border-gray-300 rounded-md">
-                            <span className="bg-gray-200 text-gray-700 px-3 py-2 border-r border-gray-300">S/</span>
+
+                    {/* Fila 3 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Costo Envío</label>
+                        <div className="flex border border-gray-200 rounded-md">
+                            <span className="bg-gray-100 px-2 py-1.5 text-sm">S/</span>
                             <input
                                 type="number"
                                 value={costoEnvio}
                                 onChange={(e) => setCostoEnvio(e.target.value)}
-                                className="w-full p-2 focus:outline-none"
+                                className="w-full p-1.5 text-sm focus:outline-none"
                                 placeholder="0.00"
-                                min="0"
                                 step="0.01"
                             />
                         </div>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Precio del Pedido:</label>
-                        <div className="flex items-center border border-gray-300 rounded-md">
-                            <span className="bg-gray-200 text-gray-700 px-3 py-2 border-r border-gray-300">S/</span>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Precio Pedido</label>
+                        <div className="flex border border-gray-200 rounded-md">
+                            <span className="bg-gray-100 px-2 py-1.5 text-sm">S/</span>
                             <input
                                 type="number"
                                 value={costoPedido}
                                 onChange={(e) => setCostoPedido(e.target.value)}
-                                className="w-full p-2 focus:outline-none rounded-md"
+                                className="w-full p-1.5 text-sm focus:outline-none"
                                 placeholder="0.00"
-                                min="0"
                                 step="0.01"
                             />
                         </div>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Teléfono:</label>
-                        <div className="flex items-center">
+
+                    {/* Fila 4 */}
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Teléfono</label>
+                        <div className="flex items-center relative">
                             <input
-                                type="text"
                                 value={telefono}
                                 onChange={(e) => setTelefono(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md"
+                                className="w-full p-1.5 text-sm border border-gray-200 rounded-md pr-6"
                             />
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(telefono);
-                                }}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                <MdContentCopy />
-                            </button>
+                            <MdContentCopy
+                                onClick={() => navigator.clipboard.writeText(telefono)}
+                                className="absolute right-2 text-gray-500 cursor-pointer"
+                                size={16}
+                            />
                         </div>
                     </div>
-                    <div>
-                        <label className="block mb-1 text-text-primary">Distrito:</label>
+
+                    <div className="space-y-1">
+                        <label className="block text-xs text-gray-600">Distrito</label>
                         <input
-                            type="text"
                             value={distrito}
                             onChange={(e) => setDistrito(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
+                            className="w-full p-1.5 text-sm border border-gray-200 rounded-md"
                         />
                     </div>
-                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setEmpaqueRegalo(!empaqueRegalo)}>
+                </div>
+
+                {/* Checkboxes en línea */}
+                <div className="grid grid-cols-2 gap-2">
+                    <div
+                        className="flex items-center p-2 bg-gray-100 rounded-md cursor-pointer"
+                        onClick={() => setEmpaqueRegalo(!empaqueRegalo)}
+                    >
                         <input
                             type="checkbox"
                             checked={empaqueRegalo}
                             onChange={(e) => setEmpaqueRegalo(e.target.checked)}
-                            className="mr-2"
+                            className="h-4 w-4 border-gray-300 rounded"
                         />
-                        <label className="text-gray-700">Empaque Regalo</label>
+                        <label className="ml-2 text-gray-700 cursor-pointer">
+                            Regalo
+                        </label>
                     </div>
-                    <div className="flex items-center p-2 bg-bg-base-white rounded-md" onClick={() => setDedicatoria(!dedicatoria)}>
+
+                    <div
+                        className="flex items-center p-2 bg-gray-100 rounded-md cursor-pointer"
+                        onClick={() => setDedicatoria(!dedicatoria)}
+                    >
                         <input
                             type="checkbox"
                             checked={dedicatoria}
                             onChange={(e) => setDedicatoria(e.target.checked)}
-                            className="mr-2"
+                            className="h-4 w-4 border-gray-300 rounded"
                         />
-                        <label className="text-gray-700">Dedicatoria</label>
+                        <label className="ml-2 text-gray-700 cursor-pointer">
+                            Dedicatoria
+                        </label>
                     </div>
-
                 </div>
-                <button
-                    type="submit"
-                    className="bg-accent-secondary text-accent-secondary-dark py-2 px-4 rounded-md w-full mt-4"
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? 'Actualizando...' : 'Actualizar Registro'}
-                </button>
+
+                <div className="flex gap-3 pt-4">
+                    <button
+                        type="submit"
+                        className="bg-accent-secondary text-white py-2.5 rounded-md w-full text-sm font-medium
+                     active:scale-95 transition-transform disabled:opacity-70"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? (
+                            <span className="inline-flex items-center justify-center">
+                                <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12H19C19 15.866 15.866 19 12 19V22Z" fill="currentColor" />
+                                    <path d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z" fill="currentColor" />
+                                </svg>
+                                Guardando...
+                            </span>
+                        ) : 'Guardar'}
+                    </button>
+                    <button
+                        className="flex items-center justify-center p-2.5 bg-text-contrast text-white w-12 h-12 rounded-md cursor-pointer hover:bg-opacity-90 transition-opacity"
+                        onClick={handleDeleteClick}
+                    >
+                        <MdDelete size={16} />
+                    </button>
+                </div>
             </form>
         </Modal>
     );

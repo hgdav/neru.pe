@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DetailsModal from './DetailsModal';
 import UpdateStatusModal from './UpdateStatusModal';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../utils/firebaseConfig';
-import { MdRemoveRedEye, MdChecklistRtl, MdDelete, MdCardGiftcard, MdImageAspectRatio } from "react-icons/md";
-import { toast } from 'react-toastify';
+import { MdRemoveRedEye, MdChecklistRtl, MdCardGiftcard, MdImageAspectRatio, MdLocationPin } from "react-icons/md";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Timestamp } from 'firebase/firestore';
@@ -16,7 +13,7 @@ function getStatusClass(estadoEmpaque) {
         case 'Pendiente':
             return 'bg-red-200 text-red-800';
         case 'Enviado':
-            return 'bg-accent-primary text-accent-primary-dark';
+            return 'bg-bg-base-white text-accent-primary-dark';
         default:
             return 'bg-gray-200 text-gray-800';
     }
@@ -35,6 +32,21 @@ function getCourierClass(tipo_envio) {
     }
 }
 
+function getCourierImg(tipo_envio) {
+    switch (tipo_envio) {
+        case 'Olva Courier':
+            return '/img/olva.png';
+        case 'Shalom':
+            return '/img/shalom.ico';
+        case 'GoPack':
+            return '/img/gopack.png';
+        case 'InDrive':
+            return '/img/indrive.png';
+        default:
+            return 'logo.svg';
+    }
+}
+
 const ClientCard = ({ client }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -43,7 +55,7 @@ const ClientCard = ({ client }) => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsntMobile(window.innerWidth >= 768); // <= 768px se considera móvil
+            setIsntMobile(window.innerWidth >= 768);
         };
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -63,18 +75,6 @@ const ClientCard = ({ client }) => {
         setIsUpdateModalOpen(false);
     };
 
-    const handleDeleteClick = async () => {
-        const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar este registro?');
-        if (!confirmDelete) return;
-
-        try {
-            await deleteDoc(doc(db, 'registro-clientes', client.id));
-            toast.success('Eliminado exitosamente');
-        } catch (error) {
-            console.error('Error eliminando el registro:', error);
-        }
-    };
-
     const verifyEmpaque = () => {
         return client.empaque_regalo === true;
     };
@@ -82,8 +82,6 @@ const ClientCard = ({ client }) => {
     const verifyDedicatoria = () => {
         return client.dedicatoria === true;
     };
-
-    // ClientCard.jsx
 
     const fechaEnvio = client.fecha_envio;
     let fechaEnvioString = 'Sin fecha de envío';
@@ -113,27 +111,24 @@ const ClientCard = ({ client }) => {
                 <div className="rounded-3xl p-6 mb-4 bg-bg-base-white">
                     <div className="card-header border-b border-gray-300 pb-4">
                         <div className="flex items-center justify-between gap-2">
+                            <div className="text-sm text-gray-500 inline-flex items-center gap-1">
+                                <div className='rounded-full bg-bg-base-white p-1'>
+                                    <img src={getCourierImg(client.tipo_envio)} alt="Logo del Courier" className="w-8 h-8 rounded-full" />
+                                </div>
+                                {fechaEnvioString}
+                            </div>
                             <div className="inline-flex items-center gap-1">
                                 {verifyEmpaque() && <MdCardGiftcard size={24} />}
                                 {verifyDedicatoria() && <MdImageAspectRatio size={24} />}
                             </div>
-                            <h3 className="text-md text-gray-500">
-                                <b>#{client.ticket}</b> | {fechaEnvioString}
-                            </h3>
                         </div>
                     </div>
                     <div className="my-2">
-                        <h2 className="text-lg font-semibold text-text-primary">{client.nombre}</h2>
+                        <h3 className="text-lg text-gray-500 font-semibold mb-1">#{client.ticket}</h3>
+                        <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
+
                         <div className="info-row mt-2">
-                            <span className="font-bold text-text-primary">Courier:</span>
-                            <span
-                                className={`${getCourierClass(client.tipo_envio)} ml-2 p-1 rounded text-text-primary`}
-                            >
-                                {client.tipo_envio}
-                            </span>
-                        </div>
-                        <div className="info-row mt-2">
-                            <span className="font-bold text-text-primary">Estado de Empaque:</span>
+                            <span className="font-bold text-text-primary">Empaque:</span>
                             <span
                                 className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}
                             >
@@ -148,38 +143,39 @@ const ClientCard = ({ client }) => {
                                 {client.estado_tracking}
                             </span>
                         </div>
-                        <div className="info-row mt-2">
-                            <span className="font-bold text-text-primary">Destino:</span>
-                            <span className="ml-2 text-text-primary">{client.distrito.toUpperCase()}</span>
+                        <div className="info-row mt-2 flex items-center">
+                            <span className="font-bold text-text-primary"><MdLocationPin size={22} /></span>
+                            <span className="ml-2 text-text-primary font-bold">{client.distrito.toUpperCase()}</span>
                         </div>
                     </div>
-                    <div className="flex justify-between mt-6">
+                    <div className="flex justify-end gap-3 sm:gap-4 mt-6">
                         <button
-                            className="flex items-center justify-center gap-2 text-button-bg bg-gray-200 rounded-lg px-4 py-2 sm:px-4 sm:py-2 font-sans"
+                            className="flex items-center gap-1 text-button-bg hover:bg-bg-base rounded-xl px-2 py-1 sm:px-4 sm:py-2 transition-all duration-200 group relative"
                             onClick={toggleModal}
                         >
-                            <MdRemoveRedEye size={24} />
-                            <span className="hidden sm:inline">Detalles</span>
+                            <MdRemoveRedEye size={18} className="opacity-80 group-hover:opacity-100" />
+                            <span className="hidden sm:inline text-sm relative">
+                                Detalles
+                                <span className="absolute bottom-0 left-1/2 w-0 h-px bg-black transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                            </span>
                         </button>
 
                         <button
-                            className="flex items-center justify-center gap-2 text-button-bg bg-gray-200 rounded-lg px-4 py-2 sm:px-4 sm:py-2 font-sans"
+                            className="flex items-center gap-2 hover:bg-bg-base rounded-xl px-3 py-2 sm:px-4 sm:py-2 transition-all duration-200 group relative"
                             onClick={handleUpdateClick}
                         >
-                            <MdChecklistRtl size={24} />
-                            <span className="hidden sm:inline">Seguimiento</span>
-                        </button>
-
-                        <button
-                            className="text-button-bg bg-gray-200 p-1 px-2 rounded-lg"
-                            onClick={handleDeleteClick}
-                        >
-                            <MdDelete size={20} />
+                            <MdChecklistRtl size={24} className="opacity-80 group-hover:opacity-100" />
+                            <span className="hidden sm:inline relative">
+                                Seguimiento
+                                <span className="absolute bottom-0 left-1/2 w-0 h-px bg-black transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                            </span>
                         </button>
                     </div>
 
                     {/* Modal con todos los detalles del cliente */}
-                    <DetailsModal isOpen={isModalOpen} onClose={toggleModal} client={client} />
+                    <DetailsModal isOpen={isModalOpen}
+                        onClose={toggleModal}
+                        client={client} />
 
                     {/* Modal para actualizar estado */}
                     {isUpdateModalOpen && (
@@ -223,17 +219,17 @@ const ClientCard = ({ client }) => {
                                 <td className="w-full sm:w-auto">
                                     <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-center">
                                         <button
-                                            className="flex items-center justify-center gap-1 text-button-bg bg-gray-200 rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
+                                            className="flex items-center justify-center gap-1 text-button-bg border border-solid border-black rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
                                             onClick={toggleModal}
                                         >
-                                            <MdRemoveRedEye size={16} />
+                                            <MdRemoveRedEye size={18} />
                                             <span className="hidden sm:inline text-sm">Detalles</span>
                                         </button>
                                         <button
-                                            className="flex items-center justify-center gap-1 text-button-bg bg-gray-200 rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
-                                            onClick={handleDeleteClick}
+                                            className="flex items-center justify-center gap-1 text-button-bg border border-solid border-black rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
+                                            onClick={handleUpdateClick}
                                         >
-                                            <MdDelete size={16} />
+                                            <MdChecklistRtl size={18} />
                                         </button>
                                     </div>
                                 </td>
