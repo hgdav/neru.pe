@@ -49,3 +49,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   -webkit-overflow-scrolling: touch;
   /* Scroll suave en iOS */
 }
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+@media (min-width: 640px) {
+  .animate-slide-up {
+    animation: none;
+  }
+}
+
+/* Mejora la respuesta táctil */
+.modal-content {
+  overscroll-behavior: contain;
+}
+
+/* Opcional: efecto de "sobrearrastre" */
+@media (max-width: 640px) {
+  .modal-container {
+    transition: transform 0.2s ease-out;
+  }
+}

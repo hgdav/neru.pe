@@ -314,13 +314,8 @@ const Tareas = () => {
                 >
                     {selectedTask && (
                         <div className="p-6">
-                            <h2 className="text-2xl font-bold mb-4">{selectedTask.title}</h2>
-                            {selectedTask.description && (
-                                <p className="text-gray-600 mb-6">{selectedTask.description}</p>
-                            )}
-
                             <div className="mb-6">
-                                <h3 className="font-semibold mb-4 text-lg">Checklist</h3>
+                                <h3 className="font-semibold mb-4 text-xl text-center">Proceso del proyecto</h3>
                                 <div className="space-y-3">
                                     {selectedTask.steps.map((step, index) => (
                                         <div key={index} className="flex items-center gap-3">
@@ -348,14 +343,14 @@ const Tareas = () => {
                                     />
                                     <button
                                         onClick={handleAddStep}
-                                        className="px-4 py-2 bg-accent-secondary text-white rounded-lg hover:bg-accent-secondary-dark transition-colors"
+                                        className="px-4 py-2 bg-accent-secondary text-white rounded-lg hover:bg-accent-secondary transition-colors"
                                     >
                                         Agregar
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 text-sm border-t pt-4">
+                            <div className="flex justify-between items-center text-sm border-t pt-4">
                                 <div>
                                     <p className="text-gray-500 mb-1">Asignado a:</p>
                                     <p className="font-medium">

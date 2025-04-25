@@ -13,7 +13,7 @@ function Header() {
 
     // Función mejorada para manejar rutas exactas y subrutas
     const isActive = (path) =>
-        location.pathname === path ? '!text-black' : 'text-gray-400';
+        location.pathname === path ? '!text-black !bold' : 'text-gray-600';
 
     return (
         <header className="bg-bg-base py-4">
@@ -32,7 +32,7 @@ function Header() {
                 <nav className="hidden md:flex space-x-6 mr-10 items-center">
                     <Link
                         to="/registro"
-                        className={`hover:text-gray-400 ${isActive('/registro')}`}
+                        className={`hover:text-gray-500 ${isActive('/registro')}`}
                     >
                         {location.pathname === '/' ? (
                             <SparklesText text="Registros" sparklesCount={5} />
@@ -40,13 +40,13 @@ function Header() {
                     </Link>
                     <Link
                         to="/tallas"
-                        className={`hover:text-gray-400 ${isActive('/tallas')}`}
+                        className={`hover:text-gray-500 ${isActive('/tallas')}`}
                     >
                         Tallas
                     </Link>
                     <Link
                         to="/inventario"
-                        className={`hover:text-gray-400 ${isActive('/inventario')}`}
+                        className={`hover:text-gray-500 ${isActive('/inventario')}`}
                     >
                         Inventario
                     </Link>

@@ -15,13 +15,13 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
                 <div className="bg-bg-base-white shadow rounded-3xl p-4">
-                    <div className="w-full max-w-3xl float-right">
+                    <div className="w-full max-w-3xl mx-auto">
                         <Calendario />
                     </div>
                 </div>
 
                 <div className="bg-bg-base-white shadow rounded-3xl p-4">
-                    <div className="w-full max-w-3xl">
+                    <div className="w-full max-w-3xl mx-auto">
                         <Graficos />
                     </div>
                 </div>

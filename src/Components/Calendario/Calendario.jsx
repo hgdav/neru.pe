@@ -13,7 +13,7 @@ import {
     deleteCalendarEvent
 } from "../../utils/EventosApiFunctions";
 import DetailsModal from "../Modal";
-import { MdClose, MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdCheck, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
 
@@ -49,6 +49,9 @@ const Calendario = () => {
 
     // Para bloquear botones cuando se está guardando
     const [isLoading, setIsLoading] = useState(false);
+
+    // Para mostrar lista de tickets o formulario
+    const [modalView, setModalView] = useState('list');
 
     // Detectar si es móvil
     const [isMobile, setIsMobile] = useState(false);
@@ -102,7 +105,10 @@ const Calendario = () => {
     // Al tocar un día en cualquier vista
     const handleDayClick = (date) => {
         setSelectedDate(date);
+        setModalView('list');
         setModalOpen(true);
+        setNewEventTitle('');
+        setSelectedUser(users.length > 0 ? users[0].id : '');
     };
 
     // Guardar nuevo ticket
@@ -346,7 +352,7 @@ const Calendario = () => {
                         upcomingEvents.map((event) => (
                             <div
                                 key={event.id}
-                                className="bg-bg-base-white p-3 rounded-lg flex justify-between items-center"
+                                className="bg-gray-100 p-3 rounded-lg flex justify-between items-center"
                             >
                                 <div>
                                     <p className="font-medium text-sm">{event.title}</p>
@@ -357,9 +363,9 @@ const Calendario = () => {
                                 </div>
                                 <button
                                     onClick={() => handleRemoveEvent(event.id)}
-                                    className="text-red-400 hover:text-red-600"
+                                    className="text-green-400 hover:text-green-600"
                                 >
-                                    <MdClose size={16} />
+                                    <MdCheck size={18} />
                                 </button>
                             </div>
                         ))
@@ -375,91 +381,161 @@ const Calendario = () => {
 
             <DetailsModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
                 {(() => {
-                    // 1. Filtrar los eventos para el día seleccionado
+                    // Filtrar eventos sigue igual
                     const dayEvents = events.filter((event) => {
+                        // ... (tu lógica de filtrado) ...
                         if (!selectedDate || !event.date) return false;
+                        const eventDate = new Date(event.date); // Asegurar que es objeto Date si viene de API
                         return (
-                            event.date.getDate() === selectedDate.getDate() &&
-                            event.date.getMonth() === selectedDate.getMonth() &&
-                            event.date.getFullYear() === selectedDate.getFullYear()
+                            eventDate.getDate() === selectedDate.getDate() &&
+                            eventDate.getMonth() === selectedDate.getMonth() &&
+                            eventDate.getFullYear() === selectedDate.getFullYear()
                         );
                     });
 
-                    return (
-                        <div className="space-y-4">
-                            <h2 className="text-xl font-bold">
-                                {selectedDate
-                                    ? format(selectedDate, "eeee d 'de' MMMM", { locale: es })
-                                    : "Nuevo Ticket"}
-                            </h2>
+                    const formattedDate = selectedDate
+                        ? selectedDate.toLocaleDateString('es-ES', { // Ajusta el locale si es necesario
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        })
+                        : 'Fecha no seleccionada';
 
-                            {/* 2. Lista de tickets ya existentes para ese día */}
-                            {dayEvents.length > 0 && (
-                                <div className="space-y-2 max-h-32 overflow-auto">
-                                    <p className="font-semibold text-sm">Tickets del día:</p>
-                                    {dayEvents.map((event) => {
-                                        const userName = users.find((u) => u.id === event.userId)?.name || "Desconocido";
-                                        return (
-                                            <div
-                                                key={event.id}
-                                                className="bg-gray-50 p-2 rounded flex justify-between items-center"
-                                            >
-                                                <div>
-                                                    <p className="font-medium text-sm" style={{ whiteSpace: "pre-wrap" }}>{event.title}</p>
-                                                    <p className="text-xs text-gray-500">
-                                                        Asignado a {userName}
-                                                    </p>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleRemoveEvent(event.id)}
-                                                    className="text-red-400 hover:text-red-600"
+                    // --- Vista de Lista ---
+                    if (modalView === 'list') {
+                        return (
+                            <div className="space-y-4">
+                                <h2 className="text-xl font-bold text-center mb-4 capitalize">
+                                    {formattedDate}
+                                </h2>
+
+                                {/* Lista de tickets */}
+                                {dayEvents.length > 0 ? (
+                                    <div className="space-y-2 max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-lg border border-gray-200"> {/* Más altura y scroll propio */}
+                                        {dayEvents.map((event) => {
+                                            const userName = users.find((u) => u.id === event.userId)?.name || 'Desconocido';
+                                            const ticketDate = event.date ? new Date(event.date) : null;
+                                            const ticketTime = ticketDate ? ticketDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+
+                                            return (
+                                                <div
+                                                    key={event.id}
+                                                    className="bg-bg-base-white p-3 rounded shadow-sm flex justify-between items-center border-l-4 border-blue-500" // Mejor estilo visual
                                                 >
-                                                    <MdClose size={16} />
-                                                </button>
-                                            </div>
-                                        );
-                                    })}
+                                                    <div className="flex-grow mr-2">
+                                                        <p className="font-medium text-base mb-1" style={{ whiteSpace: 'pre-wrap' }}>
+                                                            {event.title}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">
+                                                            Asignado a: <strong>{userName}</strong> {ticketTime && `(${ticketTime})`}
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleRemoveEvent(event.id)} // Asumo que tienes esta función
+                                                        className="text-green-500 hover:text-green-700 p-1 rounded-full hover:bg-green-100 flex-shrink-0"
+                                                        aria-label="Marcar como completado"
+                                                    >
+                                                        <MdCheck size={20} />
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <p className="text-center text-gray-500 py-4">No hay tickets para este día.</p>
+                                )}
+
+                                {/* Botón para ir al formulario */}
+                                <div className="flex justify-center pt-4">
+                                    <button
+                                        onClick={() => setModalView('form')}
+                                        className="py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark"
+                                    >
+                                        Crear Nuevo Ticket
+                                    </button>
                                 </div>
-                            )}
-
-                            {/* Formulario para agregar un nuevo ticket */}
-                            <textarea
-                                placeholder="Nuevo ticket..."
-                                className="w-full p-2 border rounded"
-                                value={newEventTitle}
-                                onChange={(e) => setNewEventTitle(e.target.value)}
-                                rows={4}
-                            />
-
-                            <select
-                                className="w-full p-2 border rounded"
-                                value={selectedUser}
-                                onChange={(e) => setSelectedUser(Number(e.target.value))}
-                            >
-                                {users.map((user) => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.name}
-                                    </option>
-                                ))}
-                            </select>
-
-                            <div className="flex gap-2 justify-end">
-                                <button
-                                    onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    onClick={handleAddEvent}
-                                    className="px-4 py-2 bg-accent-secondary text-accent-secondary-dark rounded-md flex items-center gap-2 disabled:opacity-50"
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? "Guardando..." : "Agregar Ticket"}
-                                </button>
                             </div>
-                        </div>
-                    );
+                        );
+                    }
+
+                    // --- Vista de Formulario ---
+                    if (modalView === 'form') {
+                        return (
+                            <div className="space-y-4">
+                                {/* Botón para volver a la lista */}
+                                <div className="flex justify-start mb-3">
+                                    <button
+                                        onClick={() => setModalView('list')}
+                                        className="text-sm text-black hover:underline flex items-center"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Volver a la lista
+                                    </button>
+                                </div>
+
+                                <h2 className="text-xl font-bold text-center">
+                                    {formattedDate}
+                                </h2>
+
+                                {/* Formulario (sin el contenedor extra de bg-gray-100) */}
+                                <textarea
+                                    placeholder="Objetivo o tarea..."
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-accent-primary focus:border-accent-primary" // Mejor foco
+                                    value={newEventTitle}
+                                    onChange={(e) => setNewEventTitle(e.target.value)}
+                                    rows={4}
+                                />
+
+                                <label htmlFor="assignUserSelect" className="block text-sm font-medium text-gray-700">😈 Asignar a</label>
+                                <select
+                                    id="assignUserSelect"
+                                    className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-1 focus:ring-accent-primary focus:border-accent-primary" // Mejor estilo
+                                    value={selectedUser}
+                                    onChange={(e) => setSelectedUser(Number(e.target.value))}
+                                >
+                                    {/* Opcional: Opción por defecto */}
+                                    {/* <option value="" disabled>Selecciona un usuario</option> */}
+                                    {users.map((user) => (
+                                        <option key={user.id} value={user.id}>
+                                            {user.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <div className="flex gap-3 justify-end pt-3">
+                                    {/* Botón Cancelar ahora cierra el modal completo */}
+                                    <button
+                                        onClick={() => setModalOpen(false)}
+                                        className="px-4 py-2 text-gray-700 hover:bg-gray-300 rounded-xl"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={handleAddEvent} // Tu función para guardar
+                                        className="py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark disabled:opacity-60 hover:bg-opacity-90"
+                                        disabled={isLoading || !newEventTitle.trim()}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-accent-secondary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Asignando...
+                                            </>
+                                        ) : (
+                                            "Crear Ticket"
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    }
+                    return <p>Error al cargar la vista.</p>;
+
                 })()}
             </DetailsModal>
 
