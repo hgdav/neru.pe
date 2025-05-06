@@ -19,19 +19,6 @@ function getStatusClass(estadoEmpaque) {
     }
 }
 
-function getCourierClass(tipo_envio) {
-    switch (tipo_envio) {
-        case 'Olva Courier':
-            return 'bg-olva-bg text-white';
-        case 'Shalom':
-            return 'bg-shalom-bg text-white';
-        case 'GoPack':
-            return 'bg-blue-200 text-blue-800';
-        default:
-            return 'bg-gray-200 text-gray-800';
-    }
-}
-
 function getCourierImg(tipo_envio) {
     switch (tipo_envio) {
         case 'Olva Courier':
@@ -150,7 +137,7 @@ const ClientCard = ({ client }) => {
                     </div>
                     <div className="flex justify-end gap-3 sm:gap-4 mt-6">
                         <button
-                            className="flex items-center gap-1 text-button-bg hover:bg-bg-base rounded-xl px-2 py-1 sm:px-4 sm:py-2 transition-all duration-200 group relative"
+                            className="flex items-center gap-1 text-button-bg rounded-xl px-2 py-1 sm:px-4 sm:py-2 transition-all duration-200 group relative"
                             onClick={toggleModal}
                         >
                             <MdRemoveRedEye size={18} className="opacity-80 group-hover:opacity-100" />
@@ -161,7 +148,7 @@ const ClientCard = ({ client }) => {
                         </button>
 
                         <button
-                            className="flex items-center gap-2 hover:bg-bg-base rounded-xl px-3 py-2 sm:px-4 sm:py-2 transition-all duration-200 group relative"
+                            className="flex items-center gap-2 rounded-xl px-3 py-2 sm:px-4 sm:py-2 transition-all duration-200 group relative"
                             onClick={handleUpdateClick}
                         >
                             <MdChecklistRtl size={24} className="opacity-80 group-hover:opacity-100" />
@@ -187,56 +174,62 @@ const ClientCard = ({ client }) => {
                     )}
                 </div>
             ) : (
-                <div>
-                    <table className="table-auto w-full">
-                        <tbody>
-                            <tr className="border-b border-gray-300">
-                                <td className="w-3/4 sm:w-1/2">
-                                    <div className="space-y-1">
-                                        <div className="flex flex-wrap items-center gap-1">
-                                            <p className="text-xs text-muted-foreground">
-                                                <b>#{client.ticket}</b> | {client.distrito.toUpperCase()}
-                                            </p>
-                                        </div>
-                                        <p className="font-medium text-sm sm:text-base">{client.nombre}</p>
-                                    </div>
-                                </td>
-                                <td className="w-1/4 sm:w-1/3 min-w-[150px] px-4">
-                                    <div className="flex flex-col gap-1 text-center">
-                                        <span
-                                            className={`${getCourierClass(client.tipo_envio)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary`}
-                                        >
-                                            {client.tipo_envio}
-                                        </span>
-                                        <span
-                                            className={`${getStatusClass(client.estado_empaque)} px-1 py-1 rounded text-xs sm:text-sm text-text-primary cursor-pointer`}
-                                            onClick={handleUpdateClick}
-                                        >
-                                            {client.estado_empaque}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td className="w-full sm:w-auto">
-                                    <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-center">
-                                        <button
-                                            className="flex items-center justify-center gap-1 text-button-bg border border-solid border-black rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
-                                            onClick={toggleModal}
-                                        >
-                                            <MdRemoveRedEye size={18} />
-                                            <span className="hidden sm:inline text-sm">Detalles</span>
-                                        </button>
-                                        <button
-                                            className="flex items-center justify-center gap-1 text-button-bg border border-solid border-black rounded-lg px-2 py-1 sm:px-4 sm:py-2 font-sans"
-                                            onClick={handleUpdateClick}
-                                        >
-                                            <MdChecklistRtl size={18} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div className="rounded-3xl p-3 bg-bg-base-white">
+                    <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-1.5">
+                            <div className='rounded-full bg-bg-base-white p-0.5'>
+                                <img src={getCourierImg(client.tipo_envio)} alt="Logo del Courier" className="w-5 h-5 rounded-full" />
+                            </div>
+                            <div className="text-xs text-gray-500">{fechaEnvioString}</div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {verifyEmpaque() && <MdCardGiftcard size={18} />}
+                            {verifyDedicatoria() && <MdImageAspectRatio size={18} />}
+                        </div>
+                    </div>
 
+                    <div className="space-y-1.5 mb-3">
+                        <div className="flex items-center gap-1.5">
+                            <p className="text-xs text-muted-foreground">
+                                <b>#{client.ticket}</b>
+                            </p>
+                            <p className="text-xs text-muted-foreground font-bold">
+                                - {client.distrito.toUpperCase()}
+                            </p>
+                        </div>
+                        <p className="font-medium text-sm">{client.nombre}</p>
+
+                        <div className="font-xs">
+                            <span
+                                className={`${getStatusClass(client.estado_tracking)} py-0.5 rounded text-xs`}
+                            >
+                                Tracking: {client.estado_tracking}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                        <button
+                            className="flex items-center gap-1 text-button-bg rounded-xl px-2 py-1 transition-all duration-200 group relative"
+                            onClick={toggleModal}
+                        >
+                            <MdRemoveRedEye size={18} className="opacity-80 group-hover:opacity-100" />
+                            <span className="text-sm relative">
+                                Detalles
+                                <span className="absolute bottom-0 left-1/2 w-0 h-px bg-black transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                            </span>
+                        </button>
+                        <button
+                            className="flex items-center gap-1 text-button-bg rounded-xl px-2 py-1 transition-all duration-200 group relative"
+                            onClick={handleUpdateClick}
+                        >
+                            <MdChecklistRtl size={18} className="opacity-80 group-hover:opacity-100" />
+                            <span className="text-sm relative">
+                                Seguimiento
+                                <span className="absolute bottom-0 left-1/2 w-0 h-px bg-black transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                            </span>
+                        </button>
+                    </div>
 
                     {/* Modal con todos los detalles del cliente */}
                     <DetailsModal isOpen={isModalOpen} onClose={toggleModal} client={client} />

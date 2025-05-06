@@ -383,11 +383,11 @@ const Registro = () => {
                                 )}
                             </div>
                             {lastVisible && !isFilteredByStatus && searchTerm === '' && (
-                                <div className="text-center mt-6">
+                                <div className="text-center mt-6 mb-7">
                                     <button
                                         onClick={loadMoreRecords}
                                         disabled={isLoading}
-                                        className="bg-accent-secondary text-accent-secondary-dark px-4 py-2 rounded-md"
+                                        className="mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark whitespace-nowrap"
                                     >
                                         {isLoading ? 'Cargando...' : 'Cargar más'}
                                     </button>
