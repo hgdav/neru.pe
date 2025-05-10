@@ -294,7 +294,7 @@ const Registro = () => {
     };
 
     return (
-        <div className="registro-container p-4 bg-bg-base">
+        <div className="registro-container p-4 bg-bg-base mb-10">
             <AddRecordModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
@@ -355,7 +355,7 @@ const Registro = () => {
                     ) : isFilteredByStatus ? (
                         orderedDates.length > 0 ? (
                             orderedDates.map((dateKey) => (
-                                <div key={dateKey} className="mb-8">
+                                <div key={dateKey} className="mb-[3rem]">
                                     <h2 className="text-xl font-semibold mb-4">{dateKey}</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {groupedRecords[dateKey].records.map((record) => (

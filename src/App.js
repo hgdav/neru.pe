@@ -1,12 +1,10 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { Tallas } from './Pages/Tallas';
-import { Destinos } from './Pages/Destinos';
 import { Registro } from './Pages/Registro';
 import { Index } from './Pages/Index';
 import { Login } from './Pages/Login';
 import { Resumen } from './Pages/Resumen';
 import { Inventario } from './Pages/Inventario';
-import { Hora } from './Pages/Hora';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
 import { ToastContainer } from 'react-toastify';
@@ -36,14 +34,6 @@ function App() {
           }
         />
         <Route
-          path="/destinos"
-          element={
-            <PrivateRoute>
-              <Destinos />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/registro"
           element={
             <PrivateRoute>
@@ -64,14 +54,6 @@ function App() {
           element={
             <PrivateRoute>
               <Inventario />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/hora"
-          element={
-            <PrivateRoute>
-              <Hora />
             </PrivateRoute>
           }
         />

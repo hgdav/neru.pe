@@ -53,7 +53,7 @@ function Header() {
                 </nav>
 
                 {/* Menú móvil */}
-                <nav className="md:hidden fixed bottom-0 left-0 w-full bg-bg-base border-t border-contrast/10 z-40">
+                <nav className="md:hidden fixed bottom-0 left-0 w-full bg-bg-base/80 backdrop-blur-md border-t border-contrast/10 z-40">
                     <div className="grid grid-cols-4 py-2">
                         <Link
                             to="/"

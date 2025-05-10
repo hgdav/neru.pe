@@ -72,7 +72,7 @@ const Inventario = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 mb-10">
             {/* Header y Botón de agregar */}
             <div className='flex flex-row justify-between items-center mb-8'>
                 <h1 className="text-2xl font-bold">Para Regalo</h1>
