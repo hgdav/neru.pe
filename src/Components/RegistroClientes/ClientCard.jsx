@@ -95,8 +95,8 @@ const ClientCard = ({ client }) => {
     return (
         <div>
             {isntMobile ? (
-                <div className="rounded-3xl p-6 mb-4 bg-bg-base-white">
-                    <div className="card-header border-b border-gray-300 pb-4">
+                <div className="rounded-3xl p-6 mb-4 bg-base-white">
+                    <div className="card-header border-b border-gray-300 pb-2">
                         <div className="flex items-center justify-between gap-2">
                             <div className="text-sm text-gray-500 inline-flex items-center gap-1">
                                 <div className='rounded-full bg-bg-base-white p-1'>
@@ -104,38 +104,38 @@ const ClientCard = ({ client }) => {
                                 </div>
                                 {fechaEnvioString}
                             </div>
-                            <div className="inline-flex items-center gap-1">
+                            <div className="inline-flex items-center gap-2">
                                 {verifyEmpaque() && <MdCardGiftcard size={24} />}
                                 {verifyDedicatoria() && <MdImageAspectRatio size={24} />}
                             </div>
                         </div>
                     </div>
                     <div className="my-2">
-                        <h3 className="text-lg text-gray-500 font-semibold mb-1">#{client.ticket}</h3>
-                        <h2 className="text-xl font-semibold text-text-primary">{client.nombre}</h2>
+                        <h3 className="text-sm text-gray-400 font-medium mb-1">#{client.ticket}</h3>
+                        <h2 className="text-lg font-semibold text-gray-800">{client.nombre}</h2>
 
-                        <div className="info-row mt-2">
-                            <span className="font-bold text-text-primary">Empaque:</span>
-                            <span
-                                className={`${getStatusClass(client.estado_empaque)} ml-2 p-1 rounded text-text-primary`}
-                            >
-                                {client.estado_empaque}
-                            </span>
+
+                        <div className="mt-4 space-y-2 text-sm">
+                            <div>
+                                <span className="font-medium text-gray-600">Empaque:</span>
+                                <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusClass(client.estado_empaque)}`}>
+                                    {client.estado_empaque}
+                                </span>
+                            </div>
+                            <div>
+                                <span className="font-medium text-gray-600">Tracking:</span>
+                                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusClass(client.estado_tracking)}`}>
+                                    {client.estado_tracking}
+                                </span>
+                            </div>
+                            <div className="flex items-center">
+                                <MdLocationPin size={18} className="text-gray-500" />
+                                <span className="ml-2 font-semibold text-gray-700">{client.distrito.toUpperCase()}</span>
+                            </div>
                         </div>
-                        <div className="info-row mt-2">
-                            <span className="font-bold text-text-primary">Tracking:</span>
-                            <span
-                                className={`${getStatusClass(client.estado_tracking)} ml-2 p-1 rounded text-text-primary`}
-                            >
-                                {client.estado_tracking}
-                            </span>
-                        </div>
-                        <div className="info-row mt-2 flex items-center">
-                            <span className="font-bold text-text-primary"><MdLocationPin size={22} /></span>
-                            <span className="ml-2 text-text-primary font-bold">{client.distrito.toUpperCase()}</span>
-                        </div>
+
                     </div>
-                    <div className="flex justify-end gap-3 sm:gap-4 mt-6">
+                    <div className="flex justify-end gap-3 sm:gap-1 mt-6">
                         <button
                             className="flex items-center gap-1 text-button-bg rounded-xl px-2 py-1 sm:px-4 sm:py-2 transition-all duration-200 group relative"
                             onClick={toggleModal}
@@ -174,13 +174,13 @@ const ClientCard = ({ client }) => {
                     )}
                 </div>
             ) : (
-                <div className="rounded-3xl p-3 bg-bg-base-white">
+                <div className="rounded-3xl p-3 bg-base-white">
                     <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-1.5">
-                            <div className='rounded-full bg-bg-base-white p-0.5'>
-                                <img src={getCourierImg(client.tipo_envio)} alt="Logo del Courier" className="w-5 h-5 rounded-full" />
+                        <div className="flex items-center gap-2">
+                            <div className='rounded-full bg-base-white p-0.5'>
+                                <img src={getCourierImg(client.tipo_envio)} alt="Logo del Courier" className="w-6 h-6 rounded-full" />
                             </div>
-                            <div className="text-xs text-gray-500">{fechaEnvioString}</div>
+                            <div className="text-sm text-gray-500">{fechaEnvioString}</div>
                         </div>
                         <div className="flex items-center gap-1">
                             {verifyEmpaque() && <MdCardGiftcard size={18} />}
@@ -197,13 +197,14 @@ const ClientCard = ({ client }) => {
                                 - {client.distrito.toUpperCase()}
                             </p>
                         </div>
-                        <p className="font-medium text-sm">{client.nombre}</p>
+                        <p className="font-medium text-md">{client.nombre}</p>
 
-                        <div className="font-xs">
+                        <div className="text-xs">
+                            Tracking:
                             <span
-                                className={`${getStatusClass(client.estado_tracking)} py-0.5 rounded text-xs`}
+                                className={`${getStatusClass(client.estado_tracking)} py-0.5 ml-1 rounded text-xs`}
                             >
-                                Tracking: {client.estado_tracking}
+                                {client.estado_tracking}
                             </span>
                         </div>
                     </div>

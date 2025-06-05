@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import MonthNavigator from '../Components/RegistroClientes/MonthNavigator';
 import ClientCard from '../Components/RegistroClientes/ClientCard';
 import SearchBar from '../Components/RegistroClientes/SearchBar';
-import FilterByStatus from '../Components/RegistroClientes/FilterByStatus';
 import { LoadingRecords } from '../Components/RegistroClientes/LoadingRecords';
 import {
     collection,
@@ -32,6 +31,9 @@ const Registro = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isFilteredByStatus, setIsFilteredByStatus] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [pendingTodayCount, setPendingTodayCount] = useState(0);
+    const [selectedCourier, setSelectedCourier] = useState('Todos');
+    const [couriers, setCouriers] = useState([]);
 
     const fetchInitialRecords = useCallback(() => {
         setIsLoading(true);
@@ -69,6 +71,9 @@ const Registro = () => {
             setFilteredRecords(fetchedRecords);
             setIsLoading(false);
 
+            const uniqueCouriers = [...new Set(fetchedRecords.map(record => record.tipo_envio).filter(Boolean))];
+            setCouriers(['Todos', ...uniqueCouriers]);
+
             if (querySnapshot.docs.length > 0) {
                 const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
                 setLastVisible(lastDoc);
@@ -88,6 +93,23 @@ const Registro = () => {
         fetchInitialRecords();
     }, [currentDate, fetchInitialRecords]);
 
+    const calculatePendingToday = useCallback(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const pending = records.filter(record => {
+            const recordDate = record.fecha_envio?.toDate();
+            return recordDate &&
+                record.estado_empaque !== 'Enviado';
+        });
+
+        setPendingTodayCount(pending.length);
+    }, [records]);
+
+    useEffect(() => {
+        calculatePendingToday();
+    }, [records, calculatePendingToday]);
+
     useEffect(() => {
         if (searchTerm === '' && !isFilteredByStatus) {
             const sortedRecords = [...records].sort((a, b) => {
@@ -97,6 +119,9 @@ const Registro = () => {
                 return b.ticket - a.ticket;
             });
             setFilteredRecords(sortedRecords);
+            const uniqueCouriers = [...new Set(records.map(record => record.tipo_envio).filter(Boolean))];
+            setCouriers(['Todos', ...uniqueCouriers]);
+
         } else {
             setIsLoading(true);
 
@@ -114,6 +139,10 @@ const Registro = () => {
                     });
 
                     let currentRecords = fetchedRecords;
+                    if (isFilteredByStatus) {
+                        const uniqueCouriers = [...new Set(currentRecords.map(record => record.tipo_envio).filter(Boolean))];
+                        setCouriers(['Todos', ...uniqueCouriers]);
+                    }
 
                     if (searchTerm !== '') {
                         currentRecords = currentRecords.filter((record) => {
@@ -127,6 +156,12 @@ const Registro = () => {
                                 telefono.includes(searchTerm.toLowerCase())
                             );
                         });
+                    }
+
+                    if (isFilteredByStatus && selectedCourier !== 'Todos') {
+                        currentRecords = currentRecords.filter(record =>
+                            record.tipo_envio === selectedCourier
+                        );
                     }
 
                     const sortedRecords = currentRecords.sort((a, b) => {
@@ -144,7 +179,7 @@ const Registro = () => {
                     setIsLoading(false);
                 });
         }
-    }, [searchTerm, isFilteredByStatus, records]);
+    }, [searchTerm, isFilteredByStatus, records, selectedCourier]);
 
     useEffect(() => {
         if (isFilteredByStatus) {
@@ -270,10 +305,7 @@ const Registro = () => {
 
     const handleMonthChange = (newDate) => {
         setCurrentDate(newDate);
-    };
-
-    const handleFilterByStatus = () => {
-        setIsFilteredByStatus(!isFilteredByStatus);
+        setSelectedCourier('Todos');
     };
 
     const handleAddRecord = async (newRecordData) => {
@@ -293,40 +325,36 @@ const Registro = () => {
         }
     };
 
+    const handleFilterClick = () => {
+        setIsFilteredByStatus(!isFilteredByStatus);
+        setSelectedCourier('Todos');
+    };
+
     return (
-        <div className="registro-container p-4 bg-bg-base mb-10">
+        <div className="registro-container p-4 bg-base mb-10">
             <AddRecordModal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onSubmit={handleAddRecord}
             />
 
-            <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-stretch mb-6">
-                    {/* Month Navigator a la izquierda */}
-                    <div className="md:mr-4">
-                        <MonthNavigator
-                            currentMonth={currentDate.getMonth()}
-                            currentYear={currentDate.getFullYear()}
-                            onMonthChange={handleMonthChange}
-                        />
-                    </div>
+            <div className="container mx-auto px-4 border-b border-gray-200">
+                <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-stretch mb-2">
 
-                    {/* Contenedor derecho - Alineación horizontal en todos los tamaños */}
-                    <div className="flex flex-1 flex-row items-center justify-center sm:justify-end gap-2 sm:gap-4 overflow-x-auto">
-                        {/* Búsqueda con ancho controlado */}
-                        <div className="min-w-[120px] max-w-[200px] sm:max-w-[300px] flex-1">
+                    <div className="flex flex-1 flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-4 overflow-x-auto">
+                        <div className="min-w-[120px] max-w-[500px] sm:max-w-[500px] flex-1">
                             <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                         </div>
 
-                        {/* Grupo de botones */}
-                        <div className="flex flex-row items-center gap-2 sm:gap-4 flex-shrink-0">
-                            <FilterByStatus handleFilter={handleFilterByStatus} />
+                        <div className="flex flex-row justify-end items-center gap-2 sm:gap-4 flex-shrink-0">
+                            <MonthNavigator
+                                currentMonth={currentDate.getMonth()}
+                                currentYear={currentDate.getFullYear()}
+                                onMonthChange={handleMonthChange}
+                            />
                             <button
                                 onClick={() => setIsAddModalOpen(true)}
-                                className="mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark
-                     hover:bg-accent-secondary hover:text-accent-secondary-dark transition-colors 
-                     whitespace-nowrap"
+                                className="py-2 px-3 sm:px-4 sm:py-3 rounded-xl text-sm bg-primary-button text-white whitespace-nowrap"
                             >
                                 <span className="sm:hidden">Nuevo</span>
                                 <span className="hidden sm:block">Nuevo Registro</span>
@@ -335,9 +363,41 @@ const Registro = () => {
                     </div>
                 </div>
 
+                <div className="flex flex-row justify-between items-center mt-2 gap-4 sm:gap-4 flex-shrink-0">
+                    <div className="flex gap-4 sm:gap-4">
+                        <span
+                            className={`text-md cursor-pointer border-b-2 border-solid ${!isFilteredByStatus ? 'text-accent-secondary border-accent-secondary' : 'text-gray-500 border-transparent'}`}
+                            onClick={() => setIsFilteredByStatus(false)}
+                        >
+                            Todos
+                        </span>
+                        <span
+                            className={`text-md cursor-pointer border-b-2 border-solid ${isFilteredByStatus ? 'text-accent-secondary border-accent-secondary' : 'text-gray-500 border-transparent'}`}
+                            onClick={handleFilterClick}
+                        >
+                            Para Hoy ({pendingTodayCount})
+                        </span>
+                    </div>
+
+                    {isFilteredByStatus && (
+                        <div className="flex items-center">
+                            <select
+                                id="courier-filter"
+                                value={selectedCourier}
+                                onChange={(e) => setSelectedCourier(e.target.value)}
+                                className="p-1 rounded-lg bg-button border border-black my-4">
+                                {couriers.map(courier => (
+                                    <option key={courier} value={courier}>
+                                        {courier}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div id="recordsContainer" className="w-full bg-bg-base">
+            <div id="recordsContainer" className="w-full bg-base pt-4 mt-2 px-2">
                 <div className="container mx-auto">
                     {isLoading ? (
                         <div className="text-center mt-6">
@@ -387,7 +447,7 @@ const Registro = () => {
                                     <button
                                         onClick={loadMoreRecords}
                                         disabled={isLoading}
-                                        className="mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark whitespace-nowrap"
+                                        className="mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-primary-button text-white whitespace-nowrap"
                                     >
                                         {isLoading ? 'Cargando...' : 'Cargar más'}
                                     </button>

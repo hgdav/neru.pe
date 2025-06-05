@@ -103,7 +103,7 @@ const Modal = ({ isOpen, onClose, children }) => {
             <div
                 ref={modalContentRef}
                 className={`
-                    bg-bg-base-white rounded-t-2xl shadow-xl w-full max-w-3xl
+                    bg-base-white rounded-t-2xl shadow-xl w-full max-w-3xl
                     transform transition-transform duration-300 ease-out
                     flex flex-col max-h-[90vh]
                     sm:rounded-2xl sm:max-w-lg sm:max-h-[85vh]

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchRecordsByYear, fetchAvailableYears } from '../../utils/apiFunctions';
 import { Bar, Line } from 'react-chartjs-2';
 import 'chart.js/auto';
+import LoadingAnual from './LoadingAnual';
 
 const GraficosAnuales = () => {
     const [yearData, setYearData] = useState({
@@ -158,13 +159,13 @@ const GraficosAnuales = () => {
         }))
     };
 
-    if (loading) return <div className="p-6 text-center">Graficando...</div>;
+    if (loading) return <LoadingAnual />;
     if (error) return <div className="p-6 text-red-500">{error}</div>;
 
     return (
-        <div className="p-6 space-y-8 bg-bg-base">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h1 className="text-2xl font-bold">Reporte Anual {year}</h1>
+        <div className="p-6 space-y-8 bg-base">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-4">
+                <h1 className="text-2xl font-medium">Reporte Anual {year} 📊📊📊</h1>
                 <select
                     value={year}
                     onChange={(e) => setYear(Number(e.target.value))}
@@ -200,87 +201,93 @@ const GraficosAnuales = () => {
                     comparison={0}
                 />
             </div>
+            <div className="flex flex-col">
+                <h1 className="text-xl font-medium mb-4">Tendencias por meses</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                    <ChartCard title="Empaques de Regalo">
+                        <Bar data={{
+                            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            datasets: [{
+                                label: 'Empaques',
+                                data: yearData.giftPackaging,
+                                backgroundColor: '#10B981'
+                            }]
+                        }} />
+                    </ChartCard>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ChartCard title="Comparativo de Ventas (Anual)">
-                    <Line data={{
-                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                        datasets: [
-                            {
-                                label: `Ventas ${year}`,
-                                data: yearData.monthlyVentas,
-                                borderColor: '#3B82F6',
-                                tension: 0.3
-                            },
-                            {
-                                label: `Ventas ${year - 1}`,
-                                data: previousYearData.monthlyVentas,
-                                borderColor: '#94A3B8',
-                                tension: 0.3
-                            }
-                        ]
-                    }} />
-                </ChartCard>
-
-                <ChartCard title="Costos por Courier (Anual)">
-                    <Bar data={{
-                        labels: Object.keys(yearData.costByTipo).map(t => t.toUpperCase()),
-                        datasets: [{
-                            label: 'Costos',
-                            data: Object.values(yearData.costByTipo),
-                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444']
-                        }]
-                    }} />
-                </ChartCard>
-
-                <ChartCard title="Empaques de Regalo (Mensual)">
-                    <Bar data={{
-                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                        datasets: [{
-                            label: 'Empaques',
-                            data: yearData.giftPackaging,
-                            backgroundColor: '#10B981'
-                        }]
-                    }} />
-                </ChartCard>
-
-                <ChartCard title="Gastos de Envío por Courier (Mensual)">
-                    <Line
-                        data={gastosEnvioPorCourierMensual}
-                        options={{
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Costo total (S/)'
+                    <ChartCard title="Gastos de Envío por Courier">
+                        <Line
+                            data={gastosEnvioPorCourierMensual}
+                            options={{
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Costo total (S/)'
+                                        }
                                     }
                                 }
-                            }
-                        }}
-                    />
-                </ChartCard>
+                            }}
+                        />
+                    </ChartCard>
 
-                {/* Nuevo gráfico de cantidad de envíos por courier */}
-                <ChartCard title="Cantidad de Envíos por Courier (Mensual)">
-                    <Line
-                        data={enviosPorCourierMensual}
-                        options={{
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        precision: 0
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Cantidad de envíos'
+                    {/* Nuevo gráfico de cantidad de envíos por courier */}
+                    <ChartCard title="Cantidad de Envíos por Courier">
+                        <Line
+                            data={enviosPorCourierMensual}
+                            options={{
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            precision: 0
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad de envíos'
+                                        }
                                     }
                                 }
-                            }
-                        }}
-                    />
-                </ChartCard>
+                            }}
+                        />
+                    </ChartCard>
+                </div>
+            </div>
+            <div className="flex flex-col">
+                <h1 className="text-xl font-medium mb-4">Consolidado Anual</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                    <ChartCard title="Comparativo de Ventas">
+                        <Line data={{
+                            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            datasets: [
+                                {
+                                    label: `Ventas ${year}`,
+                                    data: yearData.monthlyVentas,
+                                    borderColor: '#3B82F6',
+                                    tension: 0.3
+                                },
+                                {
+                                    label: `Ventas ${year - 1}`,
+                                    data: previousYearData.monthlyVentas,
+                                    borderColor: '#94A3B8',
+                                    tension: 0.3
+                                }
+                            ]
+                        }} />
+                    </ChartCard>
+
+                    <ChartCard title="Costos por Courier">
+                        <Bar data={{
+                            labels: Object.keys(yearData.costByTipo).map(t => t.toUpperCase()),
+                            datasets: [{
+                                label: 'Costos',
+                                data: Object.values(yearData.costByTipo),
+                                backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444']
+                            }]
+                        }} />
+                    </ChartCard>
+                </div>
             </div>
         </div>
     );
@@ -289,7 +296,7 @@ const GraficosAnuales = () => {
 const KPIBox = ({ title, value, currency = false, comparison }) => {
     const difference = value - comparison;
     return (
-        <div className="border p-4 rounded-xl shadow-sm">
+        <div className="border p-4 rounded-3xl bg-base-white">
             <h3 className="text-gray-500 text-sm mb-1">{title}</h3>
             <div className="text-2xl font-bold">
                 {currency ? 'S/ ' : ''}{value.toFixed(2)}
@@ -304,8 +311,8 @@ const KPIBox = ({ title, value, currency = false, comparison }) => {
 };
 
 const ChartCard = ({ title, children }) => (
-    <div className="border p-4 rounded-xl shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+    <div className="border p-4 rounded-3xl bg-base-white">
+        <h3 className="text-lg font-medium mb-2">{title}</h3>
         <div className="h-64">{children}</div>
     </div>
 );

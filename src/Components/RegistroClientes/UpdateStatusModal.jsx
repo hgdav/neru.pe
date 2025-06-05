@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { MdContentCopy, MdWhatsapp } from 'react-icons/md';
 
 
@@ -82,7 +82,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
             toast.success('Actualizado correctamente');
             onClose();
         } catch (error) {
-            console.error('Error actualizando el estado:', error);
+            toast.error('Error actualizando el estado:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -103,7 +103,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Header con espaciado mejorado */}
                 <div className="relative pb-4 border-b">
-                    <h3 className="text-lg font-semibold pr-10">Seguimiento - #{client.ticket}</h3>
+                    <h3 className="text-lg font-medium pr-10">Seguimiento - #{client.ticket}</h3>
 
                     <div
                         className="absolute top-0 right-0 cursor-pointer transform hover:scale-105"
@@ -206,7 +206,7 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-accent-secondary text-white py-2.5 rounded-md w-full text-sm font-medium
+                        className="bg-primary-button text-white py-2.5 rounded-xl w-full text-sm font-medium
                      active:scale-95 transition-transform disabled:opacity-70"
                     >
                         {isSubmitting ? (
@@ -226,12 +226,13 @@ Te saluda David Hurtado agente logístico 🙋🏻‍♂️ .
                             setCopiado(true);
                             setTimeout(() => setCopiado(false), 1000);
                         }}
-                        className="flex items-center justify-center p-2.5 bg-text-contrast text-white w-12 h-12 rounded-md cursor-pointer hover:bg-opacity-90 transition-opacity"
+                        className="flex items-center justify-center p-2.5 bg-primary-button text-white w-12 h-12 rounded-xl cursor-pointer hover:bg-opacity-90 transition-opacity"
                     >
                         <MdContentCopy className={`text-lg transition-transform duration-150 ease-out ${copiado ? 'scale-125' : ''}`} />
                     </div>
                 </div>
             </form>
+
         </Modal>
     );
 };

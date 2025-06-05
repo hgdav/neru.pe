@@ -1,95 +1,130 @@
 import React, { useState } from 'react';
 
+
 const Tallas = () => {
     const [talla, setTalla] = useState('');
     const [peso, setPeso] = useState('');
-    const [estilo, setEstilo] = useState('2');
+    const [estilo, setEstilo] = useState('1');
     const [resultado, setResultado] = useState('');
     const [error, setError] = useState('');
 
+    // Función para calcular la talla recomendada
     const calcularTalla = (event) => {
         event.preventDefault();
-        setError('');
-        setResultado('');
+        clearErrors();
 
         try {
-            const altura = validarCampo('estatura', talla, 100, 250);
+            const tallaValida = validarCampo('talla', talla, 100, 250);
             const pesoValido = validarCampo('peso', peso, 30, 200);
-            const estiloValido = validarEstilo(estilo);
+            const estiloValido = validarEstilo();
 
-            const tallaRecomendada = calcularTallaBase(altura, pesoValido, estiloValido);
-            mostrarResultado(tallaRecomendada, altura, pesoValido);
-
+            const resultado = obtenerTallaRecomendada(tallaValida, pesoValido, estiloValido);
+            mostrarResultado(resultado);
         } catch (error) {
-            setError(error.message);
+            mostrarError(error.message);
         }
     };
 
+    // Validar campos
     const validarCampo = (nombre, valor, min, max) => {
-        const valorNum = Number(valor);
-        if (isNaN(valorNum)) throw new Error(`${nombre} debe ser un número`);
-        if (valorNum < min || valorNum > max) throw new Error(
-            `${nombre} válido: ${min}-${max} (Ej: ${Math.round((min + max) / 2)})`
-        );
-        return valorNum;
+        const valorNumerico = parseFloat(valor);
+        if (isNaN(valorNumerico) || valorNumerico < min || valorNumerico > max) {
+            throw new Error(`Por favor, ingresa un(a) ${nombre} válido(a).`);
+        }
+        return valorNumerico;
     };
 
-    const validarEstilo = (valor) => {
-        if (!['1', '2', '3'].includes(valor)) throw new Error('Estilo no válido');
-        return valor;
+    // Validar el estilo seleccionado
+    const validarEstilo = () => {
+        if (!estilo) {
+            throw new Error('Por favor, selecciona un estilo.');
+        }
+        return estilo;
     };
 
-    const calcularTallaBase = (alturaCm, pesoKg, estiloPrenda) => {
-        const alturaMetros = alturaCm / 100;
-        const bmi = pesoKg / (alturaMetros * alturaMetros);
-
-        let tallaBase;
-        if (bmi < 18.5) tallaBase = 'S';
-        else if (bmi >= 18.5 && bmi < 22) tallaBase = 'M';
-        else if (bmi >= 22 && bmi < 26) tallaBase = 'L';
-        else if (bmi >= 26 && bmi < 30) tallaBase = 'XL';
-        else tallaBase = 'XXL';
-
-        const ajustesEstilo = {
-            '1': { S: 'S', M: 'S', L: 'M', XL: 'L', XXL: 'XL' },
-            '2': tallaBase,
-            '3': { S: 'M', M: 'L', L: 'XL', XL: 'XL', XXL: 'XXL' }
-        };
-
-        const tallaFinal = typeof ajustesEstilo[estiloPrenda] === 'object'
-            ? ajustesEstilo[estiloPrenda][tallaBase]
-            : ajustesEstilo[estiloPrenda];
-
-        if (tallaFinal === 'XXL') return 'XXL_NO_DISPONIBLE';
-        if (tallaFinal === 'XS') return 'XS_NO_DISPONIBLE';
-
-        return `TALLA ${tallaFinal}`;
+    // Obtener la talla recomendada
+    const obtenerTallaRecomendada = (talla, peso, estilo) => {
+        if (talla >= 150 && talla <= 170 && peso >= 50 && peso <= 65) {
+            if (estilo === '1' || estilo === '2') {
+                return 'TALLA S';
+            } else if (estilo === '3') {
+                return 'TALLA M';
+            }
+        } else if (talla >= 150 && talla <= 175 && peso >= 60 && peso <= 75) {
+            if (estilo === '1') {
+                return 'TALLA S';
+            } else if (estilo === '2') {
+                return 'TALLA M';
+            } else if (estilo === '3') {
+                return 'TALLA L';
+            }
+        } else if (talla >= 175 && talla <= 185 && peso >= 60 && peso <= 65) {
+            if (estilo === '1' || estilo === '2') {
+                return 'TALLA M';
+            } else if (estilo === '3') {
+                return 'TALLA L';
+            }
+        } else if (talla >= 160 && talla <= 185 && peso >= 65 && peso <= 90) {
+            if (estilo === '1') {
+                return 'TALLA M';
+            } else if (estilo === '2') {
+                return 'TALLA L';
+            } else if (estilo === '3') {
+                return 'TALLA XL';
+            }
+        } else if (talla >= 185 && talla <= 190 && peso >= 65 && peso <= 84) {
+            if (estilo === '1') {
+                return 'TALLA L';
+            } else if (estilo === '2' || estilo === '3') {
+                return 'TALLA XL';
+            }
+        } else if (talla >= 160 && talla <= 190 && peso >= 85 && peso <= 95) {
+            if (estilo === '1') {
+                return 'TALLA L';
+            } else if (estilo === '2' || estilo === '3') {
+                return 'TALLA XL';
+            }
+        } else if (talla > 190 && peso >= 96 && peso <= 100) {
+            return 'XXL_NO_DISPONIBLE';
+        } else if (talla <= 149 && peso <= 49) {
+            return 'XS_NO_DISPONIBLE';
+        } else {
+            return 'FUERA_DE_RANGO';
+        }
     };
 
-    const mostrarResultado = (tallaResultado, altura, peso) => {
-        const estilos = {
-            '1': 'Entallado',
-            '2': 'Normal',
-            '3': 'Holgado'
-        };
+    // Mostrar el resultado
+    const mostrarResultado = (resultado) => {
+        let mensaje = '';
+        if (resultado === 'XXL_NO_DISPONIBLE') {
+            mensaje = 'Al parecer, tu talla es XXL y aún no está disponible en nuestra tienda. ¡Esperamos tenerla pronto!';
+        } else if (resultado === 'XS_NO_DISPONIBLE') {
+            mensaje = 'Al parecer, tu talla es XS y aún no está disponible en nuestra tienda. ¡Esperamos tenerla pronto!';
+        } else if (resultado === 'FUERA_DE_RANGO') {
+            mensaje = 'Lo sentimos, tus medidas están fuera del rango de nuestras tallas disponibles.';
+        } else {
+            mensaje = `Después de analizar tus medidas y estilo, te recomendamos: ${resultado}`;
+        }
+        setResultado(mensaje);
+    };
 
-        const mensajes = {
-            'XXL_NO_DISPONIBLE': `Recomendación: XXL (próximamente) para ${altura}cm/${peso}kg`,
-            'XS_NO_DISPONIBLE': `Recomendación: XS (próximamente) para ${altura}cm/${peso}kg`,
-            'FUERA_DE_RANGO': `Consulta especial requerida para ${altura}cm/${peso}kg`
-        };
+    // Mostrar errores
+    const mostrarError = (mensaje) => {
+        setError(mensaje);
+    };
 
-        setResultado(mensajes[tallaResultado] ||
-            `Para ${altura}cm y ${peso}kg con estilo ${estilos[estilo]}:\nTalla recomendada:${tallaResultado}`);
+    // Limpiar errores
+    const clearErrors = () => {
+        setError('');
+        setResultado('');
     };
     return (
-        <div className="p-4 bg-bg-base min-h-screen">
+        <div className="p-4 bg-base min-h-screen">
             <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                <h1 className="text-3xl font-medium text-gray-800 mb-6 text-center mt-4">
                     Calculadora de Tallas
                 </h1>
-
-                <form onSubmit={calcularTalla} className="space-y-6 bg-white p-6 rounded-xl shadow-lg">
+                <form onSubmit={calcularTalla} className="space-y-6 bg-white p-6 rounded-3xl">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -100,7 +135,7 @@ const Tallas = () => {
                                 value={talla}
                                 onChange={(e) => setTalla(e.target.value)}
                                 placeholder="Ej: 175"
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-3 border rounded-lg"
                                 min="100"
                                 max="250"
                             />
@@ -115,7 +150,7 @@ const Tallas = () => {
                                 value={peso}
                                 onChange={(e) => setPeso(e.target.value)}
                                 placeholder="Ej: 70"
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-3 border rounded-lg"
                                 min="30"
                                 max="200"
                             />
@@ -128,7 +163,7 @@ const Tallas = () => {
                             <select
                                 value={estilo}
                                 onChange={(e) => setEstilo(e.target.value)}
-                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-3 border rounded-lg"
                             >
                                 <option value="1">Entallado</option>
                                 <option value="2">Normal</option>
@@ -139,8 +174,7 @@ const Tallas = () => {
 
                     <button
                         type="submit"
-                        className="w-full mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-accent-secondary text-accent-secondary-dark transition-colors 
- whitespace-nowrap"
+                        className="w-full mb-6 py-3 px-3 sm:px-4 rounded-xl text-sm bg-primary-button text-white"
                     >
                         Calcular Talla
                     </button>

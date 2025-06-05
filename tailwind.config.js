@@ -6,8 +6,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bg-base-white': '#fff', // anterior #e9edf6, ahora antrophic
-        'bg-base': '#f0eee6', // anterior #fcfcfc, ahora antrophic
+        'base-white': '#fcfcfc',
+        'base': '#f2f3ee',
+        'button': '#eff1ee',
+        'ticket': '#ffed8b',
+        'unused': '#5e6663',
+        'aside-selected': '#cbe88c',
+        'primary-button': '#20514d',
 
         // Negro
         'accent-secondary': '#010101', // Color de acento secundario #010101 Canela

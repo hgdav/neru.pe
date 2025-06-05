@@ -7,14 +7,17 @@ import { Resumen } from './Pages/Resumen';
 import { Inventario } from './Pages/Inventario';
 import { PrivateRoute } from './utils/privateRoute';
 import DisableSwipeReload from './Components/DisableSwipeReload';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast';
+import { Facturacion } from './Pages/Factiuracion';
 
 function App() {
   return (
     <Router>
       <DisableSwipeReload />
-      <ToastContainer />
+      <Toaster
+        position="bottom-center"
+        reverseOrder={true}
+      />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
@@ -54,6 +57,14 @@ function App() {
           element={
             <PrivateRoute>
               <Inventario />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/facturacion"
+          element={
+            <PrivateRoute>
+              <Facturacion />
             </PrivateRoute>
           }
         />

@@ -3,7 +3,7 @@ import Modal from '../Modal';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
 import { MdContentCopy, MdDelete } from 'react-icons/md';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { Timestamp } from 'firebase/firestore';
 
 const DetailsModal = ({ isOpen, onClose, client }) => {
@@ -93,7 +93,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
             toast.success('Actualización correctamente');
             onClose();
         } catch (error) {
-            console.error('Error actualizando el registro:', error);
+            toast.error('Error actualizando el registro:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -107,14 +107,14 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
             await deleteDoc(doc(db, 'registro-clientes', client.id));
             toast.success('Eliminado exitosamente');
         } catch (error) {
-            console.error('Error eliminando el registro:', error);
+            toast.error('Error eliminando el registro:', error);
         }
     };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-md font-semibold mb-2 px-1 text-center">{client.nombre}</h3>
+                <h3 className="text-md font-medium mb-2 px-1 text-center">{client.nombre}</h3>
 
                 <div className="grid grid-cols-2 gap-2">
                     {/* Fila 1 */}
@@ -258,7 +258,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                 <div className="flex gap-3 pt-4">
                     <button
                         type="submit"
-                        className="bg-accent-secondary text-white py-2.5 rounded-md w-full text-sm font-medium
+                        className="bg-primary-button text-white py-2.5 rounded-xl w-full text-sm font-medium
                      active:scale-95 transition-transform disabled:opacity-70"
                         disabled={isSubmitting}
                     >
@@ -273,7 +273,7 @@ const DetailsModal = ({ isOpen, onClose, client }) => {
                         ) : 'Guardar'}
                     </button>
                     <button
-                        className="flex items-center justify-center p-2.5 bg-text-contrast text-white w-12 h-12 rounded-md cursor-pointer hover:bg-opacity-90 transition-opacity"
+                        className="flex items-center justify-center p-2.5 bg-primary-button text-white w-12 h-12 rounded-xl cursor-pointer hover:bg-opacity-90 transition-opacity"
                         onClick={handleDeleteClick}
                     >
                         <MdDelete size={16} />

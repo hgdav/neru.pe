@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../Modal';
 import { addDoc, collection, Timestamp, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../utils/firebaseConfig';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 const AddRecordModal = ({ isOpen, onClose }) => {
     const [ticket, setTicket] = useState('');
@@ -106,7 +106,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                 return;
             }
         } catch (error) {
-            console.error('Error verificando el ticket:', error);
+            toast.error('Error verificando el ticket:', error);
             setIsSubmitting(false);
             return;
         }
@@ -138,7 +138,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
             toast.success('Registro añadido exitosamente');
             onClose();
         } catch (error) {
-            console.error('Error añadiendo el registro:', error);
+            toast.error('Error añadiendo el registro:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -147,7 +147,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-3">
-                <h3 className="text-md font-semibold px-1 mb-3 text-center">Nuevo Registro</h3>
+                <h3 className="text-md font-medium px-1 mb-3 text-center">Nuevo Registro</h3>
 
                 {/* Sección Principal - 2 columnas */}
                 <div className="grid grid-cols-2 gap-2">
@@ -285,7 +285,7 @@ const AddRecordModal = ({ isOpen, onClose }) => {
                 </div>
                 <button
                     type="submit"
-                    className="bg-accent-secondary text-white py-2.5 rounded-md w-full h-12 text-sm font-medium
+                    className="bg-primary-button text-white py-2.5 rounded-xl w-full h-12 text-sm font-medium
                      active:scale-95 transition-transform disabled:opacity-70"
                     disabled={isSubmitting}
                 >

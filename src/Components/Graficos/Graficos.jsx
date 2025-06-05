@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRecords } from '../../utils/apiFunctions';
-import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import MonthNavigator from '../RegistroClientes/MonthNavigator';
 import { Link } from 'react-router-dom';
-import { MdInsertChartOutlined } from "react-icons/md";
+import { MdInsertChartOutlined, MdMoreVert } from "react-icons/md";
+import Calendario from '../Calendario/Calendario';
 
 const Graficos = () => {
-    const [mostFrequentDistrict, setMostFrequentDistrict] = useState([]);
     const [totalEnvios, setTotalEnvios] = useState(0);
-    const [totalVentas, setTotalVentas] = useState(0);         // Ventas del mes/año actual
-    const [ventasMesAnterior, setVentasMesAnterior] = useState(0); // Ventas del mismo mes/año anterior
+    const [totalVentas, setTotalVentas] = useState(0);
     const [totalRegistros, setTotalRegistros] = useState(0);
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [mostrarOpciones, setMostrarOpciones] = useState(false);
+    const [variacionEnvios, setVariacionEnvios] = useState(0);
+    const [variacionVentas, setVariacionVentas] = useState(0);
+    const [variacionRegistros, setVariacionRegistros] = useState(0);
+    const [mostFrequentDistrict, setMostFrequentDistrict] = useState([]);
 
-    // Normaliza texto (ej. distritos) a minúsculas, sin espacios extra
     const normalizeText = (text) => {
         return text ? text.trim().toLowerCase() : '';
     };
@@ -28,56 +30,69 @@ const Graficos = () => {
                 const month = currentDate.getMonth();
                 const year = currentDate.getFullYear();
 
-                // 1) Registros de ESTE año
-                const recordsThisYear = await fetchRecords(month, year);
+                // Mes anterior
+                const prevMonthDate = new Date(currentDate);
+                prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+                const prevMonth = prevMonthDate.getMonth();
+                const prevMonthYear = prevMonthDate.getFullYear();
 
-                // 2) Registros del AÑO ANTERIOR, mismo mes
-                const recordsLastYear = await fetchRecords(month, year - 1);
+                // 1) Registros del mes actual
+                const recordsCurrentMonth = await fetchRecords(month, year);
 
-                // Variables para conteos y sumas
+                // 2) Registros del mes anterior
+                const recordsPreviousMonth = await fetchRecords(prevMonth, prevMonthYear);
+
+                // Contar distritos del mes actual
                 const districtCount = {};
-                let totalEnviosCost = 0;
-                let totalVentasAmount = 0;
-
-                // Suma de ventas del año anterior
-                let totalVentasAmountLastYear = 0;
-
-                // Procesar registros del año actual
-                recordsThisYear.forEach((record) => {
-                    const { distrito, costo_envio, costo_pedido } = record;
-                    const normalizedDistrict = normalizeText(distrito);
-
-                    if (normalizedDistrict) {
-                        districtCount[normalizedDistrict] = (districtCount[normalizedDistrict] || 0) + 1;
+                recordsCurrentMonth.forEach(record => {
+                    const distrito = normalizeText(record.distrito);
+                    if (distrito) {
+                        districtCount[distrito] = (districtCount[distrito] || 0) + 1;
                     }
-
-                    totalEnviosCost += parseFloat(costo_envio) || 0;
-                    totalVentasAmount += parseFloat(costo_pedido) || 0;
                 });
 
-                // Procesar registros del año anterior
-                recordsLastYear.forEach((record) => {
-                    // Solo nos interesa costo_pedido para comparar ventas
-                    const { costo_pedido } = record;
-                    totalVentasAmountLastYear += parseFloat(costo_pedido) || 0;
-                });
-
-                // Ordenar distritos más frecuentes (solo top 5)
+                // Ordenar y obtener top 5
                 const sortedDistricts = Object.entries(districtCount)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 5);
 
-                // Actualizar estados
                 setMostFrequentDistrict(sortedDistricts);
-                setTotalEnvios(totalEnviosCost);
-                setTotalVentas(totalVentasAmount);
-                setVentasMesAnterior(totalVentasAmountLastYear);
-                setTotalRegistros(recordsThisYear.length); // Solo registros del mes/año actual
-                setLoading(false);
+
+                // Procesar registros para métricas financieras
+                const processRecords = (records) => {
+                    let envios = 0;
+                    let ventas = 0;
+                    let registros = records.length;
+
+                    records.forEach(record => {
+                        envios += parseFloat(record.costo_envio) || 0;
+                        ventas += parseFloat(record.costo_pedido) || 0;
+                    });
+
+                    return { envios, ventas, registros };
+                };
+
+                const current = processRecords(recordsCurrentMonth);
+                const previous = processRecords(recordsPreviousMonth);
+
+                // Calcular porcentajes
+                const calcularVariacion = (actual, anterior) => {
+                    if (anterior === 0) return actual > 0 ? 100 : 0;
+                    return ((actual - anterior) / anterior) * 100;
+                };
+
+                setTotalEnvios(current.envios);
+                setTotalVentas(current.ventas);
+                setTotalRegistros(current.registros);
+
+                setVariacionEnvios(calcularVariacion(current.envios, previous.envios));
+                setVariacionVentas(calcularVariacion(current.ventas, previous.ventas));
+                setVariacionRegistros(calcularVariacion(current.registros, previous.registros));
+
             } catch (error) {
                 console.error('Error:', error);
-                setLoading(false);
             }
+            setLoading(false);
         };
 
         getRecordsData();
@@ -88,7 +103,6 @@ const Graficos = () => {
         setCurrentDate(newDate);
     };
 
-    // Formatea un número como moneda (S/ 1,234.56)
     const formatCurrency = (value) => {
         return value.toLocaleString('es-PE', {
             style: 'currency',
@@ -98,127 +112,179 @@ const Graficos = () => {
         });
     };
 
-    const generateBarChartData = () => ({
-        labels: ['Este año', 'Año anterior'],
-        datasets: [
-            {
-                label: 'Ventas (S/)',
-                data: [totalVentas, ventasMesAnterior],
-                backgroundColor: ['#010101', '#f0eee6'],
-            }
-        ]
-    });
+    const fecha = new Date();
+    const diaSemana = fecha.getDate();
+    const mesActual = document.getElementById('mes-actual')?.textContent;
 
+    const IndicadorPorcentaje = ({ valor }) => {
+        const esPositivo = valor >= 0;
+        const icono = esPositivo ? '▲' : '▼';
+
+        return (
+            <div className={`flex items-center gap-1 border rounded-lg p-1 text-sm ${esPositivo ? 'border-green-600 text-green-600 bg-green-50' : 'border-red-600 text-red-600 bg-red-50'}`} title="Con respecto al mes anterior">
+                <span>{Math.abs(valor).toFixed(1)}%</span>
+                <span>{icono}</span>
+            </div>
+        );
+    };
     return (
-        <div className="bg-bg-base-white sm:px-6 py-1 px-2">
-            <div className="flex justify-between items-center mb-4">
-                <MonthNavigator
-                    currentMonth={currentDate.getMonth()}
-                    currentYear={currentDate.getFullYear()}
-                    onMonthChange={handleMonthChange}
-                />
-                <Link
-                    to="/resumen"
-                    className="border border-solid border-black text-accent-secondary rounded-lg p-1 mb-0 sm:mb-4 hover:bg-gray-50 transition-colors"
-                >
-                    <MdInsertChartOutlined size={24} className="p-0.5" />
-                </Link>
+        <div className="sm:px-6 py-1 px-2">
+            {/* Calendario primero en mobile */}
+            <div className="lg:hidden mb-4 bg-base-white rounded-3xl">
+                <div className="h-full p-4">
+                    <Calendario />
+                </div>
             </div>
 
+            {/* Encabezado: Resumen del mes */}
+            <div className="flex items-center justify-between pb-4 border-b-0 md:border-b border-gray-200 bg-base-white p-6 rounded-t-3xl">
+                <div className="flex flex-col text-left">
+                    <h2 className="text-xl md:text-2xl hidden md:block">Resumen del mes</h2>
+                    <h2 className='text-xl md:text-2xl block md:hidden'>Resumen</h2>
+                    <p className="text-sm text-gray-500 hidden md:block">
+                        <span>{diaSemana} de {mesActual}</span>
+                    </p>
+                </div>
+                <div className="flex flex-row items-center gap-4">
+                    <MonthNavigator
+                        currentMonth={currentDate.getMonth()}
+                        currentYear={currentDate.getFullYear()}
+                        onMonthChange={handleMonthChange}
+                    />
+                    <div className="relative">
+                        <button
+                            onClick={() => setMostrarOpciones(prev => !prev)}
+                            className="p-1 rounded-lg bg-button my-4"
+                        >
+                            <MdMoreVert size={24} />
+                        </button>
+                        {mostrarOpciones && (
+                            <div className="absolute right-0 mt-2 bg-button rounded-lg border border-gray-200 shadow z-10">
+                                <Link
+                                    to="/resumen"
+                                    className="flex items-center gap-2 px-6 py-3 text-sm hover:bg-gray-100 transition"
+                                >
+                                    <MdInsertChartOutlined size={20} />
+                                    Anual
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Loader o estadísticas */}
             {loading ? (
-                <p className="text-center py-8">Graficando...</p>
+                <div className="flex items-center justify-between pb-4 border-b-0 md:border-b border-gray-200 bg-base-white p-6">
+                    <div className="flex flex-row items-center gap-4">
+                        <div className="w-40 h-10 bg-base-white rounded-xl"></div>
+                        <div className="w-10 h-10 bg-base-white rounded-lg"></div>
+                    </div>
+                </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-6 bg-base-white p-4 rounded-b-3xl">
                     {/* Sección de Estadísticas */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="border p-6 rounded-xl shadow-sm">
+                        {/* Gastos de envío */}
+                        <div className="border rounded-xl p-6 md:border-r md:border-t-0 md:border-b-0 md:border-l-0 md:rounded-r-none">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-500 mb-1">Gastos de envío</p>
-                                    <p className="text-2xl font-bold text-red-600">
-                                        {formatCurrency(totalEnvios)}
-                                    </p>
+                                    <p className="text-2xl font-medium">{formatCurrency(totalEnvios)}</p>
                                 </div>
                                 <div className="py-2">
-                                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
+                                    <IndicadorPorcentaje valor={variacionEnvios} />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="border p-6 rounded-xl shadow-sm">
+                        {/* Ventas totales */}
+                        <div className="border rounded-xl p-6 md:border-r md:border-t-0 md:border-b-0 md:border-l-0 md:rounded-r-none">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-gray-500 mb-1">Ventas totales</p>
-                                    <p className="text-xl font-bold text-green-600">
-                                        {formatCurrency(totalVentas)}
-                                    </p>
+                                    <p className="text-2xl font-medium">{formatCurrency(totalVentas)}</p>
                                 </div>
-                                <div className="py-3">
-                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
+                                <div className="py-2">
+                                    <IndicadorPorcentaje valor={variacionVentas} />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="border p-6 rounded-xl shadow-sm">
+                        {/* Registros */}
+                        <div className="border rounded-xl p-6 md:border-t-0 md:border-b-0 md:border-l-0 md:border-r-0 md:rounded-r-none">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500 mb-1">Total registros</p>
-                                    <p className="text-2xl font-bold text-black-600">
-                                        {totalRegistros.toLocaleString()}
-                                    </p>
+                                    <p className="text-sm text-gray-500 mb-1">Registros</p>
+                                    <p className="text-2xl font-medium">{totalRegistros.toLocaleString()}</p>
                                 </div>
-                                <div className="py-3">
-                                    <svg className="w-5 h-5 text-black-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                    </svg>
+                                <div className="py-2">
+                                    <IndicadorPorcentaje valor={variacionRegistros} />
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
 
-                    {/* Sección Distritos + Gráfico de barras */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Distritos más frecuentes */}
-                        <div className="border p-6 rounded-xl shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">Distritos más frecuentes</h2>
-                            <div className="space-y-3">
-                                {mostFrequentDistrict.map(([district, count]) => (
-                                    <div key={district} className="flex justify-between items-center p-3 border rounded-lg">
-                                        <span className="font-medium capitalize flex-1 truncate max-w-[70%]">
-                                            {district}
-                                        </span>
-                                        <span className="bg-accent-secondary text-accent-secondary-dark px-3 py-1 rounded-full text-sm shrink-0">
-                                            {count} envíos
-                                        </span>
+            {/* Segunda sección con Top Distritos y Calendario */}
+            {loading ? (
+                <div>
+                    <div className="space-y-6 bg-base-white p-4 rounded-b-3xl">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="border rounded-xl p-6 space-y-3">
+                                    <div className="h-4 w-24 bg-base-white rounded-xl"></div>
+                                    <div className="h-6 w-28 bg-base-white rounded-xl"></div>
+                                    <div className="h-5 w-10 bg-base-white rounded-xl"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="mt-2 grid grid-cols-1 gap-6 bg-base p-1 rounded-3xl">
+                        <div className="grid grid-cols-1 lg:grid-cols-[29%_70%] gap-4">
+                            <div className="p-6 bg-base-white rounded-3xl space-y-4">
+                                <div className="h-6 w-40 bg-base-white rounded-xl"></div>
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className="flex justify-between items-center p-3 border-b">
+                                        <div className="h-4 w-32 bg-base-white rounded-xl"></div>
+                                        <div className="h-6 w-14 bg-base-white rounded-full"></div>
                                     </div>
                                 ))}
                             </div>
+                            <div className="hidden lg:block bg-base-white rounded-3xl">
+                                <div className="h-[400px] p-4 bg-base-white rounded-3xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="mt-2 grid grid-cols-1 gap-6 bg-base p-1 rounded-3xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-[29%_70%] gap-4">
+                        {/* Top Distritos */}
+                        <div className="p-6 bg-base-white rounded-3xl">
+                            <h2 className="text-xl font-medium mb-4">Top Distritos</h2>
+                            <div className="space-y-3">
+                                {mostFrequentDistrict.map(([district, count]) => (
+                                    <div key={district} className="flex justify-between items-center p-3 border-b">
+                                        <span className="font-medium capitalize flex-1 truncate max-w-[70%]">
+                                            {district}
+                                        </span>
+                                        <span className="bg-button text-dark px-3 py-1 rounded-full text-sm shrink-0">
+                                            {count} envío{count !== 1 && 's'}
+                                        </span>
+                                    </div>
+                                ))}
+                                {mostFrequentDistrict.length === 0 && !loading && (
+                                    <p className="text-center text-gray-500">Aún no hay datos</p>
+                                )}
+                            </div>
                         </div>
 
-                        {/* NUEVO: Gráfico comparativo de ventas */}
-                        <div className="border p-6 rounded-xl shadow-sm hidden lg:block">
-                            <h2 className="text-xl font-semibold mb-4 text-center">
-                                Comparativo de meses
-                            </h2>
-                            <div className="h-72">
-                                <Bar
-                                    data={generateBarChartData()}
-                                    options={{
-                                        maintainAspectRatio: false,
-                                        plugins: {
-                                            legend: {
-                                                position: 'bottom',
-                                                labels: {
-                                                    padding: 20
-                                                }
-                                            }
-                                        }
-                                    }}
-                                />
+                        {/* Calendario solo visible en desktop aquí */}
+                        <div className="hidden lg:block bg-base-white rounded-3xl">
+                            <div className="h-full p-4">
+                                <Calendario />
                             </div>
                         </div>
                     </div>
@@ -226,6 +292,7 @@ const Graficos = () => {
             )}
         </div>
     );
+
 };
 
 export default Graficos;

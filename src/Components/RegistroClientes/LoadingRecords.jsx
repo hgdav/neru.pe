@@ -3,7 +3,7 @@ import React from 'react'
 const LoadingRecords = () => {
     return (
         <>
-            <div className="shadow-lg rounded-3xl p-6 mb-4 bg-bg-base-white min-h-[300px]">
+            <div className="shadow-lg rounded-3xl p-6 mb-4 bg-base-white min-h-[300px]">
                 <div className="card-header">
                     <div className="flex items-center justify-between gap-2">
                         {/* Simular carga de un título */}
